@@ -53,13 +53,13 @@ namespace SocialMediaApplication.Database.DatabaseHandler
             await _dbAdapter.UpdateObjectInTableAsync(textPost);
         }
 
-        //get all textposts
+        //get all text posts
         public async Task<IEnumerable<TextPost>> GetAllTextPostAsync()
         {
             return await _dbAdapter.GetAllObjectsInTableAsync<TextPost>();
         }
 
-        //get a particular textpost
+        //get a particular text post
         public async Task<TextPost> GetTextPostAsync(string id)
         {
             return await _dbAdapter.GetObjectFromTableAsync<TextPost>(id);
@@ -68,7 +68,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         public async Task<IEnumerable<TextPost>> GetUserTextPostsAsync(string userId)
         {
             await DatabaseInitializer.Instance.InitializeDatabase();
-            return await DatabaseInitializer.Instance._db.Table<TextPost>().Where(tp => tp.PostedBy == userId).ToListAsync();
+            return await DatabaseInitializer.Instance.Db.Table<TextPost>().Where(tp => tp.PostedBy == userId).ToListAsync();
         }
     }
 }

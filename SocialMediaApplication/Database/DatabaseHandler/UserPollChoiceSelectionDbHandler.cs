@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Database.DatabaseAdapter.Contract;
@@ -71,7 +70,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
             return await _dbAdapter.GetAllObjectsInTableAsync<UserPollChoiceSelection>();
         }
 
-        //get a particular UserpollChoiceSelection
+        //get a particular User pollChoiceSelection
         public async Task<UserPollChoiceSelection> GetUserPollChoiceSelectionAsync(string userPollChoiceId)
         {
             return await _dbAdapter.GetObjectFromTableAsync<UserPollChoiceSelection>(userPollChoiceId);

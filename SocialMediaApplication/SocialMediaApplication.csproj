@@ -119,10 +119,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Constant\Gender.cs" />
-    <Compile Include="Constant\MaritalStatus.cs" />
-    <Compile Include="Constant\ReactionType.cs" />
-    <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="AppSetting.cs" />
+    <Compile Include="Domain\UseCase\SignUpUseCase.cs" />
+    <Compile Include="Models\Constant\Gender.cs" />
+    <Compile Include="Models\Constant\MaritalStatus.cs" />
+    <Compile Include="Models\Constant\ReactionType.cs" />
     <Compile Include="Database\DatabaseAdapter\Contract\IDbAdapter.cs" />
     <Compile Include="Database\DatabaseAdapter\DbAdapter.cs" />
     <Compile Include="Database\DatabaseHandler\CommentDbHandler.cs" />
@@ -146,7 +147,24 @@
     <Compile Include="Database\DatabaseHandler\UserCredentialDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\UserDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\UserPollChoiceSelectionDbHandler.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Domain\UseCase\LoginUseCase.cs" />
+    <Compile Include="Domain\UseCase\UseCaseBase.cs" />
+    <Compile Include="Presenter\ViewModel\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
+    <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
+    <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
+    <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
+    <Compile Include="Presenter\View\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\LogInPage.xaml.cs">
+      <DependentUpon>LogInPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BusinessModels\CommentBObj.cs" />
@@ -167,20 +185,25 @@
     <Compile Include="Models\EntityModels\UserCredential.cs" />
     <Compile Include="Models\EntityModels\UserPollChoiceSelection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\CommentManager.cs" />
-    <Compile Include="Services\Contract\ICommentManager.cs" />
-    <Compile Include="Services\Contract\IPollChoiceManager.cs" />
-    <Compile Include="Services\Contract\IPostManager.cs" />
-    <Compile Include="Services\Contract\IReactionManager.cs" />
-    <Compile Include="Services\Contract\IUserCredentialManager.cs" />
-    <Compile Include="Services\Contract\IUserManager.cs" />
-    <Compile Include="Services\InitializeData.cs" />
-    <Compile Include="Services\LabelManager.cs" />
-    <Compile Include="Services\PollChoiceManager.cs" />
-    <Compile Include="Services\PostManager.cs" />
-    <Compile Include="Services\ReactionManager.cs" />
-    <Compile Include="Services\UserCredentialManager.cs" />
-    <Compile Include="Services\UserManager.cs" />
+    <Compile Include="DataManager\CommentManager.cs" />
+    <Compile Include="DataManager\Contract\ICommentManager.cs" />
+    <Compile Include="DataManager\Contract\IPollChoiceManager.cs" />
+    <Compile Include="DataManager\Contract\IPostManager.cs" />
+    <Compile Include="DataManager\Contract\IReactionManager.cs" />
+    <Compile Include="DataManager\Contract\IUserCredentialManager.cs" />
+    <Compile Include="DataManager\Contract\IUserManager.cs" />
+    <Compile Include="DataManager\InitializeData.cs" />
+    <Compile Include="DataManager\LabelManager.cs" />
+    <Compile Include="DataManager\PollChoiceManager.cs" />
+    <Compile Include="DataManager\PostManager.cs" />
+    <Compile Include="DataManager\ReactionManager.cs" />
+    <Compile Include="DataManager\UserCredentialManager.cs" />
+    <Compile Include="DataManager\UserManager.cs" />
+    <Compile Include="Presenter\View\SignUpPage.xaml.cs">
+      <DependentUpon>SignUpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Util\Validation.cs" />
+    <Compile Include="Util\UserManagerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -188,6 +211,11 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" />
+    <Content Include="Assets\BlackThemesDarkBackground-440x280-HD.jpg" />
+    <Content Include="Assets\images.jpg" />
+    <Content Include="Assets\signInBackground.jpg" />
+    <Content Include="Assets\wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -202,9 +230,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Presenter\ViewModel\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\LogInPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\LoginResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Presenter\View\SignUpPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -217,12 +265,22 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Utilities">
+      <Version>17.4.33103.184</Version>
+    </PackageReference>
+    <PackageReference Include="MvvmLightLibs">
+      <Version>5.4.1.1</Version>
+    </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.8.116</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="View\" />
+    <None Include="Assets\black-contrast-tech-arrows-background-260nw-1194220039.webp" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
