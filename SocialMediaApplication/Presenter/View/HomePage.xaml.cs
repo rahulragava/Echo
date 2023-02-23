@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace SocialMediaApplication.Presenter.View
 {
@@ -25,6 +12,46 @@ namespace SocialMediaApplication.Presenter.View
         public HomePage()
         {
             this.InitializeComponent();
+        }
+
+        private void NavigationMenu_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+
+            var selectedTag = args.SelectedItemContainer.Tag.ToString();
+
+            switch (selectedTag)
+            {
+                case "HomePage":
+                    //this.Frame.Navigate(typeof(HomePage));
+                    ContentFrame.Navigate(typeof(FeedsPage));
+                    break;
+                case "SearchPage":
+                    ContentFrame.Navigate(typeof(SearchPage));
+                    break;
+                case "CreatePage":
+                    ContentFrame.Navigate(typeof(PostPage));
+                    break;
+                case "LabelPage":
+                    ContentFrame.Navigate(typeof(LabelPage));
+                    break;
+                case "ProfilePage":
+                    ContentFrame.Navigate(typeof(ProfilePage));
+                    break;
+                case "Logout":
+                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                    localSettings.Values.Remove("user");
+                    this.Frame.Navigate(typeof(LoginInPage));
+                    break;
+            }
+        }
+
+        
+
+        private void UserLogOut_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            App.LocalSettings.Values.Remove("user");
+            this.Frame.Navigate(typeof(LoginInPage));
         }
     }
 }

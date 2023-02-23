@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
+using Windows.UI.Core;
 using GalaSoft.MvvmLight;
 using Microsoft.VisualStudio.PlatformUI;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
@@ -66,6 +67,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         private static readonly CancellationTokenSource Cts = new CancellationTokenSource();
 
+        public EventHandler GoToHomePageEventHandler;
 
         public void LoginButtonOnClick()
         {
@@ -115,6 +117,11 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Email = string.Empty;
             Password = string.Empty;
         }
+
+        public void SuccessfullyLoggedIn()
+        {
+            GoToHomePageEventHandler?.Invoke(this,EventArgs.Empty);
+        }
     }
 
 
@@ -128,9 +135,17 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void OnSuccess(LoginResponse logInResponse)
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            localSettings.Values["user"] = logInResponse.User.Id;
-            //switch to ui thread and go to app page
+            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            //localSettings.Values["user"] = logInResponse.User.Id;
+            App.LocalSettings.Values["user"] = logInResponse.User.Id;
+            
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    // Your UI update code goes here!
+                    _loginViewModel.SuccessfullyLoggedIn();
+                }
+            );
         }
 
         public void OnError(Exception ex)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
@@ -15,47 +16,19 @@ namespace SocialMediaApplication.Presenter.View
     /// </summary>
     public sealed partial class LoginInPage : Page
     {
-        public readonly LogInViewModel LoginViewModel;
-
-        //public string abc;// = LoginViewModel.PasswordErrorMessage;
-        
+        private readonly LogInViewModel _loginViewModel;
         public LoginInPage()
         {
             this.InitializeComponent();
-            LoginViewModel = new LogInViewModel();
-            //abc = LoginViewModel.PasswordErrorMessage;
+            _loginViewModel = new LogInViewModel();
+            _loginViewModel.GoToHomePageEventHandler += GoToHomePage;
         }
 
-        //private Visibility _visibility = Visibility.Collapsed;
-        //public Visibility UserNameTextVisibility
-        //{
-        //    get => _visibility;
-        //    set => SetField(ref _visibility, value);
-        //}
-        //private void PasswordRevealHideCheckBox_OnChecked(object sender, RoutedEventArgs e)
-        //{
-        //    UserPasswordBox.PasswordRevealMode = PasswordRevealHideCheckBox.IsChecked == true
-        //        ? PasswordRevealMode.Visible
-        //        : PasswordRevealMode.Hidden;
-        //}
-
-        //public event PropertyChangedEventHandler PropertyChanged;
-
-        //private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
-
-        //private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        //{
-        //    if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        //    field = value;
-        //    OnPropertyChanged(propertyName);
-        //    return true;
-        //}
-
-       
-
+        private void GoToHomePage(object sender, EventArgs e)
+        {
+            this.Frame.Navigate(typeof(HomePage));
+        }
+        
         private void GoToSignUpPageClick(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(SignUpPage));
@@ -63,15 +36,11 @@ namespace SocialMediaApplication.Presenter.View
 
         private void RevealPassword(object sender, TappedRoutedEventArgs e)
         {
-            PasswordBox.PasswordRevealMode = LoginViewModel.IsPasswordReveal
+            PasswordBox.PasswordRevealMode = _loginViewModel.IsPasswordReveal
                 ? PasswordRevealMode.Visible
                 : PasswordRevealMode.Hidden;
-            LoginViewModel.IsPasswordReveal = !LoginViewModel.IsPasswordReveal;
+            _loginViewModel.IsPasswordReveal = !_loginViewModel.IsPasswordReveal;
         }
 
-        public Visibility SetVisibility(Visibility value)
-        {
-            return value == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
-        }
     }
 }

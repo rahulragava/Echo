@@ -24,16 +24,9 @@ namespace SocialMediaApplication.Presenter.View
 
         public void UserAlreadyLoggedIn()
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if (localSettings.Values["user"] == null)
-            {
-                this.Frame.Navigate(typeof(SignUpPage));
-            }
-            else
-            {
-                //work page of the app
-                //this.Frame.Navigate(typeof());
-            }
+            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            //this.Frame.Navigate(localSettings.Values["user"] == null ? typeof(SignUpPage) : typeof(HomePage));
+            this.Frame.Navigate(App.UserId == null ? typeof(SignUpPage) : typeof(HomePage));
         }
 
 

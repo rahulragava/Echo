@@ -17,6 +17,7 @@ namespace SocialMediaApplication.Domain.UseCase
             CancellationToken = cancellationToken;
         }
 
+        protected UseCaseBase() { }
         public abstract void Action();
 
         public void Execute()

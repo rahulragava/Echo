@@ -37,37 +37,37 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
 
         public async Task InsertInTableAsync<T>(T obj) where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             await DatabaseInitializer.Instance.Db.InsertAsync(obj);
         }
 
         public async Task InsertMultipleObjectInTableAsync<T>(List<T> objList) where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             await DatabaseInitializer.Instance.Db.InsertAllAsync(objList, true);
         }
 
         public async Task RemoveObjectFromTableAsync<T>(string id) where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             await DatabaseInitializer.Instance.Db.DeleteAsync<T>(id);
         }
 
         public async Task UpdateObjectInTableAsync<T>(T obj) where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             await DatabaseInitializer.Instance.Db.UpdateAsync(obj);
         }
 
         public async Task<T> GetObjectFromTableAsync<T>(string id) where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.GetAsync<T>(id);
         }
 
         public async Task<IEnumerable<T>> GetAllObjectsInTableAsync<T>() where T : new()
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.Table<T>().ToListAsync();
         }
 

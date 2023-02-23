@@ -35,18 +35,18 @@ namespace SocialMediaApplication.DataManager
 
         public async Task<List<Reaction>> GetReactionAsync()
         {
-            var reactions = await Task.Run(() => _reactionDbHandler.GetAllUserReactionAsync()).ConfigureAwait(false);
+            var reactions = await _reactionDbHandler.GetAllUserReactionAsync();
             return reactions.ToList();
         }
 
         public async Task AddReactionAsync(Reaction reaction)
         {
-            await Task.Run(()=> _reactionDbHandler.InsertUserReactionAsync(reaction)).ConfigureAwait(false);
+            await _reactionDbHandler.InsertUserReactionAsync(reaction);
         }
 
         public async Task RemoveReactionAsync(Reaction reaction)
         {
-            await Task.Run(()=> _reactionDbHandler.RemoveUserReactionAsync(reaction.Id)).ConfigureAwait(false);
+            await _reactionDbHandler.RemoveUserReactionAsync(reaction.Id);
         }
 
         public async Task RemoveReactionsAsync(List<Reaction> reactions)

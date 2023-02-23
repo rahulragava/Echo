@@ -23,7 +23,7 @@ namespace SocialMediaApplication.Util
         public async Task<UserBObj> VerifyAndGetUserBObjAsync(string userMailId, string userPassword)
         {
             var userCredentialManager = UserCredentialManager.GetInstance;
-            var userToBeVerified = await GetUserBObjWithoutId(userMailId); 
+            var userToBeVerified = await GetUserBObjWithoutIdAsync(userMailId); 
             UserCredential userCredential;
             if (userToBeVerified != null)
                 userCredential = await userCredentialManager.GetUserCredentialAsync(userToBeVerified.Id);
@@ -38,9 +38,10 @@ namespace SocialMediaApplication.Util
             throw new Exception("No such user exists");
         }
 
-        public async Task<UserBObj> GetUserBObjWithoutId(string userMailId)
+        public async Task<UserBObj> GetUserBObjWithoutIdAsync(string userMailId)
         {
-            var user = (await Task.Run(() => _userDbHandler.GetAllUserAsync()).ConfigureAwait(false)).ToList().SingleOrDefault(u => u.MailId == userMailId);
+            var user = (await _userDbHandler.GetAllUserAsync().ConfigureAwait(false)).SingleOrDefault(u => u.MailId == userMailId);
+            var users = await _userDbHandler.GetAllUserAsync().ConfigureAwait(false);
             if (user == null) return null;
             var textPosts = await _postManager.GetUserTextPostBObjsAsync(user.Id);
             var pollPosts = await _postManager.GetUserPollPostBObjsAsync(user.Id);
@@ -59,6 +60,7 @@ namespace SocialMediaApplication.Util
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                MailId = user.MailId,
                 Gender = user.Gender,
                 CreatedAt = user.CreatedAt,
                 MaritalStatus = user.MaritalStatus,

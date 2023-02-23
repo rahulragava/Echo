@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.View;
+using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
+
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -166,27 +168,32 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Password = string.Empty;
             RetypedPassword = string.Empty;
         }
+
+        public EventHandler NavigateToLogInPage;
+        public void SignInSuccess()
+        {
+            NavigateToLogInPage?.Invoke(this,EventArgs.Empty);
+        }
     }
 
     public class SignUpViewModelPresenterCallBack : IPresenterCallBack<SignUpResponse>
     {
-        private SignUpViewModel _signUpViewModel;
+        private readonly SignUpViewModel _signUpViewModel;
         public SignUpViewModelPresenterCallBack(SignUpViewModel signUpViewModel)
         {
             _signUpViewModel = signUpViewModel;
         }
-        
+        //public event GoToLogInPageAfterCreateAccountEvent  
         public void OnSuccess(SignUpResponse logInResponse)
         {
             //get to login page once sign in gets successful
             //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            //Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-            //    () =>
-            //    {
-
-            //    }
-            //);
-
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                  _signUpViewModel.SignInSuccess();
+                }
+            );
         }
 
         public void OnError(Exception ex)

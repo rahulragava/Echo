@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using SocialMediaApplication.Presenter.ViewModel;
@@ -17,12 +18,26 @@ namespace SocialMediaApplication.Presenter.View
         {
             this.InitializeComponent();
             _signUpViewModel = new SignUpViewModel();
+            _signUpViewModel.NavigateToLogInPage += GoToLogInPage;
         }
 
         private void GotoSignInPageClick(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(LoginInPage));
+
         }
+
+        private void GoToLogInPage(object sender, EventArgs e)
+        {   
+            _signUpViewModel.NavigateToLogInPage -= GoToLogInPage;
+            this.Frame.Navigate(typeof(LoginInPage));
+        }
+
+        //private void ViewModelSaidDoSomething()
+        //{
+        //    var vm = (SignUpViewModel)DataContext;
+        //    vm.
+        //}
 
         private void RevealPassword(object sender, TappedRoutedEventArgs e)
         {

@@ -67,7 +67,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
 
         public async Task<IEnumerable<TextPost>> GetUserTextPostsAsync(string userId)
         {
-            await DatabaseInitializer.Instance.InitializeDatabase();
+            DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.Table<TextPost>().Where(tp => tp.PostedBy == userId).ToListAsync();
         }
     }

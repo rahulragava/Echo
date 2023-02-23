@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SocialMediaApplication.Domain.UseCase;
+using SocialMediaApplication.Models.BusinessModels;
+
 //using SocialMediaApplication.Presenter.ViewModel.RequestObj;
 
 namespace SocialMediaApplication.DataManager.Contract
@@ -14,7 +16,27 @@ namespace SocialMediaApplication.DataManager.Contract
         Task SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack);
     }
 
-    public interface IUserManager : IUserLoginManager, IUserSignUpManager
+    public interface IUserLogOut
+    {
+        //Task RemoveUserAsync();
+    }
+
+    public interface IGetUserBObj
+    {
+        Task GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequestObj, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack);
+    }
+
+    public interface IEditUserBObj
+    {
+        Task EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj, EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack);
+    }
+
+    public interface IGetUserName
+    {
+        Task GetUserNameAsync(GetUserNameRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack);
+    }
+
+    public interface IUserManager : IUserLoginManager, IUserSignUpManager, IUserLogOut, IGetUserBObj, IEditUserBObj
     {
 
     }

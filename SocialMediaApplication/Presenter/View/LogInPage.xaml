@@ -545,76 +545,122 @@
         <ImageBrush Stretch="UniformToFill" ImageSource="../../Assets/wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png"></ImageBrush>
     </Page.Background>
 
-    <Grid VerticalAlignment="Center" CornerRadius="10" HorizontalAlignment="Center"  >
-        <Grid.Background>
-            <ImageBrush ImageSource="../../Assets/44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" Stretch="UniformToFill"></ImageBrush>
-        </Grid.Background>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                  VerticalScrollBarVisibility="Auto">
+        <Grid VerticalAlignment="Center" 
+              CornerRadius="10" 
+              HorizontalAlignment="Center"  >
+            <Grid.Background>
+                <ImageBrush ImageSource="../../Assets/44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" 
+                            Stretch="UniformToFill"/>
+            </Grid.Background>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Center"
+            <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Background="#4C4291FF"
                     Spacing="5"
                     Padding="20"
                     Width="280"
                     Height="400">
-            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="24" IsColorFontEnabled="True" Foreground="White">Welcome Back !</TextBlock>
-            <Grid RowSpacing="5" ColumnSpacing="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel  Orientation="Horizontal" Padding="2">
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE119;" Height="21" Width="22"/>
-                    <TextBlock Text="Email" Margin="5 0"/>
-                </StackPanel>
-                <TextBlock Grid.Row="1" x:Name="EmailErrorMessage" Text="{x:Bind LoginViewModel.MailErrorMessage, Mode=OneWay}" Visibility="{x:Bind LoginViewModel.IsMailErrorVisible,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}" Foreground="red"></TextBlock>
-                <TextBox CornerRadius="8" Grid.Row="2" HorizontalAlignment="Stretch" Grid.Column="0" Text="{x:Bind LoginViewModel.Email,Mode=TwoWay}"/>
-                <StackPanel  Grid.Row="3" Orientation="Horizontal" Padding="2" Height="auto" Margin="0 30 0 0">
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72E;" Height="21" Width="22"/>
-                    <TextBlock Text="Password" Margin="5 0"/>
-                </StackPanel>
-                <!--<TextBlock  Grid.Row="4" FontSize="25" Text="{x:Bind LoginViewModel.PasswordErrorMessage, Mode=OneWay}"
-                             Foreground="Red"/>-->
-                <TextBlock  Grid.Row="4"  Text="{x:Bind LoginViewModel.PasswordErrorMessage, Mode=OneWay}" Visibility="{x:Bind LoginViewModel.IsPasswordErrorVisible,Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" Foreground="Red"/>
-                <StackPanel  Grid.Row="5" Orientation="Horizontal" Spacing="10" Height="auto">
-                    <PasswordBox x:Name="PasswordBox" Style="{StaticResource UserPasswordStyle}" BorderThickness="0" 
-                                 PasswordRevealMode="{x:Bind LoginViewModel.IsPasswordReveal, Converter={StaticResource BoolToPasswordRevealModeConverter}}"
-                                 CornerRadius="8"
-                                 Password="{x:Bind LoginViewModel.Password, Mode=TwoWay}" Width="205"/>
-                    <FontIcon x:Name="PasswordRevealEyeIcon" FontFamily="Segoe fluent Icons" Glyph="&#xF78D;" Height="21" Width="22" Tapped="RevealPassword" />
-                </StackPanel>
+                <TextBlock HorizontalAlignment="Center" 
+                           FontWeight="SemiBold" 
+                           FontSize="24" 
+                           IsColorFontEnabled="True" 
+                           Foreground="White"
+                           Text="Welcome Back !"/>
+                <Grid RowSpacing="5" 
+                      ColumnSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel  Orientation="Horizontal" 
+                                 Padding="2">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE119;" 
+                                  Height="21" 
+                                  Width="22"/>
+                        <TextBlock Text="Email" 
+                                   Margin="5 0"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" 
+                               x:Name="EmailErrorMessage" 
+                               Text="{x:Bind _loginViewModel.MailErrorMessage, Mode=OneWay}" 
+                               Visibility="{x:Bind _loginViewModel.IsMailErrorVisible,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}" 
+                               Foreground="red"/>
+                    <TextBox CornerRadius="8" 
+                             Grid.Row="2" 
+                             HorizontalAlignment="Stretch" 
+                             Grid.Column="0" 
+                             Text="{x:Bind _loginViewModel.Email,Mode=TwoWay}"/>
+                    <StackPanel  Grid.Row="3"
+                                 Orientation="Horizontal" 
+                                 Padding="2" 
+                                 Height="auto" 
+                                 Margin="0 30 0 0">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE72E;" 
+                                  Height="21" 
+                                  Width="22"/>
+                        <TextBlock Text="Password" 
+                                   Margin="5 0"/>
+                    </StackPanel>
+                    <TextBlock  Grid.Row="4"  
+                                Text="{x:Bind _loginViewModel.PasswordErrorMessage, Mode=OneWay}" 
+                                Visibility="{x:Bind _loginViewModel.IsPasswordErrorVisible,Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                                Foreground="Red"/>
+                    <StackPanel  Grid.Row="5" 
+                                 Orientation="Horizontal"
+                                 Spacing="10" 
+                                 Height="auto">
+                        <PasswordBox x:Name="PasswordBox" 
+                                     Style="{StaticResource UserPasswordStyle}"
+                                     BorderThickness="0" 
+                                     PasswordRevealMode="{x:Bind _loginViewModel.IsPasswordReveal, Converter={StaticResource BoolToPasswordRevealModeConverter}}"
+                                     CornerRadius="8"
+                                     Password="{x:Bind _loginViewModel.Password, Mode=TwoWay}" Width="205"/>
+                        <FontIcon x:Name="PasswordRevealEyeIcon" 
+                                  FontFamily="Segoe fluent Icons" 
+                                  Glyph="&#xF78D;"
+                                  Height="21" 
+                                  Width="22" 
+                                  Tapped="RevealPassword" />
+                    </StackPanel>
+                </Grid>
 
-            </Grid>
+                <Button Width="150" 
+                        Margin="10 20 "
+                        Content="log in"
+                        Background="Green" 
+                        HorizontalAlignment="Center"
+                        Click="{x:Bind _loginViewModel.LoginButtonOnClick}" CornerRadius="8,8,8,8">
+                </Button>
 
-            <!--<StackPanel Orientation="Horizontal" />-->
-            <Button Width="150" 
-                    Margin="10 20 "
-                    Content="log in"
-                    Background="Green" 
-                    HorizontalAlignment="Center"
-                    Click="{x:Bind LoginViewModel.LoginButtonOnClick}" CornerRadius="8,8,8,8"
-                    >
-               
-            </Button>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0 10">
-                <TextBlock Text ="Create an account"/>
-                <HyperlinkButton Click="GoToSignUpPageClick" VerticalAlignment="Top" Margin="0 -6"  HorizontalAlignment="Center">SignUp</HyperlinkButton>
-
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center" 
+                            Spacing="10" 
+                            Margin="0 10">
+                    <TextBlock Text ="Create an account"/>
+                    <HyperlinkButton Click="GoToSignUpPageClick" 
+                                     VerticalAlignment="Top" 
+                                     Margin="0 -6"  
+                                     HorizontalAlignment="Center"
+                                     Content="Sign Up"/>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>
 
     

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Media.Audio;
@@ -35,17 +36,18 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
         }
         public SQLiteAsyncConnection Db { get; set; }
 
-        public async Task InitializeDatabase()
+        public void InitializeDatabase()
         {
             if(Db == null)
             {
                 var databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SocialMediaDatabase.db3");
                 Db = new SQLiteAsyncConnection(databasePath);
-                await CreateAllTables();
+                Debug.WriteLine(databasePath);
+                //await CreateAllTablesAsync();
             }
         }
 
-        public async Task CreateAllTables()
+        public async Task CreateAllTablesAsync()
         {
             await Db.CreateTableAsync<User>();
             await Db.CreateTableAsync<UserCredential>();

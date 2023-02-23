@@ -8,6 +8,7 @@ using SocialMediaApplication.Presenter.ViewModel;
 
 namespace SocialMediaApplication.Domain.UseCase
 {
+
     //use case
     public class LoginUseCase : UseCaseBase<LoginResponse>
     {

@@ -254,7 +254,7 @@ namespace SocialMediaApplication.DataManager
         {
             var reactions = (await _reactionManager.GetReactionAsync()).ToList();
             var commentBObjs = (await _commentManager.GetCommentBObjsAsync()).ToList();
-            var textPosts = (await Task.Run(() => _textPostDbHandler.GetAllTextPostAsync()).ConfigureAwait(false)).ToList();
+            var textPosts = (await _textPostDbHandler.GetAllTextPostAsync()).Where(tp => tp.PostedBy == userId);
             var textPostBObjs = new List<TextPostBObj>();
 
             foreach (var textPost in textPosts)
@@ -283,7 +283,9 @@ namespace SocialMediaApplication.DataManager
         {
             var reactions = (await _reactionManager.GetReactionAsync()).ToList();
             var commentBObjs = (await _commentManager.GetCommentBObjsAsync()).ToList();
-            var pollPosts = (await Task.Run(() => _pollPostDbHandler.GetAllPollPostAsync()).ConfigureAwait(false)).ToList();
+            var pollPosts = (await _pollPostDbHandler.GetAllPollPostAsync()).Where(pp => pp.PostedBy == userId).ToList();
+            var pollPostsTesting = (await _pollPostDbHandler.GetAllPollPostAsync()).ToList();
+
             var pollChoices = (await _pollChoiceManager.GetPollChoicesBObjAsync()).ToList();
 
             var pollPostBObjs = new List<PollPostBObj>();
@@ -295,7 +297,7 @@ namespace SocialMediaApplication.DataManager
                 var postReactions = reactions.Where((reaction) => (reaction.ReactionOnId == pollPost.Id)).ToList();
                 var choices = pollChoices.Where((choice) => choice.PostId == pollPost.Id).ToList();
 
-                var textPostBObj = new PollPostBObj()
+                var pollPostBObj = new PollPostBObj()
                 {
                     Id = pollPost.Id,
                     Title = pollPost.Title,
@@ -307,7 +309,7 @@ namespace SocialMediaApplication.DataManager
                     Question = pollPost.Question,
                     Choices = choices
                 };
-                pollPostBObjs.Add(textPostBObj);
+                pollPostBObjs.Add(pollPostBObj);
             }
             return pollPostBObjs;
         }

@@ -119,7 +119,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppSetting.cs" />
+    <Compile Include="DataManager\LogInManager.cs" />
+    <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
+    <Compile Include="Domain\UseCase\GetUserNameUseCase.cs" />
+    <Compile Include="Domain\UseCase\GetUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\SignUpUseCase.cs" />
     <Compile Include="Models\Constant\Gender.cs" />
     <Compile Include="Models\Constant\MaritalStatus.cs" />
@@ -149,17 +152,22 @@
     <Compile Include="Database\DatabaseHandler\UserPollChoiceSelectionDbHandler.cs" />
     <Compile Include="Domain\UseCase\LoginUseCase.cs" />
     <Compile Include="Domain\UseCase\UseCaseBase.cs" />
-    <Compile Include="Presenter\ViewModel\HomePage.xaml.cs">
-      <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Presenter\ViewModel\PostControlViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
     <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
+    <Compile Include="Presenter\View\FeedsPage.xaml.cs">
+      <DependentUpon>FeedsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presenter\View\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\LabelPage.xaml.cs">
+      <DependentUpon>LabelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
@@ -184,6 +192,27 @@
     <Compile Include="Models\EntityModels\User.cs" />
     <Compile Include="Models\EntityModels\UserCredential.cs" />
     <Compile Include="Models\EntityModels\UserPollChoiceSelection.cs" />
+    <Compile Include="Presenter\View\PollChoiceUserControl.xaml.cs">
+      <DependentUpon>PollChoiceUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\PollPostUserControl.xaml.cs">
+      <DependentUpon>PollPostUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\PostPage.xaml.cs">
+      <DependentUpon>PostPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\TextPostUserControl.xaml.cs">
+      <DependentUpon>TextPostUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ProfileEditPopUp.xaml.cs">
+      <DependentUpon>ProfileEditPopUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\SearchPage.xaml.cs">
+      <DependentUpon>SearchPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataManager\CommentManager.cs" />
     <Compile Include="DataManager\Contract\ICommentManager.cs" />
@@ -230,11 +259,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Presenter\ViewModel\HomePage.xaml">
+    <Page Include="Presenter\View\FeedsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\LabelPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -250,6 +283,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Presenter\View\PollChoiceUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PollPostUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PostPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\TextPostUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ProfileEditPopUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\SearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presenter\View\SignUpPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -264,6 +325,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <Version>7.0.0-preview2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.8.2</Version>

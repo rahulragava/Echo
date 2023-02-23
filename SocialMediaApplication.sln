@@ -5,8 +5,6 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaApplication", "SocialMediaApplication\SocialMediaApplication.csproj", "{F4696605-599A-47F8-AABE-A488EF3649E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaData", "SocialMediaData\SocialMediaData.csproj", "{B7D71B59-5D59-4659-ADD4-49F574AF48AE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,26 +49,6 @@ Global
 		{F4696605-599A-47F8-AABE-A488EF3649E4}.Release|x86.ActiveCfg = Release|x86
 		{F4696605-599A-47F8-AABE-A488EF3649E4}.Release|x86.Build.0 = Release|x86
 		{F4696605-599A-47F8-AABE-A488EF3649E4}.Release|x86.Deploy.0 = Release|x86
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|ARM.Build.0 = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|x64.Build.0 = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Debug|x86.Build.0 = Debug|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|ARM.ActiveCfg = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|ARM.Build.0 = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|ARM64.Build.0 = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|x64.ActiveCfg = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|x64.Build.0 = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|x86.ActiveCfg = Release|Any CPU
-		{B7D71B59-5D59-4659-ADD4-49F574AF48AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

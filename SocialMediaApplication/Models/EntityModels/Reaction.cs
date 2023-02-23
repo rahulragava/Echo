@@ -14,7 +14,7 @@ namespace SocialMediaApplication.Models.EntityModels
         public string Id { get; set; }
         public string ReactedBy { get; set; }
         public string ReactionOnId { get; set; }
-        public ReactionType reactionType { get; set; }
+        public ReactionType ReactionType { get; set; }
 
         public Reaction()
         {

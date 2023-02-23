@@ -18,7 +18,6 @@ namespace SocialMediaApplication.Models.EntityModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MailId { get; set; }
-        public string PhoneNumber { get; set; }
         public Gender Gender { get; set; }
         public MaritalStatus MaritalStatus { get; set; }
         public string Place { get; set; }

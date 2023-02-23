@@ -1,34 +1,63 @@
 ﻿<Page
     x:Class="SocialMediaApplication.Presenter.View.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SocialMediaApplication.Presenter.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <NavigationView Background="#2E325C" x:Name="NavigationMenu" IsBackButtonVisible="Collapsed">
+        
+        <NavigationView Background="#2E325C"
+                        x:Name="NavigationMenu" 
+                        IsBackButtonVisible="Collapsed"
+                        PaneDisplayMode="Auto"
+                        IsSettingsVisible="False"
+                        OpenPaneLength="200"
+                        IsPaneOpen="False"
+                        SelectionChanged="NavigationMenu_OnSelectionChanged">
             <NavigationView.Resources>
-                <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="RoyalBlue"></SolidColorBrush>
+                <!--<SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" 
+                                 Color="RoyalBlue"/>-->
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NavigationViewExpandedPaneBackground">
+                    <!--<GradientStop Color="#DB0B5F" Offset="0"/>
+                    <GradientStop Color="#6F00ED" Offset="1"/>-->
+                    <GradientStop Color="#5433FF" Offset="0"/>
+                    <GradientStop Color="#20BDFF" Offset="1"/>
+                </LinearGradientBrush>
+                <SolidColorBrush x:Key="ItemContentColor" 
+                                 Color="Silver"/>
             </NavigationView.Resources>
-            <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Home" Content="Home" Tag="HomePage" />
-
-
-
-                <NavigationViewItem Content="Search" Tag="LabelPage">
+            <NavigationView.MenuItems >
+                <NavigationViewItem Icon="Home"
+                                    Content="Home"
+                                    Tag="HomePage"/>
+                <NavigationViewItem Content="Search" 
+                                    Tag="SearchPage">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE721;"/>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE721;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Icon="Add" Content="Create" Tag="CreatePage" />
+                <NavigationViewItem Icon="Add" 
+                                    Content="Create"
+                                    Tag="CreatePage" />
 
-                <NavigationViewItem Content="Label" Tag="LabelPage">
+                <NavigationViewItem Content="Profile" 
+                                    Tag="ProfilePage">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE932;"/>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE77B;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem Content="Label"
+                                    Tag="LabelPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets"
+                                  Glyph="&#xE932;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -36,19 +65,20 @@
 
             <NavigationView.PaneFooter>
                 <StackPanel>
-                    <NavigationViewItem Content="Profile" Tag="ProfilePage">
+                    
+                    <NavigationViewItem x:Name="UserLogOut" 
+                                        Content="Log out" 
+                                        Tapped="UserLogOut_OnTapped">
                         <NavigationViewItem.Icon>
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE77B;"/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                    <NavigationViewItem Content="Log out">
-                        <NavigationViewItem.Icon>
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF3B1;"/>
+                            <FontIcon FontFamily="Segoe MDL2 Assets"
+                                      Glyph="&#xF3B1;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                 </StackPanel>
             </NavigationView.PaneFooter>
-            <Frame x:Name="ContentFrame"/>
+            <NavigationView.Content>
+                <Frame x:Name="ContentFrame" />
+            </NavigationView.Content>
         </NavigationView>
     </Grid>
 </Page>

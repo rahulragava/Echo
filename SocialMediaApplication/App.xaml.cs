@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -16,6 +18,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Presenter.View;
 
 namespace SocialMediaApplication
@@ -25,6 +28,8 @@ namespace SocialMediaApplication
     /// </summary>
     sealed partial class App : Application
     {
+        public static string UserId ;
+        public static ApplicationDataContainer LocalSettings;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -34,6 +39,11 @@ namespace SocialMediaApplication
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             Container = ConfigureDependencyInjection();
+            var dbInstance = DatabaseInitializer.Instance;
+            dbInstance.InitializeDatabase();
+            Task.Run(async() => await dbInstance.CreateAllTablesAsync());
+            LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            UserId = LocalSettings.Values["user"].ToString();
         }
 
 
@@ -72,7 +82,7 @@ namespace SocialMediaApplication
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(HomePage), e.Arguments);
+                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
