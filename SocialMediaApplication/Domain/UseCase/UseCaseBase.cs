@@ -8,15 +8,7 @@ namespace SocialMediaApplication.Domain.UseCase
 {
     public abstract class UseCaseBase<T>
     {
-        public CancellationToken CancellationToken { get; }
         //public IPresenterCallBack<T> PresenterCallBack { get; }
-
-        protected UseCaseBase(CancellationToken cancellationToken)
-        {
-            //PresenterCallBack = presenterCallBack;
-            CancellationToken = cancellationToken;
-        }
-
         protected UseCaseBase() { }
         public abstract void Action();
 
@@ -39,7 +31,7 @@ namespace SocialMediaApplication.Domain.UseCase
                     //ZError errObj = new ZError(ex,ex.Message);
                     //PresenterCallBack?.OnError(errObj);
                 }
-            }, CancellationToken);
+            });
         }
 
         public virtual bool GetIfAvailableCache()
@@ -48,7 +40,7 @@ namespace SocialMediaApplication.Domain.UseCase
         }
     }
 
-    public interface IUseCaseCallBack<in T>
+    public interface IUseCaseCallBack<T>
     {
         void OnSuccess(T responseObj);
         void OnError(Exception ex);

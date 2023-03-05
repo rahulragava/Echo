@@ -14,7 +14,7 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         private readonly IUserManager _userManager = UserManager.GetInstance;
         public readonly LoginRequest LoginRequest;
-        public LoginUseCase(LoginRequest loginRequest) : base(loginRequest.CancellationToken)
+        public LoginUseCase(LoginRequest loginRequest)
         {
             LoginRequest = loginRequest;
         }
@@ -52,15 +52,13 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         public string Email { get; }
         public string Password { get; }
-        public CancellationToken CancellationToken { get; }
         public IPresenterCallBack<LoginResponse> LoginPresenterCallBack { get; }
 
-        public LoginRequest(string email, string password, IPresenterCallBack<LoginResponse> loginPresenterCallBack, CancellationToken cancellationToken)
+        public LoginRequest(string email, string password, IPresenterCallBack<LoginResponse> loginPresenterCallBack)
         {
             Email = email;
             Password = password;
             LoginPresenterCallBack = loginPresenterCallBack;
-            CancellationToken = cancellationToken;
         }
     }
 

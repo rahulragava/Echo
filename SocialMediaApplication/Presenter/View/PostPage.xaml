@@ -5,10 +5,409 @@
     xmlns:local="using:SocialMediaApplication.Presenter.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    xmlns:constant="using:SocialMediaApplication.Models.Constant"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource BackgroundColor}">
+    <Page.Resources>
+        <Style TargetType="controls:InAppNotification" x:Key="MsEdgeNotificationTemplateNoDismissButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="State">
+                                    <VisualState x:Name="Collapsed">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                            Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            </DoubleAnimationUsingKeyFrames>
 
-    <Grid>
-        <TextBlock>Post page</TextBlock>
-    </Grid>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                            Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                            </DoubleAnimationUsingKeyFrames>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                                Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                                <DiscreteObjectKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Visible">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
+                                            </DoubleAnimationUsingKeyFrames>
+
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid x:Name="RootGrid"
+                                    RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
+                                    Margin="{TemplateBinding Margin}"
+                                    Padding="{TemplateBinding Padding}"
+                                    MaxWidth="{TemplateBinding MaxWidth}"
+                                    Visibility="{TemplateBinding Visibility}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid.RenderTransform>
+                                    <CompositeTransform />
+                                </Grid.RenderTransform>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter x:Name="PART_Presenter"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  VerticalContentAlignment="Center"
+                                                  TextWrapping="WrapWholeWords" />
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Page.Resources>
+
+    <SplitView x:Name="SplitView" PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+               IsPaneOpen="False" OpenPaneLength="300" DisplayMode="Inline">
+        <SplitView.Pane>
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="User name" x:Name="PaneHeader" Margin="60,12,0,0" Style="{StaticResource BaseTextBlockStyle}"/>
+               <NavigationViewItemSeparator Grid.Row="1"></NavigationViewItemSeparator>
+                <TextBox Grid.Row="2" 
+                         Margin="0 10" 
+                         Width="250"
+                         x:Name="PostTitleTextBox"
+                         Text="{x:Bind PostCreationPageViewModel.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         PlaceholderText="Post title"></TextBox>
+                <TextBox Grid.Row="3" 
+                         Margin="0 10" 
+                         Height="150" 
+                         TextWrapping="Wrap"
+                         Width="250"
+                         Text="{x:Bind PostCreationPageViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         x:Name="PostContentTextBox"
+                         PlaceholderText="Start typing .. "></TextBox>
+                <ComboBox Grid.Row="4" 
+                          Margin="11" 
+                          x:Name ="FontStyleComboBox"
+                          MinWidth="250"
+                          HorizontalAlignment="Left" 
+                          PlaceholderText="Font style"
+                          ItemsSource="{ui:EnumValues Type=constant:PostFontStyle}"
+                          SelectedItem="{x:Bind PostCreationPageViewModel.FontStyle, Mode=TwoWay}"
+                          Width="200">
+                </ComboBox>
+                <ComboBox Grid.Row="5"
+                          x:Name="PollChoiceCount"
+                          Margin="11"
+                          MinWidth="250" 
+                          Visibility="Collapsed"
+                          Header="Poll choices" 
+                          HorizontalAlignment="Left" 
+                          SelectionChanged="PollChoiceCount_OnSelectionChanged"
+                          PlaceholderText="poll choices count" 
+                          Loaded="PollChoiceCount_OnLoaded"
+                          Width="200">
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                </ComboBox>
+                <StackPanel x:Name="PollChoiceContents"
+                            Margin="0 10" 
+                            Grid.Row="6" 
+                            Spacing="15">
+                    <TextBox Width="250" 
+                             PlaceholderText="Enter your choice" 
+                             Text="{x:Bind PostCreationPageViewModel.PollChoice1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             x:Name="FirstChoice"/>
+                    <TextBox Width="250" 
+                             x:Name="SecondChoice"
+                             Text="{x:Bind PostCreationPageViewModel.PollChoice2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="Enter your choice"/>
+                    <TextBox Width="250" 
+                             x:Name="ThirdChoice"
+                             Text="{x:Bind PostCreationPageViewModel.PollChoice3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="Enter your choice" 
+                             Visibility="Collapsed"/>
+                    <TextBox Width="250" 
+                             PlaceholderText="Enter your choice" 
+                             x:Name="FourthChoice"
+                             Text="{x:Bind PostCreationPageViewModel.PollChoice4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Visibility="Collapsed"></TextBox>
+                    
+                </StackPanel>
+                <StackPanel Grid.Row="7" 
+                            HorizontalAlignment="Center"
+                            x:Name="PostButton"
+                            Spacing="10"
+                            Orientation="Horizontal">
+                    <Button x:Name="CreateTextPostButton" Click="CreateTextPostButton_OnClick">Create</Button>
+                    <Button x:Name="CreatePollPostButton" Visibility="Collapsed" Click="CreatePollPostButton_OnClick">Create</Button>
+                    <Button x:Name="DiscardButton" Click="DiscardButton_OnClick">Discard</Button>
+                </StackPanel>
+            </Grid>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnSpacing="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Height="280"
+                      Width="190" 
+                      x:Name="TextPostCreation"
+                      HorizontalAlignment="Center"
+                      Tapped="TextPostCreation_OnTapped"
+                      VerticalAlignment="Center"
+                      CornerRadius="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#20BDFF" Offset="0"/>
+                            <GradientStop Color="#5433FF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <Image Source="../../Assets/TextPostIcon.png" Height="40" VerticalAlignment="Bottom"/>
+                    <!--<FontIcon FontFamily="Segoe Fluent Icons" HorizontalAlignment="Center" VerticalAlignment="Bottom" Glyph="&#xE1C8;" />-->   
+                    <TextBlock Text="Create a text post"
+                               Margin="10"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Top"
+                               Grid.Row="1"/>
+                    
+                </Grid>
+
+                <Grid Height="280"
+                      Grid.Column="1"
+                      Width="190" 
+                      x:Name="PollPostCreation"
+                      Tapped="PollPostCreation_OnTapped"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      CornerRadius="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" >
+
+                            <GradientStop Color="#DB0B5F" Offset="0"/>
+                            <GradientStop Color="#6F00ED" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    
+                    <Image Source="../../Assets/polling.png" Height="40" Width="50" VerticalAlignment="Bottom"></Image>
+                    <!--<FontIcon FontFamily="Segoe Fluent Icons" HorizontalAlignment="Center" VerticalAlignment="Bottom" Glyph="&#xE1C8;" />-->
+                    <TextBlock Text="Create a poll post"
+                               Margin="10"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Top"
+                               Grid.Row="1"/>
+                    <!--<FontIcon></FontIcon>
+                    <TextBlock Text="Create a poll post"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>-->
+
+                </Grid>
+
+                <Grid Grid.Column="0" 
+                      ColumnSpan="2" 
+                      Height="550"
+                      Width="450"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Visibility="Collapsed"
+                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                      x:Name="PollPostPreview"
+                      Padding="20"
+                      CornerRadius="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0 15" Text="Preview"/>
+                    <Grid Grid.Row="1"
+                          CornerRadius="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#DB0B5F" Offset="0"/>
+                                <GradientStop Color="#6F00ED" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                        <TextBlock Text="{x:Bind PostCreationPageViewModel.Title,Mode=OneWay}"
+                                   FontSize="25"
+                                   HorizontalAlignment="Center" Margin="0 10 0 0"></TextBlock>
+                        <NavigationViewItemSeparator Grid.Row="1"></NavigationViewItemSeparator>
+                        <TextBlock Grid.Row="2" Text="{x:Bind PostCreationPageViewModel.Content,Mode=OneWay}"
+                                   HorizontalAlignment="Left"
+                                   Width="300"
+                                   MaxHeight="50"
+                                   Margin="20 0"
+                                   TextWrapping="WrapWholeWords"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontSize="25"
+                                   VerticalAlignment="Top"/>
+                        <StackPanel Grid.Row="3" Spacing="10" HorizontalAlignment="Center" Margin="-50 30 0 0">
+                            <TextBlock x:Name="FirstChoicePreview" HorizontalAlignment="Left"
+                                       FontSize="18"
+                                       Width="300"
+                                       MaxHeight="50" 
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="Wrap"
+                                       Text="{x:Bind PostCreationPageViewModel.PollChoice1,Mode=OneWay}"/>
+                            <TextBlock x:Name="SecondChoicePreview"
+                                       HorizontalAlignment="Left"
+                                       FontSize="18"
+                                       Width="300" 
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxHeight="50" 
+                                       TextWrapping="WrapWholeWords"
+                                       Text="{x:Bind PostCreationPageViewModel.PollChoice2,Mode=OneWay}"/>
+
+                            <TextBlock x:Name="ThirdChoicePreview" 
+                                       HorizontalAlignment="Left"
+                                       FontSize="18"
+                                       Width="300" 
+                                       MaxHeight="50" 
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="WrapWholeWords"
+                                       Text="{x:Bind PostCreationPageViewModel.PollChoice3,Mode=OneWay}"/>
+
+                            <TextBlock x:Name="FourthChoicePreview" 
+                                       TextWrapping="Wrap"
+                                       FontSize="18"
+                                       Width="300" 
+                                       MaxHeight="50" 
+                                       TextTrimming="CharacterEllipsis" 
+                                       HorizontalAlignment="Left"
+                                       Text="{x:Bind PostCreationPageViewModel.PollChoice4,Mode=OneWay}"/>
+
+                        </StackPanel>
+                    </Grid>
+                    
+
+
+                </Grid>
+
+                <Grid Grid.Column="0" 
+                      ColumnSpan="2" 
+                      Height="550"
+                      Width="450"
+                      Visibility="Collapsed"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                      x:Name="TextPostPreview"
+                      Padding="20"
+                      CornerRadius="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock  Text="Preview"/>
+                    
+                    <Grid Grid.Row="1"
+                          CornerRadius="10">
+                        <Grid.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#20BDFF" Offset="0"/>
+                                <GradientStop Color="#5433FF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{x:Bind PostCreationPageViewModel.Title,Mode=OneWay}" 
+                                   FontSize="25"
+                                   Width="300"
+                                   MaxHeight="75"
+                                   HorizontalAlignment="Center" 
+                                   TextWrapping="Wrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="0 10 0 0"/>
+                        <NavigationViewItemSeparator Grid.Row="1"></NavigationViewItemSeparator>
+                        <TextBlock Grid.Row="2" 
+                                   Width="300"
+                                   MaxHeight="350"
+                                   TextWrapping="Wrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontSize="25"
+                                   Style="{x:Bind PostCreationPageViewModel.Style,Mode=OneWay}"
+                                   Text="{x:Bind PostCreationPageViewModel.Content,Mode=OneWay}" 
+                                   Margin="0 -30 0 0" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </Grid>
+                <controls:InAppNotification x:Name="ExampleVsCodeInAppNotification"
+                                            AnimationDuration="00:00:00.1000000"
+                                            Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0"
+                                            VerticalOffset="200"
+                                            HorizontalOffset="00"
+                                            Width="500"
+                                            Style="{StaticResource MsEdgeNotificationTemplateNoDismissButton}"
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="top"
+                                            StackMode="Replace">
+                </controls:InAppNotification>
+            </Grid>
+
+        </SplitView.Content>
+    </SplitView>
 </Page>

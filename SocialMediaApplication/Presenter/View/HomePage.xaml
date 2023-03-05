@@ -5,35 +5,41 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource BackgroundColor}">
 
     <Grid>
         
-        <NavigationView Background="#2E325C"
-                        x:Name="NavigationMenu" 
+        <NavigationView x:Name="NavigationMenu" 
                         IsBackButtonVisible="Collapsed"
                         PaneDisplayMode="Auto"
                         IsSettingsVisible="False"
                         OpenPaneLength="200"
                         IsPaneOpen="False"
                         SelectionChanged="NavigationMenu_OnSelectionChanged">
-            <NavigationView.Resources>
-                <!--<SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" 
-                                 Color="RoyalBlue"/>-->
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NavigationViewExpandedPaneBackground">
-                    <!--<GradientStop Color="#DB0B5F" Offset="0"/>
-                    <GradientStop Color="#6F00ED" Offset="1"/>-->
+            <!--<NavigationView.Resources>
+                --><!--<SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" 
+                                 Color="#354546"/>-->
+                    <!--<SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="YellowGreen" />-->
+                <!--<SolidColorBrush x:Key="Navi" 
+                                 Color="#354546"/>-->
+                <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NavigationViewExpandedPaneBackground">
+                    --><!--<GradientStop Color="#DB0B5F" Offset="0"/>
+                    <GradientStop Color="#6F00ED" Offset="1"/>--><!--
                     <GradientStop Color="#5433FF" Offset="0"/>
                     <GradientStop Color="#20BDFF" Offset="1"/>
-                </LinearGradientBrush>
-                <SolidColorBrush x:Key="ItemContentColor" 
-                                 Color="Silver"/>
-            </NavigationView.Resources>
+                </LinearGradientBrush>-->
+                <!--<SolidColorBrush x:Key="ItemContentColor" Color="Red"/>-->
+            <!--</NavigationView.Resources>-->
             <NavigationView.MenuItems >
                 <NavigationViewItem Icon="Home"
+                                    Foreground="{ThemeResource NavigationForegroundColor}"
                                     Content="Home"
+                                    Margin="1.5"
                                     Tag="HomePage"/>
                 <NavigationViewItem Content="Search" 
+                                    Foreground="{ThemeResource NavigationForegroundColor}"
+
+                                    Margin="1.5"
                                     Tag="SearchPage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" 
@@ -42,10 +48,14 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem Icon="Add" 
+                                    Foreground="{ThemeResource NavigationForegroundColor}"
+                                    Margin="1.5"
                                     Content="Create"
                                     Tag="CreatePage" />
 
                 <NavigationViewItem Content="Profile" 
+                                    Margin="1.5"
+                                    Foreground="{ThemeResource NavigationForegroundColor}"
                                     Tag="ProfilePage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" 
@@ -54,6 +64,8 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem Content="Label"
+                                    Foreground="{ThemeResource NavigationForegroundColor}"
+                                    Margin="1.5"
                                     Tag="LabelPage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets"
@@ -65,8 +77,37 @@
 
             <NavigationView.PaneFooter>
                 <StackPanel>
-                    
+                    <Grid>
+                        <NavigationViewItem x:Name="ThemeChangerNavigationItem"
+                                            Foreground="{ThemeResource NavigationForegroundColor}"
+                                            Margin="1.5"
+                                            Content="Change theme"
+                                            Tapped="ThemeChanger_OnTapped">
+
+                            <NavigationViewItem.Icon>
+                                <FontIcon x:Name="ThemeChanger"
+                                          FontFamily="Segoe MDL2 Assets"
+                                          Glyph="&#xE793;"/>
+                            </NavigationViewItem.Icon>
+                            
+                        </NavigationViewItem>
+                        <!--<NavigationViewItem x:Name="Dark"
+                                            Content="Theme change">
+
+                            <NavigationViewItem.Icon>
+                                <FontIcon FontFamily="Segoe UI Emoji"
+                                          Glyph="&#1F319;"></FontIcon>
+                            </NavigationViewItem.Icon>
+                            --><!--<NavigationViewItem.Icon>
+                                <FontIcon FontFamily="Segoe MDL2 Assets"
+                                          Glyph="&#xE793;"></FontIcon>
+                            </NavigationViewItem.Icon>--><!--
+                        </NavigationViewItem>-->
+
+                    </Grid>
                     <NavigationViewItem x:Name="UserLogOut" 
+                                        Foreground="Red"
+                                        Margin="1.5"
                                         Content="Log out" 
                                         Tapped="UserLogOut_OnTapped">
                         <NavigationViewItem.Icon>

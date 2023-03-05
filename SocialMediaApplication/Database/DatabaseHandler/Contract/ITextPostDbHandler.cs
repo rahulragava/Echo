@@ -12,5 +12,6 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
         Task<IEnumerable<TextPost>> GetAllTextPostAsync();
         Task<IEnumerable<TextPost>> GetUserTextPostsAsync(string userId);
         Task RemoveTextPostAsync(string TextPost);
+        Task<IEnumerable<TextPost>> GetSpecificPostAsync(int takeAmount, int skipAmount);
     }
 }

@@ -1,6 +1,12 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using SocialMediaApplication.Presenter.View.ProfileView;
+using Windows.UI.Xaml.Controls.Primitives;
+using SocialMediaApplication.Presenter.View.FeedView;
+using SocialMediaApplication.Presenter.View.PostView;
+using SocialMediaApplication.Util;
 
 namespace SocialMediaApplication.Presenter.View
 {
@@ -12,8 +18,23 @@ namespace SocialMediaApplication.Presenter.View
         public HomePage()
         {
             this.InitializeComponent();
+            FrameworkElement root = (FrameworkElement)Window.Current.Content;
+            root.RequestedTheme = AppSettings.Theme;
+            SetThemeToggle(AppSettings.Theme);
         }
 
+        private void SetThemeToggle(ElementTheme theme)
+        {
+            if (theme == AppSettings.LightTheme)
+            {
+                
+                ThemeChanger.Glyph = "&#xE945;";
+            }
+            else
+            {
+                ThemeChanger.Glyph = "&#E793;";
+            }
+        }
         private void NavigationMenu_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
 
@@ -50,8 +71,26 @@ namespace SocialMediaApplication.Presenter.View
         private void UserLogOut_OnTapped(object sender, TappedRoutedEventArgs e)
         {
             //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            App.LocalSettings.Values.Remove("user");
+            AppSettings.LocalSettings.Values.Remove("user");
             this.Frame.Navigate(typeof(LoginInPage));
+        }
+
+        private void ThemeChanger_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            FrameworkElement window = (FrameworkElement)Window.Current.Content;
+
+            if (ThemeChanger.Glyph.ToString() == "&#xE945;")
+            {
+                AppSettings.Theme = AppSettings.DarkTheme;
+                window.RequestedTheme = AppSettings.DarkTheme;
+                ThemeChanger.Glyph = "&#E793;";
+            }
+            else
+            {
+                AppSettings.Theme = AppSettings.LightTheme;
+                window.RequestedTheme = AppSettings.LightTheme;
+                ThemeChanger.Glyph = "&#xE945;";
+            }
         }
     }
 }

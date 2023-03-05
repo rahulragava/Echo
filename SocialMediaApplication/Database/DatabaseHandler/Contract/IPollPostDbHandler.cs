@@ -11,5 +11,6 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
         Task<PollPost> GetPollPostAsync(string pollPostId);
         Task<IEnumerable<PollPost>> GetAllPollPostAsync();
         Task RemovePollPostAsync(string pollPostId);
+        Task<IEnumerable<PollPost>> GetSpecificPostAsync(int takAmount, int skipAmount);
     }
 }

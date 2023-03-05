@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Database.DatabaseAdapter.Contract;
@@ -63,6 +64,11 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         public async Task<Comment> GetCommentAsync(string id)
         {
             return await _dbAdapter.GetObjectFromTableAsync<Comment>(id);
+        }
+
+        public async Task<IEnumerable<Comment>> GetPostCommentsAsync(string postId)
+        {
+            return (await GetAllCommentAsync()).Where(c => c.PostId == postId).ToList();
         }
     }
 }

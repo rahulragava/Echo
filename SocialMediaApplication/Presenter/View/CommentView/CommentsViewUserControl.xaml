@@ -1,0 +1,124 @@
+﻿<UserControl
+    x:Class="SocialMediaApplication.Presenter.View.CommentView.CommentsViewUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SocialMediaApplication.Presenter.View.CommentView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
+    xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
+    mc:Ignorable="d"
+    >
+    <UserControl.Resources>
+        <valueConverter:MarginConverter x:Key="MarginConverter"></valueConverter:MarginConverter>
+    </UserControl.Resources>
+
+    <!--<StackPanel>-->
+        <!--<Grid>
+            <TextBlock HorizontalAlignment="Center" 
+                       Foreground="{ThemeResource SecondaryColor}"> Comments</TextBlock>
+        </Grid>
+        <NavigationViewItemSeparator></NavigationViewItemSeparator>-->
+        <Grid  VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <!--<RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>-->
+            </Grid.RowDefinitions>
+            
+            <!--<TextBlock Grid.Row="0" 
+                       Grid.Column="0" 
+                       Grid.ColumnSpan="2" 
+                       HorizontalAlignment="Center" 
+                       Foreground="{ThemeResource SecondaryColor}"> Comments</TextBlock>
+            <NavigationViewItemSeparator Grid.Row="1"
+                                         Grid.Column="0"  
+                                         Grid.ColumnSpan="2"/>-->
+            <ListView Grid.Row="0"
+                      Grid.Column="0"
+                      x:Name="CommentList" 
+                      ItemsSource="{x:Bind CommentViewModel.PostComments,Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="businessModels:CommentBObj">
+                        <StackPanel Spacing="10" Margin="{x:Bind Depth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
+                            <StackPanel Orientation="Horizontal" Spacing="15">
+                                <PersonPicture Width="30"/>
+                                <TextBlock Text="{x:Bind CommentedUserName,Mode=OneWay}" 
+                                           FontSize="15" 
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Bind FormattedCommentDate, Mode=OneWay}" 
+                                           FontSize="13" 
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"/>
+                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                          x:Name="RemoveComment"
+                                          FontSize="15"
+                                          Tapped="RemoveComment_OnTapped"
+                                          Glyph="" />
+
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind Content,Mode=OneWay}" Margin="42 0 0 0" FontSize="16"/>
+
+                            <!--<StackPanel Orientation="Horizontal">
+
+                            </StackPanel>-->
+                        </StackPanel>
+
+                        <!--<local:CommentUserControl 
+                            HorizontalAlignment="Stretch"
+                            CommentedByUserName="{x:Bind CommentedUserName,Mode=OneWay}"
+                            CommentContent="{x:Bind Content,Mode=OneWay}"
+                            CommentDepth="{x:Bind Depth,Mode=OneWay}"
+                            CommentedAt="{x:Bind FormattedCommentDate,Mode=OneWay}"
+                            CommentReactions="{x:Bind Reactions,Mode=OneWay}"
+                            VerticalAlignment="Stretch"/>-->
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Visibility="Collapsed"
+                       x:Name="NoCommentsMessage"
+                       Text="No Comments Yet"/>
+            <FontIcon Grid.Row="0"
+                      Grid.Column="0" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Center"
+                      x:Name="NoCommentFont"
+                      Foreground="DarkGray"
+                      Glyph=""
+                      FontSize="60"
+                      Visibility="Collapsed"/>
+            <TextBox Grid.Column="0"
+                     x:Name="CommentContent"
+                     Grid.Row="1" 
+                     HorizontalAlignment="Stretch" 
+                     VerticalAlignment="Center" 
+                     PlaceholderText="type your comment here ..." 
+                     Margin="10">
+            </TextBox>
+
+            <Button Grid.Row="1"
+                    Grid.Column="1" 
+                    HorizontalAlignment="Stretch"
+                    Margin="0 0 4 0" 
+                    x:Name="PostCommentButton"
+                    Click="PostCommentButton_OnClick"
+                    Background="{ThemeResource SecondaryColor}">
+                <Button.Content>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>
+                    
+                </Button.Content>
+            </Button>
+        </Grid>
+
+    <!--</StackPanel>-->
+    
+</UserControl>

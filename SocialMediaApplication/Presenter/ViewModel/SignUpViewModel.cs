@@ -159,8 +159,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 _isUserNameErrorVisible = false;
             }
 
-            var cts = new CancellationTokenSource();
-            var signUpRequestObj = new SignUpRequestObj(UserName, Email, Password, RetypedPassword, new SignUpViewModelPresenterCallBack(this), cts.Token);
+            var signUpRequestObj = new SignUpRequestObj(UserName, Email, Password, RetypedPassword, new SignUpViewModelPresenterCallBack(this));
             var signUpUseCase= new SignUpUseCase(signUpRequestObj);
             signUpUseCase.Execute();
             UserName = string.Empty;

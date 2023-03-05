@@ -18,7 +18,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IUserManager _userManager = UserManager.GetInstance;
         public readonly GetUserProfileRequestObj GetUserProfileRequest;
 
-        public GetUserProfileUseCase(GetUserProfileRequestObj getUserProfileRequest) : base(getUserProfileRequest.CancellationToken)
+        public GetUserProfileUseCase(GetUserProfileRequestObj getUserProfileRequest)
         {
             GetUserProfileRequest = getUserProfileRequest;
         }
@@ -55,15 +55,12 @@ namespace SocialMediaApplication.Domain.UseCase
     public class GetUserProfileRequestObj
     {
         public string UserId { get; }
-        public CancellationToken CancellationToken { get; }
         public IPresenterCallBack<GetUserProfileResponseObj> ProfilePresenterCallBack { get; }
 
-        public GetUserProfileRequestObj(string userId, IPresenterCallBack<GetUserProfileResponseObj> profilePresenterCallBack,
-            CancellationToken cancellationToken)
+        public GetUserProfileRequestObj(string userId, IPresenterCallBack<GetUserProfileResponseObj> profilePresenterCallBack)
         {
             UserId = userId;
             ProfilePresenterCallBack = profilePresenterCallBack;
-            CancellationToken = cancellationToken;
         }
     }
 

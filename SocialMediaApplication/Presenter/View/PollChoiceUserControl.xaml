@@ -6,15 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    >
 
     <Grid>
         <StackPanel 
             Orientation="Horizontal">
-            <TextBlock
-                Text="{x:Bind PollChoice.Choice}"/>
-            <ProgressBar Value="{x:Bind PollChoice.ChoiceSelectedUsers.Count }"></ProgressBar>
+            <TextBlock Foreground="Gold"
+                       FontSize="15"
+                       Margin="5 0 0 0"
+                Text="{x:Bind Choice,Mode=OneWay}"/>
+            <ProgressBar Value="{x:Bind ChoiceSelectedUserList.Count,Mode=OneWay}"></ProgressBar>
         </StackPanel>
 
     </Grid>

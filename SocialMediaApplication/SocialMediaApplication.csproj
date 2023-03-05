@@ -119,13 +119,26 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Database\DatabaseHandler\Contract\IFetchPostManager.cs" />
+    <Compile Include="DataManager\Contract\IFeedManager.cs" />
+    <Compile Include="DataManager\Contract\RemoveCommentManager.cs" />
+    <Compile Include="DataManager\CreatePostManager.cs" />
+    <Compile Include="DataManager\FeedManager.cs" />
     <Compile Include="DataManager\LogInManager.cs" />
+    <Compile Include="DataManager\RemoveCommentManager.cs" />
     <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
+    <Compile Include="Domain\UseCase\FetchFeedUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserNameUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserProfileUseCase.cs" />
+    <Compile Include="Domain\UseCase\InsertCommentUseCase.cs" />
+    <Compile Include="Domain\UseCase\PollPostCreationUseCase.cs" />
+    <Compile Include="Domain\UseCase\TextPostCreationUseCase.cs" />
+    <Compile Include="Domain\UseCase\ReactionToPostUseCase.cs" />
+    <Compile Include="Domain\UseCase\RemoveCommentUseCase.cs" />
     <Compile Include="Domain\UseCase\SignUpUseCase.cs" />
     <Compile Include="Models\Constant\Gender.cs" />
     <Compile Include="Models\Constant\MaritalStatus.cs" />
+    <Compile Include="Models\Constant\PostFontStyleEntity.cs" />
     <Compile Include="Models\Constant\ReactionType.cs" />
     <Compile Include="Database\DatabaseAdapter\Contract\IDbAdapter.cs" />
     <Compile Include="Database\DatabaseAdapter\DbAdapter.cs" />
@@ -152,15 +165,22 @@
     <Compile Include="Database\DatabaseHandler\UserPollChoiceSelectionDbHandler.cs" />
     <Compile Include="Domain\UseCase\LoginUseCase.cs" />
     <Compile Include="Domain\UseCase\UseCaseBase.cs" />
+    <Compile Include="Presenter\ViewModel\CommentViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\FeedPageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\PostControlViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\PostCreationPageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\SearchViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
     <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
-    <Compile Include="Presenter\View\FeedsPage.xaml.cs">
+    <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
+      <DependentUpon>CommentsViewUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\FeedView\FeedsPage.xaml.cs">
       <DependentUpon>FeedsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\HomePage.xaml.cs">
@@ -195,42 +215,54 @@
     <Compile Include="Presenter\View\PollChoiceUserControl.xaml.cs">
       <DependentUpon>PollChoiceUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\PollPostUserControl.xaml.cs">
+    <Compile Include="Presenter\View\CommentView\CommentUserControl.xaml.cs">
+      <DependentUpon>CommentUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\PostView\PollPostUserControl.xaml.cs">
       <DependentUpon>PollPostUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\PostPage.xaml.cs">
       <DependentUpon>PostPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\TextPostUserControl.xaml.cs">
+    <Compile Include="Presenter\View\PostView\TextPostUserControl.xaml.cs">
       <DependentUpon>TextPostUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\ProfileEditPopUp.xaml.cs">
+    <Compile Include="Presenter\View\ProfileView\FollowerUserControl.xaml.cs">
+      <DependentUpon>FollowerUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ProfileView\ProfileEditPopUp.xaml.cs">
       <DependentUpon>ProfileEditPopUp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\ProfilePage.xaml.cs">
+    <Compile Include="Presenter\View\ProfileView\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ProfileView\UserDetailControl.xaml.cs">
+      <DependentUpon>UserDetailControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataManager\CommentManager.cs" />
-    <Compile Include="DataManager\Contract\ICommentManager.cs" />
+    <Compile Include="DataManager\AddCommentManager.cs" />
+    <Compile Include="DataManager\Contract\IAddCommentManager.cs" />
     <Compile Include="DataManager\Contract\IPollChoiceManager.cs" />
-    <Compile Include="DataManager\Contract\IPostManager.cs" />
+    <Compile Include="DataManager\Contract\ICreatePostManager.cs" />
     <Compile Include="DataManager\Contract\IReactionManager.cs" />
     <Compile Include="DataManager\Contract\IUserCredentialManager.cs" />
     <Compile Include="DataManager\Contract\IUserManager.cs" />
     <Compile Include="DataManager\InitializeData.cs" />
     <Compile Include="DataManager\LabelManager.cs" />
     <Compile Include="DataManager\PollChoiceManager.cs" />
-    <Compile Include="DataManager\PostManager.cs" />
+    <Compile Include="DataManager\FetchPostManager.cs" />
     <Compile Include="DataManager\ReactionManager.cs" />
     <Compile Include="DataManager\UserCredentialManager.cs" />
     <Compile Include="DataManager\UserManager.cs" />
     <Compile Include="Presenter\View\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\AppSettings.cs" />
+    <Compile Include="Presenter\ViewModel\ValueConverter\MarginConverter.cs" />
+    <Compile Include="Util\IncrementalLoadingCollection .cs" />
     <Compile Include="Util\Validation.cs" />
     <Compile Include="Util\UserManagerHelper.cs" />
   </ItemGroup>
@@ -241,9 +273,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" />
-    <Content Include="Assets\BlackThemesDarkBackground-440x280-HD.jpg" />
-    <Content Include="Assets\images.jpg" />
+    <Content Include="Assets\AddIcon.png" />
+    <Content Include="Assets\textIcon.png" />
+    <Content Include="Assets\facebook_dark.png" />
+    <Content Include="Assets\facebook_light.png" />
+    <Content Include="Assets\polling.png" />
     <Content Include="Assets\signInBackground.jpg" />
+    <Content Include="Assets\TextPostIcon.png" />
     <Content Include="Assets\wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -259,7 +295,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Presenter\View\FeedsPage.xaml">
+    <Page Include="Presenter\Resource\DummyThemeResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\CommentView\CommentsViewUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\FeedView\FeedsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -287,7 +331,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\PollPostUserControl.xaml">
+    <Page Include="Presenter\View\CommentView\CommentUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PostView\PollPostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -295,15 +343,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\TextPostUserControl.xaml">
+    <Page Include="Presenter\View\PostView\TextPostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\ProfileEditPopUp.xaml">
+    <Page Include="Presenter\View\ProfileView\FollowerUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\ProfilePage.xaml">
+    <Page Include="Presenter\View\ProfileView\ProfileEditPopUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ProfileView\ProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ProfileView\UserDetailControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -317,17 +373,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory">
-      <Version>7.0.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
       <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
+      <Version>7.1.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>7.0.0-preview2</Version>
+      <Version>7.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
+      <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.8.2</Version>
@@ -335,17 +394,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Utilities">
       <Version>17.4.33103.184</Version>
     </PackageReference>
-    <PackageReference Include="MvvmLightLibs">
-      <Version>5.4.1.1</Version>
-    </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.8.116</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="Assets\black-contrast-tech-arrows-background-260nw-1194220039.webp" />
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

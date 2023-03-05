@@ -18,7 +18,7 @@ namespace SocialMediaApplication.Util
         private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
         private readonly IFollowerDbHandler _followerDbHandler = FollowerDbHandler.GetInstance;
 
-        readonly PostManager _postManager= PostManager.GetInstance;
+        readonly FetchPostManager _fetchPostManager= FetchPostManager.GetInstance;
         
         public async Task<UserBObj> VerifyAndGetUserBObjAsync(string userMailId, string userPassword)
         {
@@ -39,12 +39,12 @@ namespace SocialMediaApplication.Util
         }
 
         public async Task<UserBObj> GetUserBObjWithoutIdAsync(string userMailId)
-        {
+        {   
             var user = (await _userDbHandler.GetAllUserAsync().ConfigureAwait(false)).SingleOrDefault(u => u.MailId == userMailId);
-            var users = await _userDbHandler.GetAllUserAsync().ConfigureAwait(false);
+            //var users = await _userDbHandler.GetAllUserAsync().ConfigureAwait(false);
             if (user == null) return null;
-            var textPosts = await _postManager.GetUserTextPostBObjsAsync(user.Id);
-            var pollPosts = await _postManager.GetUserPollPostBObjsAsync(user.Id);
+            var textPosts = await _fetchPostManager.GetUserTextPostBObjsAsync(user.Id);
+            var pollPosts = await _fetchPostManager.GetUserPollPostBObjsAsync(user.Id);
             var followerIds = (await _followerDbHandler.GetUserFollowerIdsAsync(user.Id)).ToList();
             var followingIds = (await _followerDbHandler.GetUserFollowingIdsAsync(user.Id)).ToList();
             var userBObj = ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
@@ -63,6 +63,7 @@ namespace SocialMediaApplication.Util
                 MailId = user.MailId,
                 Gender = user.Gender,
                 CreatedAt = user.CreatedAt,
+                FormattedCreatedTime = user.CreatedAt.ToString("dddd, dd MMMM yyyy"),
                 MaritalStatus = user.MaritalStatus,
                 Occupation = user.Occupation,
                 Education = user.Education,
@@ -72,7 +73,20 @@ namespace SocialMediaApplication.Util
                 FollowersId = followersId,
                 FollowingsId = followingsId
             };
-
+            foreach (var textPost in userBObj.TextPosts)
+            {
+                foreach (var comment in textPost.Comments)
+                {
+                    comment.CommentedUserName = userBObj.UserName;
+                }
+            }
+            foreach (var pollPost in userBObj.PollPosts)
+            {
+                foreach (var comment in pollPost.Comments)
+                {
+                    comment.CommentedUserName = userBObj.UserName;
+                }
+            }
             return userBObj;
         }
     }

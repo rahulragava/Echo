@@ -14,7 +14,7 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         private readonly IUserManager _userManager = UserManager.GetInstance;
         public readonly SignUpRequestObj SignUpRequestObj;
-        public SignUpUseCase(SignUpRequestObj signUpRequestObj) : base(signUpRequestObj.CancellationToken)
+        public SignUpUseCase(SignUpRequestObj signUpRequestObj)
         {
             SignUpRequestObj = signUpRequestObj;
         }
@@ -52,17 +52,15 @@ namespace SocialMediaApplication.Domain.UseCase
         public string Email { get; }
         public string Password { get; }
         public string RetypePassword { get; }
-        public CancellationToken CancellationToken { get; }
         public IPresenterCallBack<SignUpResponse> SignUpPresenterCallBack { get; }
 
-        public SignUpRequestObj(string userName, string email, string password, string retypePassword, IPresenterCallBack<SignUpResponse> loginPresenterCallBack, CancellationToken cancellationToken)
+        public SignUpRequestObj(string userName, string email, string password, string retypePassword, IPresenterCallBack<SignUpResponse> loginPresenterCallBack)
         {
             UserName = userName;
             Email = email;
             Password = password;
             RetypePassword = retypePassword;
             SignUpPresenterCallBack = loginPresenterCallBack;
-            CancellationToken = cancellationToken;
         }
     }
 

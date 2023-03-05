@@ -10,6 +10,9 @@ using Microsoft.VisualStudio.PlatformUI;
 using SocialMediaApplication.Domain.UseCase;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.Constant;
+using SocialMediaApplication.Models.EntityModels;
+using SocialMediaApplication.Util;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -19,7 +22,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public ObservableCollection<TextPostBObj> TextPosts;
         public ObservableCollection<PollPostBObj> PollPosts;
-        //public ObservableCollection<PostBObj> Posts;
+        public ObservableCollection<string> Followers;
+        public ObservableCollection<string> Followings;
 
         private int _userPostCount;
         public int UserPostCount
@@ -27,6 +31,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _userPostCount;
             set => SetProperty(ref _userPostCount, value);
         }
+
+
 
         private int _userFollowerCount;
         public int UserFollowerCount
@@ -49,6 +55,12 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _firstName, value);
         }
 
+        private string _formattedCreatedTime;
+        public string FormattedCreatedTime
+        {
+            get => _formattedCreatedTime;
+            set => SetProperty(ref _formattedCreatedTime, value);
+        }
         private string _lastName = "-";
         public string LastName
         {
@@ -62,12 +74,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _education;
             set => SetProperty(ref _education, value);
         }
-
-        //public Enum PostType
-        //{
-        //    TextPost,
-        //    PollPost,
-        //}
 
         private string _occupation = "-";
         public string Occupation
@@ -97,7 +103,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _maritalStatus, value);
         }
 
-        private string _userName = "-";
+        private string _userName;
         public string UserName
         {
             get => _userName;
@@ -110,42 +116,36 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _userFollowingCount;
             set => SetProperty(ref _userFollowingCount, value);
         }
-
-        //private TextPostBObj _dhdb = new TextPostBObj()
-        //{
-        //    PostedBy = "njkdss",
-        //    CreatedAt = DateTime.Now,
-        //};
-        //public TextPostBObj Dbdh
-        //{
-        //    get => _dhdb;
-        //    set => SetProperty(ref _dhdb, value);
-        //}
-
-        //public event Action<TextPostBObj> OnDataContextSetRequested;
-
-
+        
         public ProfilePageViewModel()
         {
             user = new UserBObj();
             TextPosts = new ObservableCollection<TextPostBObj>();
             PollPosts = new ObservableCollection<PollPostBObj>();
-            //Posts = new ObservableCollection<PostBObj>();
+            Followers = new ObservableCollection<string>();
+            Followings = new ObservableCollection<string>();
         }
-        public void GetUser()
+        public void GetUser(string userId)
         {
-            var cts = new CancellationTokenSource();
-            var userId = App.LocalSettings.Values["user"].ToString();
+            if (userId == null)
+            {
+                userId = AppSettings.LocalSettings.Values["user"].ToString();
+            }
+            else if(string.Empty == userId)
+            {
+                return;
+            }  
 
-            var getUserProfileRequestObj = new GetUserProfileRequestObj(userId,new GetUserProfilePresenterCallBack(this), cts.Token);
+            var getUserProfileRequestObj = new GetUserProfileRequestObj(userId,new GetUserProfilePresenterCallBack(this));
             var getUserProfileUseCase = new GetUserProfileUseCase(getUserProfileRequestObj);
             getUserProfileUseCase.Execute();
         }
 
-        public void EditUserProfile()
+        public void EditUserProfile(string userName,string firstName,string lastName,int genderInt,int maritalStatusInt,string education,string occupation,string place)
         {
-
-            var editUserProfileRequestObj = new EditUserProfileRequestObj(UserName,FirstName,LastName,Gender,MaritalStatus,Education,Occupation,Place, new EditUserProfilePresenterCallBack(this));
+            Gender gender = (Gender)Enum.Parse(typeof(Gender), genderInt.ToString());
+            MaritalStatus maritalStatus= (MaritalStatus)Enum.Parse(typeof(MaritalStatus), maritalStatusInt.ToString());
+            var editUserProfileRequestObj = new EditUserProfileRequestObj(userName,firstName,lastName,gender,maritalStatus,education,occupation,place, new EditUserProfilePresenterCallBack(this));
             var editUserProfileUseCase = new EditUserProfileUseCase(editUserProfileRequestObj);
             editUserProfileUseCase.Execute();
         }
@@ -164,22 +164,29 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Gender = user.Gender;   
             MaritalStatus = user.MaritalStatus;
             CreatedAt = user.CreatedAt;
-            UserName = string.IsNullOrEmpty(user.UserName) ? "-" : user.UserName;
-            //Posts.Clear();
+            FormattedCreatedTime = user.FormattedCreatedTime;
+            UserName = user.UserName;
             TextPosts.Clear();
             foreach (var textPost in user.TextPosts)
             {
                 TextPosts.Add(textPost);
-                //Posts.Add(textPost);
             }
             PollPosts.Clear();
             foreach (var pollPost in user.PollPosts)
             {
                 PollPosts.Add(pollPost);
-                //Posts.Add(pollPost);
             }
-
-            PollPosts = new ObservableCollection<PollPostBObj>(user.PollPosts);
+            Followers.Clear();
+            foreach (var follower in user.FollowersId)
+            {
+                Followers.Add(follower);
+                
+            }
+            Followings.Clear();
+            foreach (var following in user.FollowingsId)
+            {
+                Followers.Add(following);
+            }
         }
 
         public void EditUserSuccess(UserBObj userBObj)
@@ -192,7 +199,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Education = user.Education;
             Gender = user.Gender;
             MaritalStatus = user.MaritalStatus;
-            UserName = string.IsNullOrEmpty(user.UserName) ? "-" : user.UserName;
+            UserName = user.UserName;
         }
 
 
@@ -219,7 +226,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void OnError(Exception ex)
         {
-            throw new NotImplementedException();
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialMediaApplication.Presenter.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,39 @@ namespace SocialMediaApplication.Presenter.View
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        public SearchViewModel SearchViewModel;
         public SearchPage()
         {
+            SearchViewModel = new SearchViewModel();
             this.InitializeComponent();
+            Loaded += SearchPage_Loaded;
+
+        }
+        private void SearchPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            SearchViewModel.GetUserNames();
+            //Bindings.Update();
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                SearchViewModel.FilterSuggestions(sender.Text);
+            }
+        }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            SearchViewModel.PerformSearch(args.QueryText);
+        }
+
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            if (args.SelectedItem is string selectedUserName)
+            {
+                SearchViewModel.PerformSearch(selectedUserName);
+            }
         }
     }
 }

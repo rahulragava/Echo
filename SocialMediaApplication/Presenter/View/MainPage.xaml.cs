@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 using SocialMediaApplication.Models.BusinessModels;
+using SocialMediaApplication.Util;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -26,13 +27,13 @@ namespace SocialMediaApplication.Presenter.View
         {
             //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             //this.Frame.Navigate(localSettings.Values["user"] == null ? typeof(SignUpPage) : typeof(HomePage));
-            this.Frame.Navigate(App.UserId == null ? typeof(SignUpPage) : typeof(HomePage));
+            this.Frame.Navigate(AppSettings.LocalSettings.Values["user"] is null ? typeof(SignUpPage) : typeof(HomePage));
         }
 
 
         //to signin/singnup/logout
         //public void Dummy()
-        //{
+        //{AppSettings.LocalSettings.Values["user"].ToString();
         //    UserBObj userBObj = new UserBObj();
         //    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
         //    localSettings.Values["user"] = userBObj;

@@ -9,8 +9,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Windows.UI.Core;
-using GalaSoft.MvvmLight;
 using Microsoft.VisualStudio.PlatformUI;
+using SocialMediaApplication.Util;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
 
 namespace SocialMediaApplication.Presenter.ViewModel
@@ -110,7 +110,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 }
             }
             
-            var loginRequestObj = new LoginRequest(Email,Password,new LogInViewModelPresenterCallBack(this),Cts.Token);
+            var loginRequestObj = new LoginRequest(Email,Password,new LogInViewModelPresenterCallBack(this));
 
             var loginUseCase= new LoginUseCase(loginRequestObj);
             loginUseCase.Execute();
@@ -137,7 +137,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             //localSettings.Values["user"] = logInResponse.User.Id;
-            App.LocalSettings.Values["user"] = logInResponse.User.Id;
+            AppSettings.LocalSettings.Values["user"] = logInResponse.User.Id;
             
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>

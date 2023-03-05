@@ -8,9 +8,9 @@
 //    {
 //        readonly UserManager _dummyUserManager = UserManager.GetInstance;
 //        readonly UserCredentialManager _userCredentialManager = UserCredentialManager.GetInstance;
-//        readonly PostManager _postManager = PostManager.GetInstance;
+//        readonly FetchPostManager _postManager = FetchPostManager.GetInstance;
 //        readonly PollChoiceManager _pollChoiceManager = PollChoiceManager.GetInstance;
-//        readonly CommentManager _commentManager = CommentManager.GetInstance;
+//        readonly AddCommentManager _addCommentManager = AddCommentManager.GetInstance;
 //        readonly ReactionManager _reactionManager = ReactionManager.GetInstance;
 //        public void Initialize()
 //        {
@@ -258,7 +258,7 @@
 //                Title = "Achievements",
 //            });
 
-//            _commentManager.AddComment(new CommentBObj()
+//            _addCommentManager.AddComment(new CommentBObj()
 //            {
 //                Id = "CO1",
 //                PostId = "TP1",
@@ -268,7 +268,7 @@
 //                Content = "nice post",
 //            });
 
-//            _commentManager.AddComment(new CommentBObj()
+//            _addCommentManager.AddComment(new CommentBObj()
 //            {
 //                Id = "CO2",
 //                PostId = "TP1",

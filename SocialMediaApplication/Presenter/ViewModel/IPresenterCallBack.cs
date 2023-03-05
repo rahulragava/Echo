@@ -2,7 +2,7 @@
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
-    public interface IPresenterCallBack<in T>
+    public interface IPresenterCallBack<T>
     {
         void OnSuccess(T logInResponse);
         void OnError(Exception ex);

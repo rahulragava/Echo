@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="SocialMediaApplication.Presenter.View.FeedView.FeedsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SocialMediaApplication.Presenter.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
+    xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      VerticalScrollMode="Enabled"
+                      ViewChanged="{x:Bind FeedPageViewModel.ScrollViewer_ViewChanged}">
+        </ScrollViewer>
+        <ListView
+            x:Name="TextPostListView"
+            Margin="-10 10"
+            x:FieldModifier="public"
+            DataFetchSize="10"
+            ItemsSource="{x:Bind FeedPageViewModel.TextPosts,Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="businessModels:TextPostBObj">
+                    <postView:TextPostUserControl
+                        x:Name="PostControl"
+                        PostId ="{x:Bind Id,Mode=OneWay}"
+                        PostedByUser="{x:Bind UserName,Mode=OneWay}"
+                        PostContent="{x:Bind Content,Mode=OneWay}"
+                        PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                        PostTitle="{x:Bind Title,Mode=OneWay}"
+                        PostComments="{x:Bind Comments,Mode=OneWay}"
+                        PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+    </Grid>
+</Page>

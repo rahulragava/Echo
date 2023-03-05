@@ -14,10 +14,11 @@ using SocialMediaApplication.Util;
 
 namespace SocialMediaApplication.DataManager
 {
-    public class UserManager : IUserManager,IGetUserName
+    public class UserManager : IUserManager,IGetUserNames
     {
         private static UserManager Instance { get; set; }
         private static readonly object PadLock = new object();
+        private readonly UserManagerHelper _userManagerHelper = new UserManagerHelper();
 
         private UserBObj _userBObj;
 
@@ -44,33 +45,32 @@ namespace SocialMediaApplication.DataManager
         private readonly IUserDbHandler _userDbHandler= UserDbHandler.GetInstance;
         private readonly IUserCredentialDbHandler _userCredentialDbHandler = UserCredentialDbHandler.GetInstance; 
         private readonly IFollowerDbHandler _followerDbHandler = FollowerDbHandler.GetInstance;
-        private readonly PostManager _postManager = PostManager.GetInstance;
+        private readonly FetchPostManager _fetchPostManager = FetchPostManager.GetInstance;
 
-        public async Task LoginUserAsync(LoginRequest loginRequest,LogInUseCaseCallBack loginUseCaseCallBack)
+        public async void LoginUserAsync(LoginRequest loginRequest,LogInUseCaseCallBack loginUseCaseCallBack)
         {
             try
             {
                 _userBObj = null;
-                _postManager.PostBobjs = null;
+                //_fetchPostManager.PostBobjs = null;
                 var userManagerHelper = new UserManagerHelper();
                 _userBObj = await userManagerHelper.VerifyAndGetUserBObjAsync(loginRequest.Email,
                     loginRequest.Password);
-
                 loginUseCaseCallBack?.OnSuccess(new LoginResponse(_userBObj));
 
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                loginUseCaseCallBack?.OnError(ex);
             }
         }
 
-        public async Task SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack)
+        public async void SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack)
         {
             try
             {
                 _userBObj = null;
-                _postManager.PostBobjs = null;
+                //_fetchPostManager.PostBobjs = null;
                 var validation = new Validation();
                 if (await validation.IsUserNameAlreadyExistAsync(signUpRequestObj.UserName))
                 {
@@ -103,11 +103,11 @@ namespace SocialMediaApplication.DataManager
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                signUpUseCaseCallBack?.OnError(ex);
             }
         }
 
-        public async Task RemoveUserAsync(UserBObj user)
+        public async void RemoveUserAsync(UserBObj user)
         {
             try
             {
@@ -119,31 +119,30 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequest, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack)
+        public async void GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequest, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack)
         {
             try
             {
                 var userId = getUserProfileRequest.UserId;
-                if (_userBObj == null )
+                var user = await Task.Run(() => _userDbHandler.GetUserAsync(userId)).ConfigureAwait(false);
+                var textPosts = await _fetchPostManager.GetUserTextPostBObjsAsync(userId).ConfigureAwait(false);
+                var pollPosts = await _fetchPostManager.GetUserPollPostBObjsAsync(userId).ConfigureAwait(false);
+                var followerIds = (await _followerDbHandler.GetUserFollowerIdsAsync(userId).ConfigureAwait(false))
+                    .ToList();
+                var followingIds = (await _followerDbHandler.GetUserFollowingIdsAsync(userId).ConfigureAwait(false))
+                    .ToList();
+                foreach (var t in textPosts)
                 {
-                    var user = await Task.Run(() => _userDbHandler.GetUserAsync(userId)).ConfigureAwait(false);
-                    var textPosts = await _postManager.GetUserTextPostBObjsAsync(userId).ConfigureAwait(false);
-                    var pollPosts = await _postManager.GetUserPollPostBObjsAsync(userId).ConfigureAwait(false);
-                    var followerIds = (await _followerDbHandler.GetUserFollowerIdsAsync(userId).ConfigureAwait(false))
-                        .ToList();
-                    var followingIds = (await _followerDbHandler.GetUserFollowingIdsAsync(userId).ConfigureAwait(false))
-                        .ToList();
-                    var userBusinessObject = ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
-
-                    _userBObj = userBusinessObject;
-                    getUserProfileUseCaseCallBack?.OnSuccess(new GetUserProfileResponseObj(userBusinessObject));
-
+                    t.UserName = user.UserName;
                 }
-                else
+                foreach (var t in pollPosts)
                 {
-                    getUserProfileUseCaseCallBack?.OnSuccess(new GetUserProfileResponseObj(_userBObj));
+                    t.UserName = user.UserName;
+                }
+                var userBusinessObject = _userManagerHelper.ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
+                _userBObj = userBusinessObject;
+                getUserProfileUseCaseCallBack?.OnSuccess(new GetUserProfileResponseObj(userBusinessObject));
 
-                }    
             }
             catch (Exception ex)
             {
@@ -151,20 +150,16 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task GetUserNameAsync(GetUserNameRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack)
+        public async void GetUserNamesAsync(GetUserNamesRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack)
         {
             try
             {
-                var userId = getUserNameRequestObj.UserId;
-                if (_userBObj != null && _userBObj.Id == userId)
-                {
-                    getUserNamesUseCaseCallBack?.OnSuccess(new GetUserNameResponseObj(_userBObj.UserName));
-                }
-                else
-                {
-                    var user = await Task.Run(() => _userDbHandler.GetUserAsync(userId)).ConfigureAwait(false);
-                    getUserNamesUseCaseCallBack?.OnSuccess(new GetUserNameResponseObj(user.UserName));
-                }
+                var users = await _userDbHandler.GetAllUserAsync();
+                var userNames = users.Select(u => u.UserName).ToList();
+                var userIds= users.Select(u => u.Id).ToList();
+                userNames.Remove(_userBObj.UserName);
+                userNames.Remove(_userBObj.Id);
+                getUserNamesUseCaseCallBack?.OnSuccess(new GetUserNamesResponseObj(userNames,userIds));
             }
             catch (Exception ex)
             {
@@ -172,7 +167,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj,
+        public async void EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj,
             EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack)
         {
             try
@@ -223,61 +218,57 @@ namespace SocialMediaApplication.DataManager
             };
         }
 
-        public async Task<List<PostBObj>> GetUserPostBObjsAsync(string userId)
-        {
-            var postBObjs = new List<PostBObj>();
-            if (_userBObj == null)
-            {
-                postBObjs = await _postManager.GetUserPostBObjsAsync(userId).ConfigureAwait(false);
-            }
-            else
-            {
-                postBObjs.AddRange(_userBObj.TextPosts);
-                postBObjs.AddRange(_userBObj.PollPosts);
-            }
-            return postBObjs;
-        }
+        //public async Task<List<PostBObj>> GetUserPostBObjsAsync(string userId)
+        //{
+        //    var postBObjs = new List<PostBObj>();
+        //    if (_userBObj == null)
+        //    {
+        //        postBObjs = await _fetchPostManager.GetUserPostBObjsAsync(userId).ConfigureAwait(false);
+        //    }
+        //    else
+        //    {
+        //        postBObjs.AddRange(_userBObj.TextPosts);
+        //        postBObjs.AddRange(_userBObj.PollPosts);
+        //    }
+        //    return postBObjs;
+        //}
 
-        
-
-       
-
-        
         public async Task<UserBObj> GetUserBObjWithoutIdAsync(string userMailId)
         {
             var user = (await Task.Run(() => _userDbHandler.GetAllUserAsync()).ConfigureAwait(false)).ToList().SingleOrDefault(u => u.MailId == userMailId);
             if (user == null) return null;
-            var textPosts = (await Task.Run(() => _postManager.GetUserTextPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var pollPosts = (await Task.Run(() => _postManager.GetUserPollPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
+            var textPosts = (await Task.Run(() => _fetchPostManager.GetUserTextPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
+            var pollPosts = (await Task.Run(() => _fetchPostManager.GetUserPollPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
             var followerIds = (await Task.Run(() => _followerDbHandler.GetUserFollowerIdsAsync(user.Id)).ConfigureAwait(false)).ToList();
             var followingIds = (await Task.Run(() => _followerDbHandler.GetUserFollowingIdsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var userBObj = ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
+            var userBObj = _userManagerHelper.ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
 
             return userBObj;
         }
 
-        public UserBObj ConvertModelToBObj(User user, List<TextPostBObj> textPosts, List<PollPostBObj> pollPosts, List<string> followersId, List<string> followingsId)
-        {
-            var userBObj = new UserBObj
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Gender = user.Gender,
-                CreatedAt = user.CreatedAt,
-                MaritalStatus = user.MaritalStatus,
-                Occupation = user.Occupation,
-                Education = user.Education,
-                Place = user.Place,
-                TextPosts = textPosts,
-                PollPosts = pollPosts,
-                FollowersId = followersId,
-                FollowingsId = followingsId
-            };
+        //public UserBObj ConvertModelToBObj(User user, List<TextPostBObj> textPosts, List<PollPostBObj> pollPosts, List<string> followersId, List<string> followingsId)
+        //{
+        //    var userBObj = new UserBObj
+        //    {
+        //        Id = user.Id,
+        //        UserName = user.UserName,
+        //        FirstName = user.FirstName,
+        //        LastName = user.LastName,
+        //        Gender = user.Gender,
+        //        CreatedAt = user.CreatedAt,
+        //        FormattedCreatedTime = user.CreatedAt.ToString("dddd, dd MMMM yyyy"),
+        //        MaritalStatus = user.MaritalStatus,
+        //        Occupation = user.Occupation,
+        //        Education = user.Education,
+        //        Place = user.Place,
+        //        TextPosts = textPosts,
+        //        PollPosts = pollPosts,
+        //        FollowersId = followersId,
+        //        FollowingsId = followingsId
+        //    };
 
-            return userBObj;
-        }
+        //    return userBObj;
+        //}
 
 
         public async Task UnFollowAsync(string viewingUserId, string searchedUserId)

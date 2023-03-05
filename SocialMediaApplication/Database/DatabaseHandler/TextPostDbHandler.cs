@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Database.DatabaseAdapter.Contract;
@@ -69,6 +70,11 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         {
             DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.Table<TextPost>().Where(tp => tp.PostedBy == userId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TextPost>> GetSpecificPostAsync(int takeAmount, int skipAmount)
+        {
+            return (await _dbAdapter.GetSpecificObjectsInTableAsync<TextPost>(takeAmount, skipAmount)).ToList();
         }
     }
 }

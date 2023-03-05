@@ -1,0 +1,123 @@
+﻿<UserControl
+    x:Class="SocialMediaApplication.Presenter.View.ProfileView.UserDetailControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SocialMediaApplication.Presenter.View.ProfileView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+            <Setter Property="MaxWidth" Value="250"></Setter>
+            <Setter Property="FontSize" Value="15"></Setter>
+        </Style>
+
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <StackPanel 
+
+        Padding="100 10"
+        Spacing="25"
+        BorderThickness="1"
+        CornerRadius="10"
+        Margin="120 0 20 0"
+        VerticalAlignment="Center"
+        Background="{ThemeResource ControlBackground}"
+        HorizontalAlignment="Center">
+
+
+            <!--<StackPanel.Background>
+            -->
+            <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#5433FF" Offset="0"/>
+                <GradientStop Color="#20BDFF" Offset="1"/>
+            </LinearGradientBrush>-->
+            <!--
+            <media:AcrylicBrush BackgroundSource="Backdrop"
+                                TintColor="DarkSlateGray"
+                                TintOpacity="0.2"/>
+
+</StackPanel.Background>-->
+            <TextBlock HorizontalAlignment="Center">Intro</TextBlock>
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+                <FontIcon Glyph="&#xE716;">
+                    <!--<FontIcon.Foreground>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#FF9F4A  " Offset="0"/>
+                            <GradientStop Color="#FF3C83" Offset="1"/>
+                        </LinearGradientBrush>
+                </FontIcon.Foreground>-->
+                </FontIcon>
+                <TextBlock CharacterSpacing="70">
+                <Run Text="Call me"/>
+                <Run Text="{x:Bind FirstName,Mode=OneWay}" 
+                     FontWeight="Bold" 
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                <Run Text="{x:Bind LastName,Mode=OneWay}" 
+                     FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+                <FontIcon Glyph="&#xE7BE;"></FontIcon>
+                <TextBlock>
+                <Run Text="Studied at"/>
+                <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+                <FontIcon Glyph="&#xE10F;"></FontIcon>
+                <TextBlock >
+                <Run Text="Lives in "/>
+                <Run Text="{x:Bind Place,Mode=OneWay}" FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+
+                <FontIcon Glyph="&#xE821;"></FontIcon>
+                <TextBlock>
+                <Run Text="Currently working as"/>
+                <Run Text="{x:Bind Occupation,Mode=OneWay}" FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+                <FontIcon Glyph="&#xE006;"></FontIcon>
+                <TextBlock>
+                <Run Text="{x:Bind MarriageStatus,Mode=OneWay}" FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                    Spacing="10">
+                <FontIcon Glyph="&#xE121;"></FontIcon>
+                <TextBlock>
+                <Run Text="FC user since"/>
+                <Run Text="{x:Bind UserCreatedAt,Mode=OneWay}" FontWeight="Bold"
+                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+    </ScrollViewer>
+    
+</UserControl>

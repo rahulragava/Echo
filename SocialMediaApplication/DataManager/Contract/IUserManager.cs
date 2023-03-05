@@ -8,12 +8,12 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IUserLoginManager
     {
-        Task LoginUserAsync(LoginRequest loginRequest, LogInUseCaseCallBack loginUseCaseCallBack);
+        void LoginUserAsync(LoginRequest loginRequest, LogInUseCaseCallBack loginUseCaseCallBack);
     }
 
     public interface IUserSignUpManager
     {
-        Task SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack);
+        void SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack);
     }
 
     public interface IUserLogOut
@@ -23,17 +23,17 @@ namespace SocialMediaApplication.DataManager.Contract
 
     public interface IGetUserBObj
     {
-        Task GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequestObj, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack);
+        void GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequestObj, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack);
     }
 
     public interface IEditUserBObj
     {
-        Task EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj, EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack);
+        void EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj, EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack);
     }
 
-    public interface IGetUserName
+    public interface IGetUserNames
     {
-        Task GetUserNameAsync(GetUserNameRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack);
+        void GetUserNamesAsync(GetUserNamesRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack);
     }
 
     public interface IUserManager : IUserLoginManager, IUserSignUpManager, IUserLogOut, IGetUserBObj, IEditUserBObj

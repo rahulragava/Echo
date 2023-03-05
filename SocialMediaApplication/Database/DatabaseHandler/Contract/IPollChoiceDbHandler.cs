@@ -12,5 +12,6 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
         Task<PollChoice> GetPollChoiceAsync(string pollchoiceId);
         Task<IEnumerable<PollChoice>> GetAllPollChoiceAsync();
         Task RemovePollChoiceAsync(string pollChoiceId);
+        Task<IEnumerable<PollChoice>> GetPostPollChoicesAsync(string postId);
     }
 }

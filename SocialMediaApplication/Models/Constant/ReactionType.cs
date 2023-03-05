@@ -11,7 +11,8 @@ namespace SocialMediaApplication.Models.Constant
 
     public enum ReactionType
     {
-        Happy = 1,
+        None=1,
+        Happy,
         Sad,
         Mad,
         Confused,

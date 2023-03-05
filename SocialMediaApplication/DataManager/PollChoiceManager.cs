@@ -39,8 +39,8 @@ namespace SocialMediaApplication.DataManager
         public async Task<List<PollChoiceBObj>> GetPollChoicesBObjAsync()
         {
             var pollChoiceBobjs = new List<PollChoiceBObj>();
-            var pollChoices = (await Task.Run(()=> _pollChoiceDbHandler.GetAllPollChoiceAsync()).ConfigureAwait(false)).ToList();
-            var userPollChoiceSelections = (await Task.Run(() => _userPollChoiceSelectionDbHandler.GetAllUserPollChoiceSelectionAsync()).ConfigureAwait(false)).ToList();
+            var pollChoices = (await _pollChoiceDbHandler.GetAllPollChoiceAsync()).ToList();
+            var userPollChoiceSelections = (await _userPollChoiceSelectionDbHandler.GetAllUserPollChoiceSelectionAsync()).ToList();
 
             foreach (var pollChoice in pollChoices)
             {

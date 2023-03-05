@@ -12,5 +12,6 @@ namespace SocialMediaApplication.Database.DatabaseAdapter.Contract
         Task UpdateObjectInTableAsync<T>(T obj) where T : new();
         Task<T> GetObjectFromTableAsync<T>(string id) where T : new();
         Task<IEnumerable<T>> GetAllObjectsInTableAsync<T>() where T : new ();
+        Task<IEnumerable<T>> GetSpecificObjectsInTableAsync<T>(int takeAmount, int skipAmount) where T : new ();
     }
 }

@@ -10,6 +10,5 @@ namespace SocialMediaApplication.Models.BusinessModels
     public class PollChoiceBObj : PollChoice
     {
         public List<UserPollChoiceSelection> ChoiceSelectedUsers { get; set; }
-
     }
 }

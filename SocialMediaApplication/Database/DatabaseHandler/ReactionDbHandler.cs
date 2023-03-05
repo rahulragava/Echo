@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.WindowManagement;
 using SocialMediaApplication.Database.DatabaseAdapter;
@@ -64,6 +65,11 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         public async Task<Reaction> GetUserReactionAsync(string id)
         {
             return await _dbAdapter.GetObjectFromTableAsync<Reaction>(id);
+        }
+
+        public async Task<IEnumerable<Reaction>> GetReactionsAsync(string reactionOnId)
+        {
+            return (await GetAllUserReactionAsync()).Where(c => c.ReactionOnId == reactionOnId);
         }
     }
 }

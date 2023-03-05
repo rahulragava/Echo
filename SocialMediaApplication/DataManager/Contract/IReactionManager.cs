@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SocialMediaApplication.Domain.UseCase;
 using System.Threading.Tasks;
 
-namespace SocialMediaApplication.Services.Contract
+namespace SocialMediaApplication.DataManager.Contract
 {
-    internal class IReactionManager
+    public interface IReactionManager
     {
+        Task AddReactionAsync(ReactionToPostRequestObj reactionToPostRequestObj,
+            ReactionToPostUseCaseCallBack reactionToPostUseCaseCallBack);
+
+
+
     }
 }

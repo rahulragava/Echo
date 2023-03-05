@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Database.DatabaseAdapter.Contract;
@@ -69,6 +70,11 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         public async Task InsertPollChoicesAsync(List<PollChoice> pollChoices)
         {
             await _dbAdapter.InsertMultipleObjectInTableAsync(pollChoices);
+        }
+
+        public async Task<IEnumerable<PollChoice>> GetPostPollChoicesAsync(string postId)
+        {
+            return (await GetAllPollChoiceAsync()).Where(p => p.PostId== postId);
         }
     }
 }

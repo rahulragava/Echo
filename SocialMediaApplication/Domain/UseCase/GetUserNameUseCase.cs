@@ -12,66 +12,64 @@ using System.Threading.Tasks;
 namespace SocialMediaApplication.Domain.UseCase
 {
 
-    public class GetUserNameUseCase : UseCaseBase<GetUserNameResponseObj>
+    public class GetUserNamesUseCase : UseCaseBase<GetUserNamesResponseObj>
     {
-        private readonly IGetUserName _userManager = UserManager.GetInstance;
-        public readonly GetUserNameRequestObj GetUserNameRequestObj;
+        private readonly IGetUserNames _userManager = UserManager.GetInstance;
+        public readonly GetUserNamesRequestObj GetUserNamesRequestObj;
 
-        public GetUserNameUseCase(GetUserNameRequestObj getUserNameRequestObj)
+        public GetUserNamesUseCase(GetUserNamesRequestObj getUserNameRequestObj)
         {
-            GetUserNameRequestObj = getUserNameRequestObj;
+            GetUserNamesRequestObj = getUserNameRequestObj;
         }
 
         public override void Action()
         {
-            _userManager.GetUserNameAsync(GetUserNameRequestObj, new GetUserNamesUseCaseCallBack(this));
+            _userManager.GetUserNamesAsync(GetUserNamesRequestObj, new GetUserNamesUseCaseCallBack(this));
         }
     }
 
     //Get user name use case call back
-    public class GetUserNamesUseCaseCallBack : IUseCaseCallBack<GetUserNameResponseObj>
+    public class GetUserNamesUseCaseCallBack : IUseCaseCallBack<GetUserNamesResponseObj>
     {
-        private readonly GetUserNameUseCase _getUserNameUseCase;
+        private readonly GetUserNamesUseCase _getUserNameUseCase;
 
-        public GetUserNamesUseCaseCallBack(GetUserNameUseCase getUserNameUseCase)
+        public GetUserNamesUseCaseCallBack(GetUserNamesUseCase getUserNameUseCase)
         {
             _getUserNameUseCase = getUserNameUseCase;
         }
 
-        public void OnSuccess(GetUserNameResponseObj responseObj)
+        public void OnSuccess(GetUserNamesResponseObj responseObj)
         {
-            _getUserNameUseCase?.GetUserNameRequestObj.GetUserNamePresenterCallBack?.OnSuccess(responseObj);
+            _getUserNameUseCase?.GetUserNamesRequestObj.GetUserNamePresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _getUserNameUseCase?.GetUserNameRequestObj.GetUserNamePresenterCallBack?.OnError(ex);
+            _getUserNameUseCase?.GetUserNamesRequestObj.GetUserNamePresenterCallBack?.OnError(ex);
         }
     }
 
     //Request obj
-    public class GetUserNameRequestObj
+    public class GetUserNamesRequestObj
     {
-        public GetUserNameRequestObj(string userId, IPresenterCallBack<GetUserNameResponseObj> getUserNamePresenterCallBack, CancellationToken cancellationToken)
+        public GetUserNamesRequestObj(IPresenterCallBack<GetUserNamesResponseObj> getUserNamePresenterCallBack)
         {
-            UserId = userId;
-            CancellationToken = cancellationToken;
             GetUserNamePresenterCallBack = getUserNamePresenterCallBack;
         }
 
-        public string UserId { get; }
-        public CancellationToken CancellationToken { get; } 
-        public IPresenterCallBack<GetUserNameResponseObj> GetUserNamePresenterCallBack { get; }
+        public IPresenterCallBack<GetUserNamesResponseObj> GetUserNamePresenterCallBack { get; }
 
     }
 
     //response object
-    public class GetUserNameResponseObj
+    public class GetUserNamesResponseObj
     {
-        public string UserName { get; }
-        public GetUserNameResponseObj(string userName)
+        public List<string> UserNames { get; }
+        public List<string> UserIds { get; }
+        public GetUserNamesResponseObj(List<string> userNames, List<string> userIds)
         {
-            UserName = userName;
+            UserNames = userNames;
+            UserIds = userIds;
         }
     }
 }

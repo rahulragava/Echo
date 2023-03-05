@@ -11,5 +11,6 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
         Task<Comment> GetCommentAsync(string commentId);
         Task<IEnumerable<Comment>> GetAllCommentAsync();
         Task RemoveCommentAsync(string commentId);
+        Task<IEnumerable<Comment>> GetPostCommentsAsync(string postId);
     }
 }

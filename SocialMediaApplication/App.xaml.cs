@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Presenter.View;
+using SocialMediaApplication.Util;
 
 namespace SocialMediaApplication
 {
@@ -29,7 +30,7 @@ namespace SocialMediaApplication
     sealed partial class App : Application
     {
         public static string UserId ;
-        public static ApplicationDataContainer LocalSettings;
+        //public static ApplicationDataContainer LocalSettings;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -41,9 +42,9 @@ namespace SocialMediaApplication
             Container = ConfigureDependencyInjection();
             var dbInstance = DatabaseInitializer.Instance;
             dbInstance.InitializeDatabase();
-            Task.Run(async() => await dbInstance.CreateAllTablesAsync());
-            LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            UserId = LocalSettings.Values["user"].ToString();
+            Task.Run(async () => await dbInstance.CreateAllTablesAsync());
+            //LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            //UserId = AppSettings.LocalSettings.Values["user"].ToString();
         }
 
 

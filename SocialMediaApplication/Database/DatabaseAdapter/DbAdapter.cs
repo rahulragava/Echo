@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseAdapter.Contract;
 using Windows.System;
+using SocialMediaApplication.Models.BusinessModels;
 
 namespace SocialMediaApplication.Database.DatabaseAdapter
 {
@@ -69,6 +70,12 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
         {
             DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.Table<T>().ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetSpecificObjectsInTableAsync<T>(int takeAmount, int skipAmount) where T : new()
+        {
+            DatabaseInitializer.Instance.InitializeDatabase();
+            return await DatabaseInitializer.Instance.Db.Table<T>().Skip(skipAmount).Take(takeAmount).ToListAsync();
         }
 
     }

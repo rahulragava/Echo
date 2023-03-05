@@ -11,5 +11,6 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
         Task<Reaction> GetUserReactionAsync(string reactionId);
         Task<IEnumerable<Reaction>> GetAllUserReactionAsync();
         Task RemoveUserReactionAsync(string reactionId);
+        Task<IEnumerable<Reaction>> GetReactionsAsync(string reactionOnId);
     }
 }
