@@ -29,7 +29,11 @@
             VerticalAlignment="Top"
             Margin="0 10 0 15"/>
 
-        <local:ProfilePage Visibility="Collapsed"
+        <Frame x:Name="UserProfileFrame"
+               Grid.Row="1">
+
+        </Frame>
+        <local:ProfilePage 
                            ProfileUserId="{x:Bind SearchViewModel.UserId,Mode=OneWay}"
                            Grid.Row="1"
                            Margin="0 -10 0 0"/>

@@ -9,6 +9,7 @@
         <controls:XamlControlsResources>
             <controls:XamlControlsResources.MergedDictionaries>
                 <ResourceDictionary Source="/Presenter/Resource/DummyThemeResourceDictionary.xaml"></ResourceDictionary>
+
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>
     </Application.Resources>

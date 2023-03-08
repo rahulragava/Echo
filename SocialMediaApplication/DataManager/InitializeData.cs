@@ -122,82 +122,82 @@
 //            {
 //                Id = "PollChoice1",
 //                Choice = "Chennai",
-//                PostId = "PP1",
+//                ReactionOnId = "PP1",
 
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice2",
 //                Choice = "Mumbai",
-//                PostId = "PP1",
+//                ReactionOnId = "PP1",
 
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice3",
 //                Choice = "Kolkatta",
-//                PostId = "PP1",
+//                ReactionOnId = "PP1",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice4",
 //                Choice = "Delhi",
-//                PostId = "PP1",
+//                ReactionOnId = "PP1",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice5",
 //                Choice = "Red",
-//                PostId = "PP2",
+//                ReactionOnId = "PP2",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice6",
 //                Choice = "Blue",
-//                PostId = "PP2",
+//                ReactionOnId = "PP2",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice7",
 //                Choice = "Green",
-//                PostId = "PP2",
+//                ReactionOnId = "PP2",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice8",
 //                Choice = "364",
-//                PostId = "PP3",
+//                ReactionOnId = "PP3",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice9",
 //                Choice = "365",
-//                PostId = "PP3",
+//                ReactionOnId = "PP3",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice10",
 //                Choice = "345",
-//                PostId = "PP3",
+//                ReactionOnId = "PP3",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice11",
 //                Choice = "python",
-//                PostId = "PP4",
+//                ReactionOnId = "PP4",
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice12",
 //                Choice = "C#",
-//                PostId = "PP4",
+//                ReactionOnId = "PP4",
 
 //            });
 //            _pollChoiceManager.AddPollChoice(new PollChoiceBObj()
 //            {
 //                Id = "PollChoice13",
 //                Choice = "js",
-//                PostId = "PP4",
+//                ReactionOnId = "PP4",
 //            });
 
 //            _postManager.AddPost(new TextPostBObj()
@@ -261,7 +261,7 @@
 //            _addCommentManager.AddComment(new CommentBObj()
 //            {
 //                Id = "CO1",
-//                PostId = "TP1",
+//                ReactionOnId = "TP1",
 //                CommentedAt = new DateTime(2015, 12, 12),
 //                CommentedBy = "User2",
 //                ParentCommentId = null,
@@ -271,7 +271,7 @@
 //            _addCommentManager.AddComment(new CommentBObj()
 //            {
 //                Id = "CO2",
-//                PostId = "TP1",
+//                ReactionOnId = "TP1",
 //                Content = "Thanks for the comment",
 //                ParentCommentId = "CO1",
 //                CommentedAt = new DateTime(2015, 12, 13),
@@ -283,31 +283,31 @@
 //            {
 //                Id = "LA1",
 //                Name = "favourite",
-//                PostId = "TP1"
+//                ReactionOnId = "TP1"
 //            });
 //            labelSet.AddLabel(new Label()
 //            {
 //                Id = "LA2",
 //                Name = "favourite",
-//                PostId = "PP1"
+//                ReactionOnId = "PP1"
 //            });
 //            labelSet.AddLabel(new Label()
 //            {
 //                Id = "LA3",
 //                Name = "important",
-//                PostId = "TP1"
+//                ReactionOnId = "TP1"
 //            });
 //            labelSet.AddLabel(new Label()
 //            {
 //                Id = "LA4",
 //                Name = "favourite",
-//                PostId = "TP2"
+//                ReactionOnId = "TP2"
 //            });
 //            labelSet.AddLabel(new Label()
 //            {
 //                Id = "LA5",
 //                Name = "important",
-//                PostId = "TP2"
+//                ReactionOnId = "TP2"
 //            });
 //        }
 //    }

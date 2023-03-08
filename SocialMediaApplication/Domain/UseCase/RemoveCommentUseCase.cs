@@ -54,13 +54,11 @@ namespace SocialMediaApplication.Domain.UseCase
     public class RemoveCommentRequest
     {
         public CommentBObj Comment;
-        public List<CommentBObj> Comments;
         public IPresenterCallBack<RemoveCommentResponse> RemoveCommentPresenterCallBack;
 
-        public RemoveCommentRequest(CommentBObj comment,List<CommentBObj> comments, IPresenterCallBack<RemoveCommentResponse> removeCommentPresenterCallBack)
+        public RemoveCommentRequest(CommentBObj comment, IPresenterCallBack<RemoveCommentResponse> removeCommentPresenterCallBack)
         {
             Comment = comment;
-            Comments = comments;
             RemoveCommentPresenterCallBack = removeCommentPresenterCallBack;
         }
     }
@@ -69,11 +67,11 @@ namespace SocialMediaApplication.Domain.UseCase
     //response object
     public class RemoveCommentResponse
     {
-        public List<string> RemovedCommentIds;
+        //public List<string> RemovedCommentIds;
 
-        public RemoveCommentResponse(List<string> removedCommentIds)
+        public RemoveCommentResponse()
         {
-            RemovedCommentIds = removedCommentIds;
+            //RemovedCommentIds = removedCommentIds;
         }
     }
 }

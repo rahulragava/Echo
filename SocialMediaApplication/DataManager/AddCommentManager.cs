@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseHandler;
 using SocialMediaApplication.Database.DatabaseHandler.Contract;
@@ -21,6 +22,8 @@ namespace SocialMediaApplication.DataManager
         private static readonly object PadLock = new object();
 
         private AddCommentManager() { }
+
+        //public List<CommentBObj> CommentCacheList;
 
         public static AddCommentManager GetInstance
         {
@@ -48,29 +51,34 @@ namespace SocialMediaApplication.DataManager
         public async Task<List<CommentBObj>> GetCommentBObjsAsync()
         {
             var commentBObjs = new List<CommentBObj>();
-            var comments = (await Task.Run(() => _commentDbHandler.GetAllCommentAsync()).ConfigureAwait(false)).ToList();
+            var comments = (await _commentDbHandler.GetAllCommentAsync()).ToList();
             var reactions = await _reactionManager.GetReactionAsync();
             CommentBObj commentBobj;
 
-            for (int i = 0; i < comments.Count; i++)
+            foreach (var comment in comments)
             {
-                var commentReactions = reactions.Where((reaction) => reaction.ReactionOnId == comments[i].Id).ToList();
+                var commentReactions =
+                    reactions.Where((reaction) => reaction.ReactionOnId == comment.Id).ToList();
                 commentBobj = new CommentBObj
                 {
-                    Id = comments[i].Id,
-                    PostId = comments[i].PostId,
-                    ParentCommentId = comments[i].ParentCommentId,
-                    CommentedBy = comments[i].CommentedBy,
-                    CommentedAt = comments[i].CommentedAt,
-                    FormattedCommentDate = comments[i].CommentedAt.ToString("dddd, dd MMMM yyyy"),
-                    Content = comments[i].Content,
+                    Id = comment.Id,
+                    PostId = comment.PostId,
+                    ParentCommentId = comment.ParentCommentId,
+                    CommentedBy = comment.CommentedBy,
+                    CommentedAt = comment.CommentedAt,
+                    FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
+                    Content = comment.Content,
                     Reactions = reactions
                 };
 
                 commentBObjs.Add(commentBobj);
             }
+
             return commentBObjs;
+        
         }
+
+        public static event Action CommentInserted;
 
         public async Task InsertCommentAsync(InsertCommentRequest insertCommentRequest,
             InsertCommentUseCaseCallBack insertCommentUseCaseCallBack)
@@ -86,7 +94,83 @@ namespace SocialMediaApplication.DataManager
                     PostId = insertCommentRequest.CommentOnPostId
                 };
                 await _commentDbHandler.InsertCommentAsync(comment);
-                var user = await _userDbHandler.GetUserAsync(AppSettings.LocalSettings.Values["user"].ToString());
+                //var user = await _userDbHandler.GetUserAsync(AppSettings.UserId);
+                //var commentBObj = new CommentBObj()
+                //{
+                //    Id = comment.Id,
+                //    PostId = comment.PostId,
+                //    CommentedBy = user.Id,
+                //    CommentedAt = comment.CommentedAt,
+                //    FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
+                //    Content = comment.Content,
+                //    CommentedUserName = user.UserName,
+                //    ParentCommentId = insertCommentRequest.ParentCommentId,
+
+                //};
+                //var comments = (await _commentDbHandler.GetPostCommentsAsync(insertCommentRequest.CommentOnPostId)).ToList();
+                //var commentBObjList = await GetSortedCommentBObjList(comments);
+
+                //if (insertCommentRequest.Depth == 0 && insertCommentRequest.ParentCommentId == null)
+                //{
+                //    commentBObj.Depth = 0;
+                //}
+                //else
+                //{
+                //    commentBObj.Depth = insertCommentRequest.Depth + 10;
+
+                //}
+
+
+                //if (commentBObjList.Count == 0)
+                //{
+                //    commentBObjList.Add(commentBObj);
+
+                //}
+                //else
+                //{
+                //    int parentIndex = -1;
+                //    int siblingCount = 0;
+                //    int currentIndex = commentBObjList.Count;
+                //    if (commentBObj.ParentCommentId == null)
+                //    {
+                //        currentIndex = commentBObjList.Count;
+                //    }
+                //    else
+                //    {
+                //        for (int i = 0; i < commentBObjList.Count; i++)
+                //        {
+                //            if (commentBObjList[i].Id == commentBObj.ParentCommentId)
+                //            {
+                //                parentIndex = i;
+                //            }
+
+                //            if (commentBObjList[i].ParentCommentId == commentBObj.ParentCommentId)
+                //            {
+                //                siblingCount++;
+                //            }
+                //        }
+                //        currentIndex = parentIndex + siblingCount + 1;
+                //    }
+                //    commentBObjList.Insert(currentIndex, commentBObj);
+                //}
+
+                CommentInserted?.Invoke();
+                //comment
+                insertCommentUseCaseCallBack?.OnSuccess(new InsertCommentResponse());
+            }
+            catch (Exception ex)
+            {
+                insertCommentUseCaseCallBack?.OnError(ex);
+            }
+        }
+
+        public async Task<List<CommentBObj>> GetSortedCommentBObjList(List<Comment> comments)
+        {
+            List<CommentBObj> sortedCommentBobjList;
+            var commentBobjList = new List<CommentBObj>();
+            foreach (var comment in comments)
+            {
+                var user = await _userDbHandler.GetUserAsync(comment.CommentedBy);
                 var commentBObj = new CommentBObj()
                 {
                     Id = comment.Id,
@@ -96,26 +180,14 @@ namespace SocialMediaApplication.DataManager
                     FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
                     Content = comment.Content,
                     CommentedUserName = user.UserName,
-                    ParentCommentId = insertCommentRequest.ParentCommentId,
-
+                    ParentCommentId = comment.ParentCommentId,
                 };
-                if (insertCommentRequest.Depth == 0 && insertCommentRequest.ParentCommentId == null)
-                {
-                    commentBObj.Depth = 0;
-                }
-                else
-                {
-                    commentBObj.Depth = insertCommentRequest.Depth + 10;
+                commentBobjList.Add(commentBObj);
+            }
 
-                }
-                insertCommentUseCaseCallBack?.OnSuccess(new InsertCommentResponse(commentBObj));
-            }
-            catch (Exception ex)
-            {
-                insertCommentUseCaseCallBack?.OnError(ex);
-            }
+            sortedCommentBobjList = FetchPostManager.GetSortedComments(commentBobjList);
+            return sortedCommentBobjList;
         }
-
         //public async Task AddCommentAsync(CommentBObj comment)
         //{
         //    await Task.Run(() => _commentDbHandler.InsertCommentAsync(ConvertCommentBObjToEntity(comment))).ConfigureAwait(false);
@@ -131,21 +203,21 @@ namespace SocialMediaApplication.DataManager
 
 
 
-        //public async Task RemoveCommentsAsync(List<CommentBObj> comments)
+        //public async Task RemoveCommentsAsync(List<CommentBObj> CommentCacheList)
         //{
-        //    if (comments.Count <= 0 || !(comments.Any())) return;
+        //    if (CommentCacheList.Count <= 0 || !(CommentCacheList.Any())) return;
 
         //    while (true)
         //    {
-        //        for (var i = 0; i < comments.Count; i++)
+        //        for (var i = 0; i < CommentCacheList.Count; i++)
         //        {
-        //            await RemoveCommentAsync(comments[i]).ConfigureAwait(false);
+        //            await RemoveCommentAsync(CommentCacheList[i]).ConfigureAwait(false);
         //            break;
         //        }
-        //        if (comments.Count == 0) break;
+        //        if (CommentCacheList.Count == 0) break;
         //    }
         //}
 
-      
+
     }
 }

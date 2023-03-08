@@ -54,7 +54,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
             await _dbAdapter.UpdateObjectInTableAsync(comment);
         }
 
-        //get all comments
+        //get all CommentCacheList
         public async Task<IEnumerable<Comment>> GetAllCommentAsync()
         {
             return await _dbAdapter.GetAllObjectsInTableAsync<Comment>();

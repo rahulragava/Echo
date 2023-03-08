@@ -8,4 +8,12 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     
+    <Page.Resources>
+        <Style TargetType="TextBlock" x:Key="Simple">
+            <Setter Property="FontFamily" Value="Arial"></Setter>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Casual">
+            <Setter Property="FontFamily" Value="Comic Sans MS"></Setter>
+        </Style>
+    </Page.Resources>
 </Page>

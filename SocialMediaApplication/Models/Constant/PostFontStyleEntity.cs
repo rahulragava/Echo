@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace SocialMediaApplication.Models.Constant
 {
-    public class PostFontStyleEntity
-    {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        public PostFontStyle FontStyle { get; set; }
-    }
     public enum PostFontStyle
     {
         Simple,

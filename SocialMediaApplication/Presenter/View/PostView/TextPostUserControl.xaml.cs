@@ -10,6 +10,11 @@ using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
+using Windows.UI.Xaml.Controls.Primitives;
+using SocialMediaApplication.Presenter.View.ReactionView;
+using System.Xml.Linq;
+using SocialMediaApplication.DataManager;
+using Windows.UI.Core;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -24,41 +29,54 @@ namespace SocialMediaApplication.Presenter.View.PostView
             PostControlViewModel = new PostControlViewModel();
             this.InitializeComponent();
             Loaded += PostControl_Loaded;
+            Unloaded += PostControl_Unloaded;
+
+            //ReactionUserControl.GetReactionList += PostControlViewModel.
         }
 
         private void PostControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            PostControlViewModel.SetObservableCollection(PostReaction, PostComments);
-            foreach (var reaction in PostReaction)
-            {
-                if (reaction.ReactedBy == App.UserId)
-                {
-                    switch (reaction.ReactionType)
-                    {
-                        case ReactionType.Heart:
-                            HeartReaction.IsChecked = true;
-                            break;
-                        case ReactionType.Happy:
-                            HappyReaction.IsChecked = true;
-                            break;
-                        case ReactionType.HeartBreak:
-                            HeartBreakReaction.IsChecked = true;
-                            break;
-                        case ReactionType.Mad:
-                            MadReaction.IsChecked = true;
-                            break;
-                        case ReactionType.Sad:
-                            SadReaction.IsChecked = true;
-                            break;
-                        case ReactionType.ThumbsDown:
-                            DisLikeReaction.IsChecked = true;
-                            break;
-                        case ReactionType.ThumbsUp:
-                            LikeReaction.IsChecked = true;
-                            break;
-                    }
-                }
-            }
+            PostControlViewModel.SetObservableCollection(PostReaction, PostComments,PostId);
+            PostControlViewModel.PostId = PostId;
+            AddCommentManager.CommentInserted += CommentInserted;
+            RemoveCommentManager.CommentRemoved += CommentRemoved;
+            //foreach (var reaction in PostReaction)
+            //{
+            //    if (reaction.ReactedBy == App.UserId)
+            //    {
+            //        switch (reaction.ReactionType)
+            //        {
+            //            case ReactionType.Heart:
+            //                HeartReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.Happy:
+            //                HappyReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.HeartBreak:
+            //                HeartBreakReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.Mad:
+            //                MadReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.Sad:
+            //                SadReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.ThumbsDown:
+            //                DisLikeReaction.IsChecked = true;
+            //                break;
+            //            case ReactionType.ThumbsUp:
+            //                LikeReaction.IsChecked = true;
+            //                break;
+            //        }
+            //    }
+            //}
+
+        }
+
+        private void PostControl_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            AddCommentManager.CommentInserted -= CommentInserted;
+            RemoveCommentManager.CommentRemoved -= CommentRemoved;
         }
 
         //username
@@ -101,7 +119,15 @@ namespace SocialMediaApplication.Presenter.View.PostView
             set => SetValue(PostTitleProperty, value);
         }
 
-        //comments
+        public static readonly DependencyProperty CreatedAtProperty = DependencyProperty.Register(
+            nameof(CreatedAt), typeof(DateTime), typeof(TextPostUserControl), new PropertyMetadata(default(DateTime)));
+
+        public DateTime CreatedAt
+        {
+            get => (DateTime)GetValue(CreatedAtProperty);
+            set => SetValue(CreatedAtProperty, value);
+        }
+        //CommentCacheList
         public static readonly DependencyProperty PostCommentsProperty = DependencyProperty.Register(
             nameof(PostComments), typeof(List<CommentBObj>), typeof(TextPostUserControl),
             new PropertyMetadata(default(List<CommentBObj>)));
@@ -132,522 +158,105 @@ namespace SocialMediaApplication.Presenter.View.PostView
             set => SetValue(PostIdProperty, value);
         }
 
-        // Handles the Click event on the Button on the page and opens the Popup. 
-        //private void ShowPopupOffsetClicked(object sender, RoutedEventArgs e)
-        //{
-        //    // open the Popup if it isn't open already 
-        //    if (!CommentPopUp.IsOpen)
-        //    {
-        //        CommentPopUp.IsOpen = true;
-        //    }
-        //}
-
-        //private void ClosePopupClicked(object sender, RoutedEventArgs e)
-        //{
-        //    // if the Popup is open, then close it 
-        //    if (CommentPopUp.IsOpen)
-        //    {
-        //        CommentPopUp.IsOpen = false;
-        //    }
-        //}
-
-        private void DisLikeReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            //already added reaction is removed and new reaction is added
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            HeartReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            HappyReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            HeartBreakReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            MadReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            SadReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown }, PostId);
-                            LikeReaction.IsChecked=false;
-                            return;
-                        }
-                        break;
-                }
-            }
-
-            //just new reaction is added
-            if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction()
-                        { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsDown },
-                    PostId);
-            }
-
-            //reaction by user is removed
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-        private void HeartReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            DisLikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-
-            if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart },
-                    PostId);
-            }
-
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-        private void LikeReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp }, PostId);
-                            HeartReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp}, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-            if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.ThumbsUp },
-                    PostId);
-            }
-
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-        private void HeartBreakReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            HeartReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Heart }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-            if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.HeartBreak },
-                    PostId);
-            }
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,null, PostId);
-            }
-        }
-
-        private void HappyReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            HeartReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-
-            if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Happy},
-                    PostId);
-            }
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-        private void SadReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            HeartReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Mad:
-                        if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Mad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-            if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Sad },
-                    PostId);
-            }
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-        private void MadReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            foreach (ReactionType reactionType in Enum.GetValues(typeof(ReactionType)))
-            {
-                switch (reactionType)
-                {
-                    case ReactionType.Heart:
-                        if (HeartReaction.IsChecked != null && (bool)HeartReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Heart, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            HeartReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Happy:
-                        if (HappyReaction.IsChecked != null && (bool)HappyReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Happy, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            HappyReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.HeartBreak:
-                        if (HeartBreakReaction.IsChecked != null && (bool)HeartBreakReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.HeartBreak, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            HeartBreakReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsDown:
-                        if (DisLikeReaction.IsChecked != null && (bool)DisLikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsDown, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            MadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.Sad:
-                        if (SadReaction.IsChecked != null && (bool)SadReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.Sad, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            SadReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                    case ReactionType.ThumbsUp:
-                        if (LikeReaction.IsChecked != null && (bool)LikeReaction.IsChecked)
-                        {
-                            PostControlViewModel.ReactedToPost(ReactionType.ThumbsUp, new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad }, PostId);
-                            LikeReaction.IsChecked = false;
-                            return;
-                        }
-                        break;
-                }
-            }
-            if (MadReaction.IsChecked != null && (bool)MadReaction.IsChecked )
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None,
-                    new Reaction() { ReactedBy = App.UserId, ReactionOnId = PostId, ReactionType = ReactionType.Mad },
-                    PostId);
-            }
-            else
-            {
-                PostControlViewModel.ReactedToPost(ReactionType.None, null, PostId);
-            }
-        }
-
-
-        private void CloseCommentSection_OnClick(object sender, RoutedEventArgs e)
-        {
-            OpenCommentSection.Visibility = Visibility.Visible;
-            CommentComponent.Visibility = Visibility.Collapsed;
-        }
-
         private void OpenCommentSection_OnClick(object sender, RoutedEventArgs e)
         {
-            OpenCommentSection.Visibility = Visibility.Collapsed;
-            CommentComponent.Visibility = Visibility.Visible;
+            //OpenCommentSection.Visibility = Visibility.Collapsed;
+            //OpenReactionSection.Visibility = Visibility.Collapsed;
+            if (CommentComponent.Visibility == Visibility.Collapsed)
+            {
+                CommentComponent.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CommentComponent.Visibility = Visibility.Collapsed;
+            }
+        }
+
+
+        private void OpenReactionSection_OnClick(object sender, RoutedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void UserReactions_OnClick(object sender, RoutedEventArgs e)
+        {
+            UserReactionPopup.Visibility = Visibility.Visible;
+            UserReactions.Visibility = Visibility.Collapsed;
+        }
+
+        private void OpenReactionSection_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (OpenReactionSection.Flyout != null)
+                OpenReactionSection.Flyout.ShowAt(OpenReactionSection, new FlyoutShowOptions());
+        }
+
+        private void OpenReactionSection_OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            //if (OpenReactionSection.Flyout != null) OpenReactionSection.Flyout.Hide();
+        }
+
+        private void SetReaction(Reaction reaction)
+        {
+            PostControlViewModel.Reaction = reaction;
+            switch (reaction.ReactionType)
+            {
+                case ReactionType.Heart:
+                    PostControlViewModel.ReactionIcon = "♥";
+                    break;
+                case ReactionType.ThumbsDown:
+                    PostControlViewModel.ReactionIcon = "👎";
+                    break;
+                case ReactionType.ThumbsUp:
+                    PostControlViewModel.ReactionIcon = "👍";
+
+                    break;
+                case ReactionType.Happy:
+                    PostControlViewModel.ReactionIcon = "😁";
+                    break;
+                case ReactionType.Mad:
+                    PostControlViewModel.ReactionIcon = "😡";
+                    break;
+                case ReactionType.HeartBreak:
+                    PostControlViewModel.ReactionIcon = "💔";
+                    break;
+                case ReactionType.Sad:
+                    PostControlViewModel.ReactionIcon = "😕";
+                    break;
+                default:
+                    PostControlViewModel.ReactionIcon = "👍";
+                    break;
+            }
+        }
+
+        //private void ChangeCommentList(List<CommentBObj> CommentCacheList)
+        //{
+        //    PostControlViewModel.Comments.Clear();
+        //    foreach (var comment in CommentCacheList)
+        //    {
+        //        PostControlViewModel.Comments.Add(comment);
+        //    }
+
+        //}
+
+        private void CommentInserted()
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    PostControlViewModel.GetComments();
+
+                }
+            );
+        }
+
+        private void CommentRemoved()
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    PostControlViewModel.GetComments();
+                }
+            );
         }
     }
 }

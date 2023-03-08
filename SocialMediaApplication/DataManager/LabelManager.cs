@@ -49,7 +49,7 @@
 //        public async Task<List<Label>> GetUserLabelsAsync(string userId)
 //        {
 //            var labels = await GetLabelsAsync();
-//            var userLabels = labels.Where(label => FetchPostManager.GetInstance.GetUserIdAsync(label.PostId).Result == userId).ToList();
+//            var userLabels = labels.Where(label => FetchPostManager.GetInstance.GetUserIdAsync(label.ReactionOnId).Result == userId).ToList();
 
 //            return userLabels;
 //        }
@@ -66,7 +66,7 @@
 //        public async Task RemoveLabelsAsync(string postId)
 //        {
 //            var labels = await GetLabelsAsync();
-//            var removableLabels = labels.Where(label => label.PostId == postId).ToList();
+//            var removableLabels = labels.Where(label => label.ReactionOnId == postId).ToList();
 //            if (removableLabels.Count <= 0 || !(removableLabels.Any())) return;
 
 //            while (true)

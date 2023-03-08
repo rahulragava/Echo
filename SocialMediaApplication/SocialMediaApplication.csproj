@@ -121,16 +121,23 @@
     </Compile>
     <Compile Include="Database\DatabaseHandler\Contract\IFetchPostManager.cs" />
     <Compile Include="DataManager\Contract\IFeedManager.cs" />
+    <Compile Include="DataManager\Contract\IGetCommentManager.cs" />
+    <Compile Include="DataManager\Contract\IUserPollChoiceSelectionManager.cs" />
     <Compile Include="DataManager\Contract\RemoveCommentManager.cs" />
     <Compile Include="DataManager\CreatePostManager.cs" />
     <Compile Include="DataManager\FeedManager.cs" />
+    <Compile Include="DataManager\GetCommentManager.cs" />
     <Compile Include="DataManager\LogInManager.cs" />
     <Compile Include="DataManager\RemoveCommentManager.cs" />
+    <Compile Include="DataManager\UserPollChoiceSelectionManager.cs" />
     <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\FetchFeedUseCase.cs" />
+    <Compile Include="Domain\UseCase\GetCommentUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserNameUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserProfileUseCase.cs" />
+    <Compile Include="Domain\UseCase\GetUserReactionUseCase.cs" />
     <Compile Include="Domain\UseCase\InsertCommentUseCase.cs" />
+    <Compile Include="Domain\UseCase\InsertUserSelectionChoiceUseCase.cs" />
     <Compile Include="Domain\UseCase\PollPostCreationUseCase.cs" />
     <Compile Include="Domain\UseCase\TextPostCreationUseCase.cs" />
     <Compile Include="Domain\UseCase\ReactionToPostUseCase.cs" />
@@ -170,12 +177,14 @@
     <Compile Include="Presenter\ViewModel\PostControlViewModel.cs" />
     <Compile Include="Presenter\ViewModel\PostCreationPageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\ReactionViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SearchViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
     <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\ValueConverter\RelativeDateTimeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
     <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
       <DependentUpon>CommentsViewUserControl.xaml</DependentUpon>
@@ -230,14 +239,17 @@
     <Compile Include="Presenter\View\ProfileView\FollowerUserControl.xaml.cs">
       <DependentUpon>FollowerUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\ProfileView\ProfileEditPopUp.xaml.cs">
-      <DependentUpon>ProfileEditPopUp.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Presenter\View\ProfileView\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\ProfileView\UserDetailControl.xaml.cs">
       <DependentUpon>UserDetailControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ReactionView\ReactionUserControl.xaml.cs">
+      <DependentUpon>ReactionUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\ReactionView\UserSelectedReaction.xaml.cs">
+      <DependentUpon>UserSelectedReaction.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
@@ -351,15 +363,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\ProfileView\ProfileEditPopUp.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Presenter\View\ProfileView\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\ProfileView\UserDetailControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ReactionView\ReactionUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\ReactionView\UserSelectedReaction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

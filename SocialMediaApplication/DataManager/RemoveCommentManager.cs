@@ -9,6 +9,8 @@ using SocialMediaApplication.DataManager.Contract;
 using SocialMediaApplication.Domain.UseCase;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.EntityModels;
+using SocialMediaApplication.Util;
+using System.Xml.Linq;
 
 namespace SocialMediaApplication.DataManager
 {
@@ -38,7 +40,9 @@ namespace SocialMediaApplication.DataManager
         }
         private readonly ICommentDbHandler _commentDbHandler = CommentDbHandler.GetInstance;
         private readonly IReactionManager _reactionManager = ReactionManager.GetInstance;
+        private readonly IUserDbHandler _userDbHandler= UserDbHandler.GetInstance;
 
+        public static event Action CommentRemoved;
 
 
         public async Task RemoveCommentAsync(RemoveCommentRequest removeCommentRequest,
@@ -46,35 +50,23 @@ namespace SocialMediaApplication.DataManager
         {
             try
             {
-                //if (removeCommentRequest.Comment.Reactions != null && removeCommentRequest.Comment.Reactions.Any())
-                //    await _reactionManager.RemoveReactionsAsync(removeCommentRequest.Comment.Reactions).ConfigureAwait(false);
-                //var removedCommentIds = new List<string>();
-                //var childComments = removeCommentRequest.Comments.Where(c => c.ParentCommentId == removeCommentRequest.Comment.Id);
-                //List<CommentBObj> commentBObjs = new List<CommentBObj>();
-                //foreach (var comment in removeCommentRequest.Comments)
-                //{
-                //    if (comment.ParentCommentId == removeCommentRequest.Comment.Id)
-                //    {
-                //        commentBObjs.Add(comment);
-                //    }
-
-                //}
-
-
-                var (childComments,removedCommentIdList) = RemovableCommentList(removeCommentRequest.Comments, removeCommentRequest.Comment);
+                var comments = (await _commentDbHandler.GetPostCommentsAsync(removeCommentRequest.Comment.PostId)).ToList();
+                var (childComments,removedCommentIdList) = RemovableCommentList(comments, removeCommentRequest.Comment.Id);
+                var commentBObjList =  await AddCommentManager.GetInstance.GetSortedCommentBObjList(comments);
                 foreach (var comment in childComments)
                 {
-                    removedCommentIdList.Add(comment.Id);
+                    var user = await _userDbHandler.GetUserAsync(AppSettings.UserId);
                     await _commentDbHandler.RemoveCommentAsync(comment.Id);
+                    var commentBObj = commentBObjList.First(c => c.Id == comment.Id);
+                    commentBObjList.Remove(commentBObj);
                 }
-
-
-                removedCommentIdList.Add(removeCommentRequest.Comment.Id);
                 await _commentDbHandler.RemoveCommentAsync(removeCommentRequest.Comment.Id);
-                var entityComment = ConvertCommentBObjToEntity(removeCommentRequest.Comment);
-                await _commentDbHandler.RemoveCommentAsync(entityComment.Id);
+                var commentBusinessObj = commentBObjList.First(c => c.Id == removeCommentRequest.Comment.Id);
+                commentBObjList.Remove(commentBusinessObj);
 
-                removeCommentUseCaseCallBack?.OnSuccess(new RemoveCommentResponse(removedCommentIdList));
+                CommentRemoved?.Invoke();
+
+                removeCommentUseCaseCallBack?.OnSuccess(new RemoveCommentResponse());
             }
             catch (Exception e)
             {
@@ -82,21 +74,21 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        private Tuple<List<CommentBObj>,List<String>> RemovableCommentList(List<CommentBObj> comments, CommentBObj comment)
+        private Tuple<List<Comment>,List<String>> RemovableCommentList(List<Comment> comments, string commentId)
         {
-            List<CommentBObj> commentList = new List<CommentBObj>();
+            List<Comment> commentList = new List<Comment>();
             List<string> commentIdList = new List<string>();
 
             foreach (var c in comments)
             {
-                if (c.ParentCommentId == comment.Id)
+                if (c.ParentCommentId == commentId)
                 {
                     commentList.Add(c);
                     commentIdList.Add(c.Id);
                     var childOfChild = comments.Where(cc => cc.ParentCommentId == c.Id);
                     if (childOfChild.Any())
                     {
-                        var (childComment,removedCommentListId) = RemovableCommentList(comments, c);
+                        var (childComment,removedCommentListId) = RemovableCommentList(comments, c.Id);
                         commentList.AddRange(childComment);
                         commentIdList.AddRange(removedCommentListId);
                     }

@@ -8,13 +8,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:commentView="using:SocialMediaApplication.Presenter.View.CommentView"
+    xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
+    xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
     mc:Ignorable="d"
     >
-    
+    <UserControl.Resources>
+        <valueConverter:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter:RelativeDateTimeConvertor>
+
+    </UserControl.Resources>
     <Grid 
 
         Margin="7 7" 
-        Background="{ThemeResource ControlBackground}"
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
         CornerRadius="10">
 
         <Grid.RowDefinitions>
@@ -23,6 +28,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
 
         <!--<Popup
             Grid.Row="0"
@@ -70,7 +76,7 @@
                 Height="40" 
                 VerticalAlignment="Top" 
                 Margin="10 7"/>
-            <StackPanel>
+            <StackPanel Margin="4">
                 <TextBlock
                     VerticalAlignment="Top" 
                     Margin=" 0 3" 
@@ -80,14 +86,13 @@
                     VerticalAlignment="Top" 
                     FontSize="13" 
                     Margin="0 -5 " 
-                    Text="{x:Bind PostCreatedAt, Mode=OneWay}"/>
+                    Text="{x:Bind CreatedAt, Converter={StaticResource DateTimeConvertor}, Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
         <Grid Grid.Row="1"
               ScrollViewer.VerticalScrollBarVisibility="Auto"
               ScrollViewer.HorizontalScrollBarVisibility="Auto"
               CornerRadius="10"
-              Background="Black"
               VerticalAlignment="Top"
               Margin="5"
               RowSpacing="10">
@@ -99,15 +104,16 @@
             <TextBlock HorizontalAlignment="Center" 
                        VerticalAlignment="Center" 
                        TextWrapping="WrapWholeWords"
-                       Text="{x:Bind PostTitle,Mode=OneWay}"
-                       Foreground="{ThemeResource TernaryColor}"/>
+                       Text="{x:Bind PostTitle,Mode=OneWay}"/>
             <TextBlock Grid.Row="1"
                        Margin="15 0 0 0"
                        HorizontalAlignment="Left"
-                       Foreground="{ThemeResource TernaryColor}"
                        TextWrapping="WrapWholeWords"
                        Text="{x:Bind PostQuestion,Mode=OneWay}"/>
-            <ListView Grid.Row="2" 
+            <ListView Grid.Row="2"
+                      x:Name="pollChoiceList"
+                      IsItemClickEnabled="True"
+                      SelectionChanged="PollChoiceList_OnSelectionChanged"
                       ItemsSource="{x:Bind PostControlViewModel.PollChoices,Mode=OneWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="data:PollChoiceBObj">
@@ -115,6 +121,7 @@
                         <local:PollChoiceUserControl HorizontalAlignment="Stretch"
                                                  VerticalAlignment="Stretch"
                                                  Choice ="{x:Bind Choice,Mode=OneWay}"
+                                                 TotalVotes="{x:Bind TotalVotes,Mode=OneWay}"
                                                  ChoiceSelectedUserList="{x:Bind ChoiceSelectedUsers,Mode=OneWay}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -125,9 +132,9 @@
 
         <Grid
             Grid.Row="2">
-            <TextBlock>
+            <TextBlock HorizontalAlignment="left" Margin="23 0 0 0">
                 <!--<Run Text="{x:Bind PostControlViewModel.PollChoiceBObj.ChoiceSelectedUsers.Count}"/>-->
-                <Run Text="{x:Bind PollChoiceList.Count.ToString()}"/>
+                <Run Text="{x:Bind PostControlViewModel.TotalVotes,Mode=OneWay}"/>
                 <Run Text=" votes"/>
             </TextBlock>
         </Grid>
@@ -141,11 +148,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
             <NavigationViewItemSeparator
-                Margin=" 0 -5"></NavigationViewItemSeparator>
+                Grid.ColumnSpan="2"
+                Margin=" 0 -5"/>
 
-            <StackPanel
+            <!--<StackPanel
                 Grid.Row="1"
                 Spacing="3"
                 Margin="8 5 0 5"
@@ -331,22 +343,56 @@
                         </StackPanel>
                     </ToggleButton.Content>
                 </ToggleButton>
-            </StackPanel>
+            </StackPanel>-->
 
             <NavigationViewItemSeparator
+                Grid.ColumnSpan="2"
+                Grid.Column="0"
                 Grid.Row="2"
                 Margin=" 0 0"/>
 
             <Button 
                 Grid.Row="3"
+                Grid.Column="0"
+                x:Name="ReactionButton"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SecondaryColor}" 
+                Foreground="White"
+                FontSize="15"
+                Margin="10 0 10 10"
+                Padding="11">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon 
+                            FontFamily="Segoe UI Emoji" 
+                            Glyph="👍" 
+                            Foreground="White" 
+                            Margin="0 4 0 0"
+                            FontSize="20" />
+                        <TextBlock>Reaction</TextBlock>
+                    </StackPanel>
+                </Button.Content>
+                <Button.Flyout>
+                    <Flyout>
+                        <reactionView:ReactionUserControl HorizontalAlignment="Stretch"
+                                                   ReactionOnId="{x:Bind PostId,Mode=OneWay}"
+                                                   VerticalAlignment="Stretch"/>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+
+            <Button 
+                Grid.Row="3"
+                Grid.Column="1"
                 x:Name="CommentButton"
                 VerticalAlignment="Center"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
                 Background="{ThemeResource SecondaryColor}" 
                 Click="CommentButton_OnClick"
                 Foreground="White"
                 FontSize="15"
-                Margin="0 0 0 10"
+                Margin="10 0 10 10"
                 Padding="11">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" Spacing="10">
@@ -361,7 +407,9 @@
                 </Button.Content>
             </Button>
 
-            <StackPanel Grid.Row="3"  Padding="0"
+
+
+            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Padding="0"
                         Visibility="Collapsed"
                         x:Name="CommentComponent"
                         HorizontalAlignment="Stretch"

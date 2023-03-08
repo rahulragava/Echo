@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,6 +14,10 @@ using Windows.UI.Xaml.Controls.Maps;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using Color = Windows.UI.Color;
+using Windows.UI.Xaml.Media.Animation;
+using SocialMediaApplication.DataManager;
+using SocialMediaApplication.Presenter.View.ReactionView;
+using Windows.UI.Core;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -34,20 +32,34 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentViewModel = new CommentViewModel();
             this.InitializeComponent();
             Loaded += Comment_Loaded;
+            Unloaded += Comment_UnLoaded;
             CommentViewModel.CheckAnyComments += CommentExist;
+            AddCommentManager.CommentInserted += CommentInserted;
+            RemoveCommentManager.CommentRemoved += CommentRemoved;
 
         }
 
         private void Comment_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            CommentViewModel.CommentsList = Comments;
-            CommentViewModel.ClearAndUpdate();
-            if (!Comments.Any())
+            if (Comments != null)
             {
-                CommentList.Visibility = Visibility.Collapsed;
-                NoCommentsMessage.Visibility = Visibility.Visible;
-                NoCommentFont.Visibility = Visibility.Visible;
+                CommentViewModel.CommentsList = Comments;
+                CommentViewModel.ClearAndUpdate();
+                if (!Comments.Any())
+                {
+                    CommentList.Visibility = Visibility.Collapsed;
+                    NoCommentsMessage.Visibility = Visibility.Visible;
+                    NoCommentFont.Visibility = Visibility.Visible;
+                }
             }
+
+            CommentViewModel.PostId = PostId;
+        }
+
+        private void Comment_UnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            AddCommentManager.CommentInserted -= CommentInserted;
+            RemoveCommentManager.CommentRemoved -= CommentRemoved;
 
         }
 
@@ -106,17 +118,10 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentViewModel.SendCommentButtonClicked(content, parentCommentId, commentOnPostId, depth);
         }
 
-        private void RemoveComment_OnTapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (CommentList.SelectedItem is CommentBObj commentToBeDeleted)
-            {
-                CommentViewModel.RemoveSelectedComment(commentToBeDeleted, Comments);
-            }
-        }
-
+        
         private void CommentExist(object sender, EventArgs e)
         {
-            if (Comments.Any())
+            if (CommentViewModel.CommentsList.Any())
             {
                 CommentList.Visibility = Visibility.Visible;
                 NoCommentsMessage.Visibility = Visibility.Collapsed;
@@ -131,5 +136,38 @@ namespace SocialMediaApplication.Presenter.View.CommentView
 
 
         }
+        
+
+        private void CommentInserted()
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    CommentViewModel.GetComments();
+                }
+            );
+           
+        }
+
+        private void CommentRemoved()
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    CommentViewModel.GetComments();
+                }
+            );
+        }
+        private void ReplyButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ReactionButton_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            btn.Flyout.ShowAt(btn, new FlyoutShowOptions());
+        }
+
     }
 }

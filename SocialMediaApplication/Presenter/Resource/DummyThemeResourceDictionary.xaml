@@ -12,6 +12,7 @@
                     <SolidColorBrush x:Key="PrimaryColor" Color="#0DA9E9"></SolidColorBrush>
                     <SolidColorBrush x:Key="SecondaryColor" Color="#0D64FF"></SolidColorBrush>
                     <SolidColorBrush x:Key="TernaryColor" Color="Gold"></SolidColorBrush>
+                    <SolidColorBrush x:Key="SubtleText" Color="Gray"></SolidColorBrush>
                     <!--<brushes:AcrylicBrush x:Key="AcrylicBrushBackground" BackgroundSource="Backdrop"
                                         TintColor="LightSlateGray"
                                         TintOpacity="0.2"/>-->
@@ -30,10 +31,12 @@
                         <GradientStop Color="#FF9F4A  " Offset="0"/>
                         <GradientStop Color="#FF3C83" Offset="1"/>
                     </LinearGradientBrush>-->
-                    <LinearGradientBrush x:Key="ImportantTextBlockForegroundGradient" StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#20BDFF" Offset="0"/>
+                    <SolidColorBrush x:Key="ImportantTextBlockForegroundGradient" Color="#0D64FF"></SolidColorBrush>
+
+                    <!--<LinearGradientBrush x:Key="ImportantTextBlockForegroundGradient" StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#0D64FF" Offset="0"/>
                         <GradientStop Color="#6F32FF" Offset="1"/>
-                    </LinearGradientBrush>
+                    </LinearGradientBrush>-->
 
                     <!--<TextBlock x:Key="Simple" FontFamily=""></TextBlock>-->
                 </ResourceDictionary>
@@ -43,7 +46,7 @@
         <ResourceDictionary x:Key="Dark">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <SolidColorBrush x:Key="ControlBackground" Color="#121212"></SolidColorBrush>
+                    <SolidColorBrush x:Key="ControlBackground" Color="DimGray"></SolidColorBrush>
                     <SolidColorBrush x:Key="BackgroundColor" Color="Black"></SolidColorBrush>
                     <SolidColorBrush x:Key="PrimaryColor" Color="#0D64FF"></SolidColorBrush>
                     <SolidColorBrush x:Key="SecondaryColor" Color="#6F32FF"></SolidColorBrush>
@@ -51,6 +54,8 @@
                     <SolidColorBrush x:Key="TitleContentColor" Color="#2E325C"></SolidColorBrush>
                     <SolidColorBrush x:Key="PostBackground" Color="#121212"></SolidColorBrush>
                     <!--<FontIcon x:Key="ThemeChangingIcon" Glyph="&#xE945;"></FontIcon>-->
+                    <SolidColorBrush x:Key="SubtleText" Color="LightGray"></SolidColorBrush>
+
                     <!--<Style TargetType="FontIcon" x:Key="ThemeChangingIcon">
                         <Setter Property="Glyph" Value="&#xE793;"></Setter>
                     </Style>-->

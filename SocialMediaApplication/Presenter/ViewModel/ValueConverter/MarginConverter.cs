@@ -8,7 +8,7 @@ namespace SocialMediaApplication.Presenter.ViewModel.ValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return new Thickness(System.Convert.ToInt32(value), 10, 0, 0);
+            return new Thickness(System.Convert.ToInt32(value), -10, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

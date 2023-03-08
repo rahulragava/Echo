@@ -101,7 +101,7 @@ namespace SocialMediaApplication.DataManager
         //    return post;
         //}
 
-        //private async Task<PostBObj> ConvertEntityToBObj(Post post, List<CommentBObj> comments, List<Reaction> reactions)
+        //private async Task<PostBObj> ConvertEntityToBObj(Post post, List<CommentBObj> CommentCacheList, List<Reaction> reactions)
         //{
         //    PostBObj postBObj;
 
@@ -117,7 +117,7 @@ namespace SocialMediaApplication.DataManager
         //    postBObj.Id = post.Id;
         //    postBObj.PostedBy = post.PostedBy;
         //    postBObj.Reactions = reactions;
-        //    postBObj.Comments = comments;
+        //    postBObj.Comments = CommentCacheList;
         //    postBObj.Title = post.Title;
         //    postBObj.FormattedCreatedTime = post.CreatedAt.ToString("dddd, dd MMMM yyyy");
         //    postBObj.CreatedAt = post.CreatedAt;
@@ -132,7 +132,7 @@ namespace SocialMediaApplication.DataManager
         //    }
         //    else if (postBObj is PollPostBObj pollPostBObj)
         //    {
-        //        var choices = (await _pollChoiceManager.GetPollChoicesBObjAsync()).Where(choice => choice.PostId == post.Id).ToList();
+        //        var choices = (await _pollChoiceManager.GetPollChoicesBObjAsync()).Where(choice => choice.ReactionOnId == post.Id).ToList();
         //        PollPost pollPost = post as PollPost;
         //        if (pollPost != null) pollPostBObj.Question = pollPost.Question;
         //        pollPostBObj.Choices = choices;
@@ -198,9 +198,9 @@ namespace SocialMediaApplication.DataManager
         //    }
             
         //    var textPost = (await Task.Run(() => _textPostDbHandler.GetAllTextPostAsync()).ConfigureAwait(false)).Single(tp => tp.Id == postId);
-        //    var comments = (await _addCommentManager.GetCommentBObjsAsync()).Where(comment => comment.PostId == postId).ToList();
+        //    var CommentCacheList = (await _addCommentManager.GetCommentBObjsAsync()).Where(comment => comment.ReactionOnId == postId).ToList();
         //    var reactions = (await _reactionManager.GetReactionAsync()).Where(reaction => reaction.ReactionOnId == postId).ToList();
-        //    var textPostBObj = await ConvertEntityToBObj(textPost, comments, reactions);
+        //    var textPostBObj = await ConvertEntityToBObj(textPost, CommentCacheList, reactions);
             
         //    return textPostBObj as TextPostBObj;
         //}
@@ -212,9 +212,9 @@ namespace SocialMediaApplication.DataManager
         //        return PostBobjs.OfType<PollPostBObj>().Single(p => p.Id == postId);
         //    }
         //    var pollPost = (await Task.Run(() => _pollPostDbHandler.GetAllPollPostAsync()).ConfigureAwait(false)).Single(pp => pp.Id == postId);
-        //    var comments = (await _addCommentManager.GetCommentBObjsAsync()).Where(comment => comment.PostId == postId).ToList();
+        //    var CommentCacheList = (await _addCommentManager.GetCommentBObjsAsync()).Where(comment => comment.ReactionOnId == postId).ToList();
         //    var reactions = (await _reactionManager.GetReactionAsync()).Where(reaction => reaction.ReactionOnId == postId).ToList();
-        //    var pollPostBObj = await ConvertEntityToBObj(pollPost, comments, reactions);
+        //    var pollPostBObj = await ConvertEntityToBObj(pollPost, CommentCacheList, reactions);
 
         //    return pollPostBObj as PollPostBObj;
         //}

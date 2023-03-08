@@ -7,14 +7,90 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
+    xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
+        <valueConverter:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter:RelativeDateTimeConvertor>
         <valueConverter:MarginConverter x:Key="MarginConverter"></valueConverter:MarginConverter>
+        <Style x:Key="ButtonStyle1" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
+            <Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
+            <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}"/>
+            <Setter Property="Padding" Value="{StaticResource ButtonPadding}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
+            <Setter Property="FocusVisualMargin" Value="-3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" CornerRadius="5" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SecondaryColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TernaryColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TernaryColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundDisabled}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushDisabled}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundDisabled}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
-    <StackPanel Spacing="10" Margin="{x:Bind CommentDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
+    <!--<StackPanel Spacing="10" Margin="{x:Bind CommentDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
        <StackPanel Orientation="Horizontal" Spacing="15">
            <PersonPicture Width="30"/>
             <TextBlock Text="{x:Bind CommentedByUserName,Mode=OneWay}" FontSize="15" VerticalAlignment="Center"/>
@@ -24,5 +100,95 @@
        <StackPanel Orientation="Horizontal">
 
        </StackPanel>
+    </StackPanel>-->
+
+
+    <StackPanel Margin="{x:Bind CommentDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}" 
+                Spacing="15">
+        <StackPanel Orientation="Horizontal">
+            <PersonPicture Margin="0 6 0 0" 
+                           Width="35"/>
+            <StackPanel Background="{ThemeResource ControlBackground}" 
+                        MinWidth="200" 
+                        Margin="10 25 0 0" 
+                        Spacing="10" 
+                        CornerRadius="10">
+                <StackPanel Orientation="Horizontal" 
+                            Margin="15 5 10 0"  
+                            Spacing="10">
+                    <TextBlock Text="{x:Bind CommentedByUserName,Mode=OneWay}"
+                               FontSize="15" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="{x:Bind PostCommentContent,Mode=OneWay}" 
+                           Margin="15 0 0 5" 
+                           FontSize="16"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Margin="{x:Bind CommentViewModel.StackDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
+            <Button x:Name="ReactionButton" 
+                    Style="{StaticResource ButtonStyle1}"
+                    BorderThickness="0"
+                    Content="Like" 
+                    PointerEntered="ReactionButton_OnPointerEntered">
+                <Button.Flyout>
+                    <Flyout>
+                        <reactionView:ReactionUserControl HorizontalAlignment="Stretch"
+                                                          ReactionOnId="{x:Bind CommentId,Mode=OneWay}"
+                                                          VerticalAlignment="Stretch"/>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+
+            <HyperlinkButton x:Name="ReplyButton"
+                             Margin="0 0 0 0"
+                             Click="ReplyButton_OnClick"
+                             BorderThickness="0"
+                             
+                             HorizontalAlignment="Left">
+                <HyperlinkButton.Content>
+                    <TextBlock TextDecorations="Underline" FontSize="15">Reply</TextBlock>
+                </HyperlinkButton.Content>
+            </HyperlinkButton>
+
+
+
+
+            <TextBlock Text="{x:Bind CommentDateTime, Mode=OneWay,Converter={StaticResource DateTimeConvertor}}"  
+                       Margin="0 0 0 0"
+                       FontSize="13" 
+                       Foreground="{ThemeResource SubtleText}"
+                       TextWrapping="Wrap"
+                       ToolTipService.ToolTip="{x:Bind CommentedAt,Mode=OneWay}"
+                       VerticalAlignment="Center"/>
+            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="" 
+                      FontSize="13"
+                      Visibility="{x:Bind CommentViewModel.RemoveButtonVisibility,Mode=OneWay}"
+                      Margin="10 0 0 0"
+                      Tapped="RemoveComment_OnTapped">
+            </FontIcon>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    x:Name="ReplyPanel"
+                    Margin="{x:Bind CommentViewModel.StackDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}"
+                    Visibility="Collapsed">
+            <TextBox x:Name="CommentContent"
+                     HorizontalAlignment="Stretch" 
+                     VerticalAlignment="Center" 
+                     PlaceholderText="type your reply here ..." 
+                     Margin="10">
+            </TextBox>
+
+            <Button HorizontalAlignment="Stretch"
+                    Margin="0 0 4 0" 
+                    x:Name="PostCommentButton"
+                    Style="{StaticResource ButtonStyle1}"
+                    Click="PostCommentButton_OnClick">
+                <Button.Content>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>
+                </Button.Content>
+            </Button>
+        </StackPanel>
     </StackPanel>
 </UserControl>

@@ -37,6 +37,8 @@ namespace SocialMediaApplication.Presenter.View
             //Bindings.Update();
         }
 
+
+
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)

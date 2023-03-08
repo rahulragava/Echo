@@ -70,6 +70,20 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
             var index = UserNames.IndexOf(userName);
             UserId = UserIds[index];
+            //NavigateToProfilePage?.Invoke(this, EventArgs(UserId));
+
+        }
+
+        public EventHandler NavigateToProfilePage;
+        public void SearchSuccess(GetUserNamesResponseObj getUserNamesResponseObj)
+        {
+            UserNames = getUserNamesResponseObj.UserNames;
+            UserIds = getUserNamesResponseObj.UserIds;
+            UserNameList.Clear();
+            foreach (var userName in UserNames)
+            {
+                UserNameList.Add(userName);
+            }
         }
 
         public class SearchViewModelPresenterCallBack : IPresenterCallBack<GetUserNamesResponseObj>
@@ -86,13 +100,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _searchViewModel.UserNames = getUserNamesResponseObj.UserNames;
-                        _searchViewModel.UserIds= getUserNamesResponseObj.UserIds;
-                        _searchViewModel.UserNameList.Clear();
-                        foreach (var userName in _searchViewModel.UserNames)
-                        {
-                            _searchViewModel.UserNameList.Add(userName);
-                        }
+                        _searchViewModel.SearchSuccess(getUserNamesResponseObj);
                     }
                 );
 

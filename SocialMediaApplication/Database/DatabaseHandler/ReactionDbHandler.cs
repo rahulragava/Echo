@@ -37,13 +37,13 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         }
 
         //insert reaction to db
-        public async Task InsertUserReactionAsync(Reaction reaction)
+        public async Task InsertReactionAsync(Reaction reaction)
         {
             await _dbAdapter.InsertInTableAsync(reaction);
         }
 
         //remove a Reaction from db
-        public async Task RemoveUserReactionAsync(string reactionId)
+        public async Task RemoveReactionAsync(string reactionId)
         {
             await _dbAdapter.RemoveObjectFromTableAsync<Reaction>(reactionId);
         }
@@ -56,20 +56,20 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         }
 
         //get all reactions
-        public async Task<IEnumerable<Reaction>> GetAllUserReactionAsync()
+        public async Task<IEnumerable<Reaction>> GetAllReactionAsync()
         {
             return await _dbAdapter.GetAllObjectsInTableAsync<Reaction>();
         }
 
         //get a particular reaction
-        public async Task<Reaction> GetUserReactionAsync(string id)
+        public async Task<Reaction> GetReactionAsync(string id)
         {
             return await _dbAdapter.GetObjectFromTableAsync<Reaction>(id);
         }
 
         public async Task<IEnumerable<Reaction>> GetReactionsAsync(string reactionOnId)
         {
-            return (await GetAllUserReactionAsync()).Where(c => c.ReactionOnId == reactionOnId);
+            return (await GetAllReactionAsync()).Where(c => c.ReactionOnId == reactionOnId);
         }
     }
 }

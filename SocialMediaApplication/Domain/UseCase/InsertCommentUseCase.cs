@@ -74,11 +74,9 @@ namespace SocialMediaApplication.Domain.UseCase
 
     public class InsertCommentResponse
     {
-        public CommentBObj CommentBObj;
 
-        public InsertCommentResponse(CommentBObj commentBObj)
+        public InsertCommentResponse()
         {
-            CommentBObj = commentBObj;
         }
     }
 }

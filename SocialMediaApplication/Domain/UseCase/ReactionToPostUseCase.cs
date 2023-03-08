@@ -24,7 +24,6 @@ namespace SocialMediaApplication.Domain.UseCase
         }
         public override void Action()
         {
-            
             ReactionManager.AddReactionAsync(ReactionToPostRequestObj, new ReactionToPostUseCaseCallBack(this));
         }
         
@@ -53,17 +52,13 @@ namespace SocialMediaApplication.Domain.UseCase
     public class ReactionToPostRequestObj
     {
         public Reaction Reaction { get; }
-        public string ReactionOnId { get; }
-        public ReactionType ReactionType { get; }
         public IPresenterCallBack<ReactionToPostResponse> ReactionToPostResponsePresenterCallBack { get; }
 
 
-        public ReactionToPostRequestObj(ReactionType reactionType, Reaction reaction, string reactionOnId, IPresenterCallBack<ReactionToPostResponse> reactionToPostResponsePresenterCallBack)
+        public ReactionToPostRequestObj(Reaction reaction, IPresenterCallBack<ReactionToPostResponse> reactionToPostResponsePresenterCallBack)
         {
-            ReactionType = reactionType;
             Reaction = reaction;
             ReactionToPostResponsePresenterCallBack = reactionToPostResponsePresenterCallBack;
-            ReactionOnId = reactionOnId;
         }
     }
 
@@ -71,11 +66,11 @@ namespace SocialMediaApplication.Domain.UseCase
  
     public class ReactionToPostResponse
     {
-        public List<Reaction> Reactions;
+        public bool ReactionSuccess;
 
-        public ReactionToPostResponse(List<Reaction> reactions)
+        public ReactionToPostResponse(bool reactionSuccess)
         {
-            Reactions = reactions;
+            ReactionSuccess = reactionSuccess;
         }
     }
 }

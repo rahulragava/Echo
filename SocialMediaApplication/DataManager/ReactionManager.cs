@@ -19,7 +19,7 @@ namespace SocialMediaApplication.DataManager
         private static readonly object PadLock = new object();
 
         ReactionManager() { }
-        private  List<Reaction> reactions = new List<Reaction>();
+        //private  List<Reaction> reactions = new List<Reaction>();
         
         public static ReactionManager GetInstance
         {
@@ -42,7 +42,7 @@ namespace SocialMediaApplication.DataManager
 
         public async Task<List<Reaction>> GetReactionAsync()
         {
-            var reactionList = await _reactionDbHandler.GetAllUserReactionAsync();
+            var reactionList = await _reactionDbHandler.GetAllReactionAsync();
             return reactionList.ToList();
         }
 
@@ -51,75 +51,30 @@ namespace SocialMediaApplication.DataManager
         {
             try
             {
-                
-                if (reactions == null)
+                var reactions = await _reactionDbHandler.GetReactionsAsync(reactionToPostRequestObj.Reaction.ReactionOnId);
+                var reaction = reactions.SingleOrDefault(r => r.ReactedBy == reactionToPostRequestObj.Reaction.ReactedBy);
+
+                if (reaction != null)
                 {
-                    reactions = await GetReactionAsync();
-                }
-                var reaction = reactions.SingleOrDefault(r =>
-                    r.ReactedBy == App.UserId && r.ReactionOnId == reactionToPostRequestObj.ReactionOnId && r.ReactionType == reactionToPostRequestObj.ReactionType);
-                if (reactionToPostRequestObj.Reaction is null &&
-                    reactionToPostRequestObj.ReactionType == ReactionType.None)
-                {
-                    //var reaction = reactions.SingleOrDefault(r =>
-                    //    r.ReactedBy == App.UserId && r.ReactionOnId == reactionToPostRequestObj.ReactionOnId && r.ReactionType == reactionToPostRequestObj.ReactionType);
-                    if (reaction != null)
+                    if (reaction.ReactionType == reactionToPostRequestObj.Reaction.ReactionType)
                     {
-                        await RemoveReactionAsync(reaction.Id);
-                        reactions.Remove(reaction);
+                        //remove
+                        await _reactionDbHandler.RemoveReactionAsync(reaction.Id);
                     }
-                }
-                else if(reactionToPostRequestObj.ReactionType == ReactionType.None)
-                {
-                    if (reactionToPostRequestObj.Reaction != null)
+                    else
                     {
-                        await _reactionDbHandler.InsertUserReactionAsync(reactionToPostRequestObj.Reaction);
-                        reactions.Add(reactionToPostRequestObj.Reaction);
+                        //remove and insert
+                        await _reactionDbHandler.RemoveReactionAsync(reaction.Id);
+                        await _reactionDbHandler.InsertReactionAsync(reactionToPostRequestObj.Reaction);
                     }
+
                 }
                 else
                 {
-                    if (reactionToPostRequestObj.Reaction != null)
-                    {
-                        if (reaction != null)
-                        {
-                            await RemoveReactionAsync(reaction.Id);
-                            reactions.Remove(reaction);
-                            await _reactionDbHandler.InsertUserReactionAsync(reactionToPostRequestObj.Reaction);
-                            reactions.Add(reactionToPostRequestObj.Reaction);
-                        }
-                    }
+                    //insert
+                    await _reactionDbHandler.InsertReactionAsync(reactionToPostRequestObj.Reaction);
                 }
-                    //if (reactionToPostRequestObj.Reaction == null)
-                        //{
-                        //    var reaction = reactions.SingleOrDefault(r =>
-                        //        r.ReactedBy == App.UserId && r.ReactionOnId == reactionToPostRequestObj.ReactionOnId);
-
-                        //}
-
-                        //logic error 
-                    //if (reactions.Exists(r => r.Id == reactionToPostRequestObj.Reaction.Id && r.ReactionType != reactionToPostRequestObj.Reaction.ReactionType))
-                    //{
-                    //    if (reactionToPostRequestObj.Reaction != null)
-                    //    {
-                    //        await RemoveReactionAsync(reactionToPostRequestObj.Reaction.Id);
-                    //        reactions.Remove(reactionToPostRequestObj.Reaction);
-                    //        await _reactionDbHandler.InsertUserReactionAsync(reactionToPostRequestObj.Reaction);
-                    //        reactions.Add(reactionToPostRequestObj.Reaction);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (reactionToPostRequestObj.Reaction != null)
-                    //    {
-                    //        await _reactionDbHandler.InsertUserReactionAsync(reactionToPostRequestObj.Reaction);
-                    //        reactions.Add(reactionToPostRequestObj.Reaction);
-                    //    }
-
-                    //}
-                reactionToPostUseCaseCallBack?.OnSuccess(new ReactionToPostResponse(reactions));
-
-
+                reactionToPostUseCaseCallBack?.OnSuccess(new ReactionToPostResponse(true));
             }
             catch (Exception e)
             {
@@ -127,37 +82,51 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task AddReactionAsync(Reaction reaction)
-        {
-            await _reactionDbHandler.InsertUserReactionAsync(reaction);
-        }
-
-        public async Task RemoveReactionAsync(string reactionId)
+        public async Task GetUserReaction(GetUserReactionRequest getUserReactionRequest, GetUserReactionUseCaseCallBack getUserReactionUseCallBack)
         {
             try
             {
-                await _reactionDbHandler.RemoveUserReactionAsync(reactionId);
+                var reactions = await _reactionDbHandler.GetReactionsAsync(getUserReactionRequest.ReactionOnId);
+                var reaction =  reactions.SingleOrDefault(r => r.ReactedBy == getUserReactionRequest.UserId);
+
+                getUserReactionUseCallBack?.OnSuccess(new GetUserReactionResponse(reaction));
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                getUserReactionUseCallBack?.OnError(e);
             }
         }
+        //public async Task AddReactionAsync(Reaction reaction)
+        //{
+        //    await _reactionDbHandler.InsertReactionAsync(reaction);
+        //}
 
-        public async Task RemoveReactionsAsync(List<Reaction> reactions)
-        {
-            if (reactions.Count <= 0 || !(reactions.Any())) return;
+        //public async Task RemoveReactionAsync(string reactionId)
+        //{
+        //    try
+        //    {
+        //        await _reactionDbHandler.RemoveReactionAsync(reactionId);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception(e.Message);
+        //    }
+        //}
 
-            while (true)
-            {
-                for (int i = 0; i < reactions.Count; i++)
-                {
-                    await RemoveReactionAsync(reactions[i].Id).ConfigureAwait(false);
-                    break;
-                }
-                if (reactions.Count == 0) break;
-            }
-        }
+        //public async Task RemoveReactionsAsync(List<Reaction> reactions)
+        //{
+        //    if (reactions.Count <= 0 || !(reactions.Any())) return;
+
+        //    while (true)
+        //    {
+        //        for (int i = 0; i < reactions.Count; i++)
+        //        {
+        //            await RemoveReactionAsync(reactions[i].Id).ConfigureAwait(false);
+        //            break;
+        //        }
+        //        if (reactions.Count == 0) break;
+        //    }
+        //}
 
         
     }

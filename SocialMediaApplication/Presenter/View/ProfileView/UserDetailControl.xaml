@@ -18,17 +18,17 @@
         </Style>
 
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
         <StackPanel 
 
-        Padding="100 10"
-        Spacing="25"
-        BorderThickness="1"
-        CornerRadius="10"
-        Margin="120 0 20 0"
-        VerticalAlignment="Center"
-        Background="{ThemeResource ControlBackground}"
-        HorizontalAlignment="Center">
+            Padding="100 10"
+            Spacing="25"
+            BorderThickness="1"
+            CornerRadius="10"
+            Margin="120 0 20 0"
+            VerticalAlignment="Center"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            HorizontalAlignment="Center">
 
 
             <!--<StackPanel.Background>
@@ -43,9 +43,9 @@
                                 TintOpacity="0.2"/>
 
 </StackPanel.Background>-->
-            <TextBlock HorizontalAlignment="Center">Intro</TextBlock>
             <StackPanel Orientation="Horizontal"
-                    Spacing="10">
+                        Margin="0 5 0 0"
+                        Spacing="10">
                 <FontIcon Glyph="&#xE716;">
                     <!--<FontIcon.Foreground>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -54,14 +54,13 @@
                         </LinearGradientBrush>
                 </FontIcon.Foreground>-->
                 </FontIcon>
-                <TextBlock CharacterSpacing="70">
+                <TextBlock CharacterSpacing="50">
                 <Run Text="Call me"/>
                 <Run Text="{x:Bind FirstName,Mode=OneWay}" 
-                     FontWeight="Bold" 
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                     FontWeight="Medium" />
                 <Run Text="{x:Bind LastName,Mode=OneWay}" 
-                     FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                     FontWeight="Medium"
+                     />
                 </TextBlock>
             </StackPanel>
 
@@ -70,8 +69,7 @@
                 <FontIcon Glyph="&#xE7BE;"></FontIcon>
                 <TextBlock>
                 <Run Text="Studied at"/>
-                <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
 
@@ -80,8 +78,7 @@
                 <FontIcon Glyph="&#xE10F;"></FontIcon>
                 <TextBlock >
                 <Run Text="Lives in "/>
-                <Run Text="{x:Bind Place,Mode=OneWay}" FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                <Run Text="{x:Bind Place,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
 
@@ -91,8 +88,7 @@
                 <FontIcon Glyph="&#xE821;"></FontIcon>
                 <TextBlock>
                 <Run Text="Currently working as"/>
-                <Run Text="{x:Bind Occupation,Mode=OneWay}" FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                <Run Text="{x:Bind Occupation,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
 
@@ -100,19 +96,16 @@
                     Spacing="10">
                 <FontIcon Glyph="&#xE006;"></FontIcon>
                 <TextBlock>
-                <Run Text="{x:Bind MarriageStatus,Mode=OneWay}" FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
-
+                <Run Text="{x:Bind MarriageStatus,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal"
-                    Spacing="10">
+            <StackPanel Orientation="Horizontal" Spacing="10" 
+                        ToolTipService.ToolTip="{x:Bind UserCreatedAt,Mode=OneWay}">
                 <FontIcon Glyph="&#xE121;"></FontIcon>
                 <TextBlock>
                 <Run Text="FC user since"/>
-                <Run Text="{x:Bind UserCreatedAt,Mode=OneWay}" FontWeight="Bold"
-                     Foreground="{ThemeResource ImportantTextBlockForegroundGradient}"/>
+                <Run Text="{x:Bind UserCreatedAt,Mode=OneWay}" FontWeight="Medium"/>
 
                 </TextBlock>
             </StackPanel>

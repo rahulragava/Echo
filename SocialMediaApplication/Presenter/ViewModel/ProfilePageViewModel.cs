@@ -31,9 +31,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _userPostCount;
             set => SetProperty(ref _userPostCount, value);
         }
-
-
-
+        
         private int _userFollowerCount;
         public int UserFollowerCount
         {
@@ -201,8 +199,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
             MaritalStatus = user.MaritalStatus;
             UserName = user.UserName;
         }
-
-
     }
 
     public class GetUserProfilePresenterCallBack : IPresenterCallBack<GetUserProfileResponseObj>

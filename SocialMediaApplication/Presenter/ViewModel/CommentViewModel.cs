@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using SocialMediaApplication.Models.BusinessModels;
 using System.Collections.ObjectModel;
+using Windows.Globalization.NumberFormatting;
+using Windows.UI.Xaml;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace SocialMediaApplication.Presenter.ViewModel
@@ -21,6 +23,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public EventHandler CheckAnyComments;
 
+        public CommentViewModel()
+        {
+            CommentsList = new List<CommentBObj>();
+        }
 
         public void SendCommentButtonClicked(string content, string parentId, string commentOnPostId,int depth)
         {
@@ -30,11 +36,20 @@ namespace SocialMediaApplication.Presenter.ViewModel
             insertCommentUseCase.Execute();
         }
 
-        public void RemoveSelectedComment(CommentBObj comment, List<CommentBObj> comments)
+        public void RemoveSelectedComment(CommentBObj comment)
         {
-            var removeCommentRequest = new RemoveCommentRequest(comment,comments,new RemoveCommentPresenterCallBack(this));
+            var removeCommentRequest = new RemoveCommentRequest(comment,new RemoveCommentPresenterCallBack(this));
             var removeCommentUseCase = new RemoveCommentUseCase(removeCommentRequest);
             removeCommentUseCase.Execute();
+        }
+
+        public string PostId;
+
+        public void GetComments()
+        {
+            var getCommentRequest = new GetCommentRequest(PostId, new GetCommentsPresenterCallBack(this));
+            var getCommentUseCase = new GetCommentUseCase(getCommentRequest);
+            getCommentUseCase.Execute();
         }
         public void ClearAndUpdate()
         {
@@ -45,51 +60,94 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
         }
 
-        public void SuccessfullyCommented(CommentBObj commentBObj)
+        public void SetStackPanelDepth(int depth)
         {
-            if (CommentsList.Count == 0)
-            {
-                CommentsList.Add(commentBObj);
+            StackDepth = depth+45;
+        }
 
-            }
-            else
-            {
-                int parentIndex = -1;
-                int siblingCount = 0;
-                int currentIndex = CommentsList.Count;
-                if (commentBObj.ParentCommentId == null)
-                {
-                    currentIndex = CommentsList.Count;
-                }
-                else
-                {
-                    for (int i = 0; i < CommentsList.Count; i++)
-                    {
-                        if (CommentsList[i].Id == commentBObj.ParentCommentId)
-                        {
-                            parentIndex = i;
-                        }
+        private int _stackDepth;
 
-                        if (CommentsList[i].ParentCommentId == commentBObj.ParentCommentId)
-                        {
-                            siblingCount++;
-                        }
-                    }
-                    currentIndex = parentIndex + siblingCount + 1;
-                }
-                CommentsList.Insert(currentIndex, commentBObj);
-            } 
-            ClearAndUpdate();
+        public int StackDepth
+        {
+            get => _stackDepth;
+            set => SetProperty(ref _stackDepth, value);
+        }
+        private Visibility _removeButtonVisibility;
+
+        public Visibility RemoveButtonVisibility
+        {
+            get => _removeButtonVisibility;
+            set => SetProperty(ref _removeButtonVisibility, value);
+        }
+
+        public void SuccessfullyCommented()
+        {
             CheckAnyComments?.Invoke(this, EventArgs.Empty);
+
+            //if (CommentsList.Count == 0)
+            //{
+            //    CommentsList.Add(commentBObj);
+
+            //}
+            //else
+            //{
+            //    int parentIndex = -1;
+            //    int siblingCount = 0;
+            //    int currentIndex = CommentsList.Count;
+            //    if (commentBObj.ParentCommentId == null)
+            //    {
+            //        currentIndex = CommentsList.Count;
+            //    }
+            //    else
+            //    {
+            //        for (int i = 0; i < CommentsList.Count; i++)
+            //        {
+            //            if (CommentsList[i].Id == commentBObj.ParentCommentId)
+            //            {
+            //                parentIndex = i;
+            //            }
+
+            //            if (CommentsList[i].ParentCommentId == commentBObj.ParentCommentId)
+            //            {
+            //                siblingCount++;
+            //            }
+            //        }
+            //        currentIndex = parentIndex + siblingCount + 1;
+            //    }
+            //    CommentsList.Insert(currentIndex, commentBObj);
+            //} 
+            //CommentsList = commentBObjs;
+            //ClearAndUpdate();
+
 
         }
 
-        public void SuccessfullyRemovedComments(List<string> removedCommentIds)
+        //public List<string> RemovedCommentIds;
+        public void SuccessfullyRemovedComments()
         {
-            CommentsList.RemoveAll(c => removedCommentIds.Contains(c.Id));
-            ClearAndUpdate();
             CheckAnyComments?.Invoke(this, EventArgs.Empty);
 
+            //CommentsList.RemoveAll(c => removedCommentIds.Contains(c.Id));
+            //RemovedCommentIds = new List<string>();
+            //RemovedCommentIds = removedCommentIds;
+            //ClearAndUpdate();
+
+
+        }
+
+        //public void CommentRemoved()
+        //{
+
+        //    CheckAnyComments?.Invoke(this, EventArgs.Empty);
+        //}
+        public void GetCommentSuccess(List<CommentBObj> comments)
+        {
+            CommentsList = comments;
+            PostComments.Clear();
+            foreach (var comment in comments)
+            {
+                PostComments.Add(comment);
+            }
         }
 
     }
@@ -107,7 +165,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    _commentViewModel.SuccessfullyCommented(insertCommentResponse.CommentBObj);
+                    _commentViewModel.SuccessfullyCommented();
                 }
             );
         }
@@ -132,7 +190,32 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    _commentViewModel.SuccessfullyRemovedComments(removeCommentResponse.RemovedCommentIds);
+                    _commentViewModel.SuccessfullyRemovedComments();
+                }
+            );
+        }
+
+        public void OnError(Exception ex)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GetCommentsPresenterCallBack : IPresenterCallBack<GetCommentResponse>
+    {
+        private readonly CommentViewModel _commentViewModel;
+
+        public GetCommentsPresenterCallBack(CommentViewModel commentViewModel)
+        {
+            _commentViewModel = commentViewModel;
+        }
+
+        public void OnSuccess(GetCommentResponse getCommentResponse)
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    _commentViewModel.GetCommentSuccess(getCommentResponse.Comments);
                 }
             );
         }

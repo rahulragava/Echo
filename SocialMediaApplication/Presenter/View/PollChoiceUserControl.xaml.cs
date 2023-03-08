@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.EntityModels;
+using SocialMediaApplication.Util;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -24,10 +25,22 @@ namespace SocialMediaApplication.Presenter.View
 {
     public sealed partial class PollChoiceUserControl : UserControl
     {
-
+        public readonly PostControlViewModel PostControlViewModel;
         public PollChoiceUserControl()
         {
+            PostControlViewModel = new PostControlViewModel();
             this.InitializeComponent();
+            Loaded += PollChoiceUserControl_Loaded;
+
+        }
+
+        private void PollChoiceUserControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            
+            if (TotalVotesProperty != null)
+            {
+                PostControlViewModel.GetCount(ChoiceSelectedUserList.Count, TotalVotes);
+            }
         }
 
         //public string CalculateUserSelectionPercentage()
@@ -53,5 +66,16 @@ namespace SocialMediaApplication.Presenter.View
             get => (List<UserPollChoiceSelection>)GetValue(ChoiceSelectedUserListProperty);
             set => SetValue(ChoiceSelectedUserListProperty, value);
         }
+
+        public static readonly DependencyProperty TotalVotesProperty = DependencyProperty.Register(
+            nameof(TotalVotes), typeof(int), typeof(PollChoiceUserControl), new PropertyMetadata(default(int)));
+
+        public int TotalVotes
+        {
+            get => (int)GetValue(TotalVotesProperty);
+            set => SetValue(TotalVotesProperty, value);
+        }
+
+        
     }
 }

@@ -157,8 +157,9 @@ namespace SocialMediaApplication.DataManager
                 var users = await _userDbHandler.GetAllUserAsync();
                 var userNames = users.Select(u => u.UserName).ToList();
                 var userIds= users.Select(u => u.Id).ToList();
-                userNames.Remove(_userBObj.UserName);
-                userNames.Remove(_userBObj.Id);
+                userIds.Remove(AppSettings.UserId);
+                var currentUserName = (await _userDbHandler.GetUserAsync(AppSettings.UserId)).UserName;
+                userNames.Remove(currentUserName);
                 getUserNamesUseCaseCallBack?.OnSuccess(new GetUserNamesResponseObj(userNames,userIds));
             }
             catch (Exception ex)
