@@ -24,6 +24,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _userId, value);
         }
 
+
+
         public ObservableCollection<string> FilteredUserNames;
 
         public SearchViewModel()
@@ -70,6 +72,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
             var index = UserNames.IndexOf(userName);
             UserId = UserIds[index];
+            NavigateToProfilePage?.Invoke(this, EventArgs.Empty);
+
             //NavigateToProfilePage?.Invoke(this, EventArgs(UserId));
 
         }

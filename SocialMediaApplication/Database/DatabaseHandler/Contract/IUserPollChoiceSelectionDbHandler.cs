@@ -6,7 +6,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler.Contract
 {
     public interface IUserPollChoiceSelectionDbHandler
     {
-        Task InsertUserPollChoiceSelectionAsync(UserPollChoiceSelection userPollChoiceSelection);
+        Task<int> InsertUserPollChoiceSelectionAsync(UserPollChoiceSelection userPollChoiceSelection);
         Task UpdateUserPollChoiceSelectionAsync(UserPollChoiceSelection userPollChoiceSelection);
         Task<UserPollChoiceSelection> GetUserPollChoiceSelectionAsync(string id);
         Task InsertUserPollChoiceSelectionsAsync(List<UserPollChoiceSelection> userPollChoiceSelections);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SocialMediaApplication.Database.DatabaseHandler;
 using SocialMediaApplication.Database.DatabaseHandler.Contract;
@@ -16,6 +17,7 @@ namespace SocialMediaApplication.DataManager
 {
     public class UserManager : IUserManager,IGetUserNames
     {
+
         private static UserManager Instance { get; set; }
         private static readonly object PadLock = new object();
         private readonly UserManagerHelper _userManagerHelper = new UserManagerHelper();
@@ -74,7 +76,7 @@ namespace SocialMediaApplication.DataManager
                 var validation = new Validation();
                 if (await validation.IsUserNameAlreadyExistAsync(signUpRequestObj.UserName))
                 {
-                    throw new Exception("user name already existed.");
+                    throw new Exception("Already User with this UserName Exist! Try Something new");
                 }
 
                 if (await validation.IsUserMailAlreadyExistAsync(signUpRequestObj.Email))
@@ -168,6 +170,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
+        public static event Action<string> UserNameChanged;
         public async void EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj,
             EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack)
         {
@@ -181,8 +184,9 @@ namespace SocialMediaApplication.DataManager
                 var place = editUserProfileRequestObj.Place;
                 var gender = editUserProfileRequestObj.Gender;
                 var maritalStatus = editUserProfileRequestObj.MaritalStatus;
+                var originalUserName = _userBObj.UserName;
 
-                _userBObj.UserName = userName;
+                //_userBObj.UserName = userName;
                 _userBObj.FirstName = firstName;
                 _userBObj.LastName = lastName;
                 _userBObj.Occupation = occupation;
@@ -190,10 +194,20 @@ namespace SocialMediaApplication.DataManager
                 _userBObj.Place = place;
                 _userBObj.Gender = gender;
                 _userBObj.MaritalStatus = maritalStatus;
-                
+
+                var users = (await _userDbHandler.GetAllUserAsync()).ToList();
+                var userNames = (users.Select(u => u.UserName)).ToList();
+                userNames.Remove(originalUserName);
+                var isUserNameAlreadyExist = userNames.Contains(userName);
+                _userBObj.UserName = isUserNameAlreadyExist ? originalUserName : userName;
                 var user = ConvertBObjToEntity(_userBObj);
                 await _userDbHandler.UpdateUserAsync(user);
                 editUserProfileUseCaseCallBack?.OnSuccess(new EditUserProfileResponseObj(_userBObj));
+                if (isUserNameAlreadyExist)
+                {
+                    throw new Exception("user name already exist");
+                }
+                UserNameChanged?.Invoke(user.UserName);
             }
             catch (Exception ex)
             {

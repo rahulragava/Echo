@@ -138,7 +138,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             //localSettings.Values["user"] = logInResponse.User.Id;
             AppSettings.LocalSettings.Values["user"] = logInResponse.User.Id;
-            
+            AppSettings.UserId = AppSettings.LocalSettings.Values["user"]?.ToString();
+
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
                 {
@@ -150,7 +151,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void OnError(Exception ex)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 

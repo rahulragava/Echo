@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Services.Contract;
 
 namespace SocialMediaApplication.Domain.UseCase
@@ -74,9 +75,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
     public class InsertCommentResponse
     {
-
-        public InsertCommentResponse()
+        public int InsertedIndex;
+        public CommentBObj CommentBObj;
+        public InsertCommentResponse(int insertedIndex, CommentBObj commentBObj)
         {
+            InsertedIndex = insertedIndex;
+            CommentBObj = commentBObj;
         }
     }
 }

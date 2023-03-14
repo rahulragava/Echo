@@ -39,9 +39,11 @@ namespace SocialMediaApplication.Domain.UseCase
             _getUserProfileUseCase = getUserProfileUseCase;
         }
 
-        public void OnSuccess(GetUserProfileResponseObj response)
+
+        public void OnSuccess(GetUserProfileResponseObj responseObj)
         {
-            _getUserProfileUseCase?.GetUserProfileRequest.ProfilePresenterCallBack?.OnSuccess(response);
+            _getUserProfileUseCase?.GetUserProfileRequest.ProfilePresenterCallBack?.OnSuccess(responseObj);
+
         }
 
         public void OnError(Exception ex)

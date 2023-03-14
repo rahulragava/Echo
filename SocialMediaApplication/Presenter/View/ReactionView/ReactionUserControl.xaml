@@ -22,51 +22,47 @@
 
             <FontIcon FontFamily="Segoe UI Emoji" 
                       Glyph="&#x2665;" 
-                      ToolTipService.ToolTip="Heart"
                       x:Name="HeartReaction"
                       Tapped="HeartReaction_OnTapped"
                       Foreground="Red" 
                      />
-        
-            <FontIcon FontFamily="Segoe UI Emoji" 
+            <!--ToolTipService.ToolTip="Heart"-->
+
+        <FontIcon FontFamily="Segoe UI Emoji" 
                       Glyph="&#x1F44E;" x:Name="DislikeReaction"
                       Tapped="DislikeReaction_OnTapped"
-                      ToolTipService.ToolTip="Dislike"
                       />
-       
-           
-            <FontIcon FontFamily="Segoe UI Emoji"
+        <!--ToolTipService.ToolTip="Dislike"-->
+
+
+
+        <FontIcon FontFamily="Segoe UI Emoji"
                       Glyph="&#x1F44D;" x:Name="LikeReaction"
                       Tapped="LikeReaction_OnTapped"
-                      ToolTipService.ToolTip="Like"
                       />
+            <!--ToolTipService.ToolTip="Like"-->
 
-            <FontIcon FontFamily="Segoe UI Emoji"
+        <FontIcon FontFamily="Segoe UI Emoji"
                       Glyph="&#x1F494;" 
                       x:Name="HeartBreakReaction"
                       Tapped="HeartBreakReaction_OnTapped"
-                      ToolTipService.ToolTip="HeartBreak"
                       Foreground="Red" 
                       />
+            <!--ToolTipService.ToolTip="HeartBreak"-->
 
 
-            <FontIcon FontFamily="Segoe UI Emoji"
+        <FontIcon FontFamily="Segoe UI Emoji"
                       Glyph="&#x1F601;" x:Name="HappyReaction"
                       Tapped="HappyReaction_OnTapped"
-                      ToolTipService.ToolTip="Happy"
                       />
             <FontIcon FontFamily="Segoe UI Emoji"
                       Glyph="&#x1F615;" x:Name="SadReaction"
                       Tapped="SadReaction_OnTapped"
-                      ToolTipService.ToolTip="Sad"
                       />
 
             <FontIcon FontFamily="Segoe UI Emoji"
                       Glyph="&#x1F621;" x:Name="MadReaction"
                       Tapped="MadReaction_OnTapped"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Stretch"
-                      ToolTipService.ToolTip="Mad"
-                      />
+            />
     </StackPanel>
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -33,10 +34,7 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             this.InitializeComponent();
             Loaded += Comment_Loaded;
             Unloaded += Comment_UnLoaded;
-            CommentViewModel.CheckAnyComments += CommentExist;
-            AddCommentManager.CommentInserted += CommentInserted;
-            RemoveCommentManager.CommentRemoved += CommentRemoved;
-
+            
         }
 
         private void Comment_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -45,6 +43,8 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             {
                 CommentViewModel.CommentsList = Comments;
                 CommentViewModel.ClearAndUpdate();
+                CommentViewModel.CheckAnyComments += CommentExist;
+                CommentViewModel.ParentCommentInserted += ParentCommentInserted;
                 if (!Comments.Any())
                 {
                     CommentList.Visibility = Visibility.Collapsed;
@@ -52,16 +52,20 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                     NoCommentFont.Visibility = Visibility.Visible;
                 }
             }
-
+            //AddCommentManager.CommentInserted += CommentInserted;
+            
+            //RemoveCommentManager.CommentRemoved += CommentRemoved;
             CommentViewModel.PostId = PostId;
         }
 
         private void Comment_UnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            AddCommentManager.CommentInserted -= CommentInserted;
-            RemoveCommentManager.CommentRemoved -= CommentRemoved;
-
+            //AddCommentManager.CommentInserted -= CommentInserted;
+            //RemoveCommentManager.CommentRemoved -= CommentRemoved;
+            CommentViewModel.CheckAnyComments -= CommentExist;
         }
+
+        public event Action<int> CommentCountChanged;
 
         public static readonly DependencyProperty CommentsProperty = DependencyProperty.Register(
             nameof(Comments), typeof(List<CommentBObj>), typeof(CommentsViewUserControl),
@@ -88,7 +92,7 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
             {
                 CommentContent.Header = "text should not be empty";
-                CommentContent.Header = new SolidColorBrush(Colors.Red);
+                CommentContent.Foreground = new SolidColorBrush(Colors.Red);
                 return;
             }
             else
@@ -98,7 +102,6 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentContent.Text = String.Empty;
             string parentCommentId;
             int depth;
-            string commentOnPostId;
             if (CommentList.SelectedItem is null)
             {
                 parentCommentId = null;
@@ -113,11 +116,30 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                 depth = 0;
             }
 
-            commentOnPostId = PostId;
+            var commentOnPostId = PostId;
 
             CommentViewModel.SendCommentButtonClicked(content, parentCommentId, commentOnPostId, depth);
         }
 
+        public void InsertingCommentInList(CommentBObj comment, int index)
+        {
+            CommentViewModel.CommentsList.Insert(index, comment);
+            CommentViewModel.PostComments.Insert(index, comment);
+            CommentCountChanged?.Invoke(CommentViewModel.CommentsList.Count);
+
+        }
+
+        public void RemoveCommentsInList(List<string> commentIds)
+        {
+            foreach (var commentId in commentIds)
+            {
+                CommentViewModel.CommentsList.Remove(CommentViewModel.CommentsList.SingleOrDefault(c=>c.Id == commentId));
+                CommentViewModel.PostComments.Remove(CommentViewModel.PostComments.SingleOrDefault(c=>c.Id == commentId));
+            }
+
+            CommentExist(this,EventArgs.Empty);
+            CommentCountChanged?.Invoke(CommentViewModel.CommentsList.Count);
+        }
         
         private void CommentExist(object sender, EventArgs e)
         {
@@ -133,31 +155,34 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                 NoCommentsMessage.Visibility = Visibility.Visible;
                 NoCommentFont.Visibility = Visibility.Visible;
             }
-
-
         }
-        
 
-        private void CommentInserted()
+        private void ParentCommentInserted(object sender, EventArgs e)
         {
-            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    CommentViewModel.GetComments();
-                }
-            );
-           
+            CommentCountChanged?.Invoke(CommentViewModel.CommentsList.Count);
         }
+        //private void CommentInserted()
+        //{
+        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+        //        () =>
+        //        {
+        //            CommentViewModel.GetComments();
+        //        }
+        //    );
 
-        private void CommentRemoved()
-        {
-            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    CommentViewModel.GetComments();
-                }
-            );
-        }
+        //}
+
+        //private void CommentRemoved()
+        //{
+        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+        //        () =>
+        //        {
+        //            CommentViewModel.GetComments();
+        //        }
+        //    );
+        //}
+
+
         private void ReplyButton_OnClick(object sender, RoutedEventArgs e)
         {
 

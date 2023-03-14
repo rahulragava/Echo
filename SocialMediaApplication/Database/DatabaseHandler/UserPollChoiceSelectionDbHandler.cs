@@ -35,10 +35,13 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         }
 
         //insert poll choice selection to db
-        public async Task InsertUserPollChoiceSelectionAsync(UserPollChoiceSelection userPollChoiceSelection)
+        public async Task<int> InsertUserPollChoiceSelectionAsync(UserPollChoiceSelection userPollChoiceSelection)
         {
-            await _dbAdapter.InsertInTableAsync(userPollChoiceSelection);
+            var insertedId = await _dbAdapter.InsertInTableAsync(userPollChoiceSelection);
+            return insertedId;
         }
+
+       
 
         public async Task InsertUserPollChoiceSelectionsAsync(List<UserPollChoiceSelection> userPollChoiceSelections)
         {
@@ -76,6 +79,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         {
             return await _dbAdapter.GetObjectFromTableAsync<UserPollChoiceSelection>(userPollChoiceId);
         }
+
 
         public async Task<IEnumerable<UserPollChoiceSelection>> GetSelectiveUserPollChoicesSelectionAsync(string choiceId)
         {

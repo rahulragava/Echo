@@ -38,7 +38,7 @@ namespace SocialMediaApplication.Presenter.View
         {
             SplitView.IsPaneOpen = true;
             TextPostPreview.Visibility = Visibility.Visible;
-            PollPostPreview.Visibility = Visibility.Visible;
+            PollPostPreview.Visibility = Visibility.Collapsed;
             TextPostCreation.Visibility = Visibility.Visible;
             PollPostCreation.Visibility = Visibility.Visible;
             PollChoiceCount.Visibility = Visibility.Collapsed;
@@ -78,14 +78,28 @@ namespace SocialMediaApplication.Presenter.View
                     SecondChoice.Visibility = Visibility.Visible;
                     ThirdChoice.Visibility = Visibility.Collapsed;
                     FourthChoice.Visibility = Visibility.Collapsed;
+                    FourthChoice.Text = String.Empty;
+                    ThirdChoice.Text = String.Empty;
+                    ChoiceGrid3.Visibility = Visibility.Collapsed;
+                    ChoiceGrid4.Visibility = Visibility.Collapsed;
+                    choice4.Text = string.Empty;
+                    choice3.Text = string.Empty;
+
                     break;
                 case 1:
+                    ChoiceGrid4.Visibility = Visibility.Collapsed;
+                    choice4.Text = string.Empty;
+                    ChoiceGrid3.Visibility = Visibility.Visible;
                     ThirdChoice.Visibility = Visibility.Visible;
                     FourthChoice.Visibility = Visibility.Collapsed;
+                    FourthChoice.Text = String.Empty;
                     break;
 
                 case 2:
-                    FourthChoice.Visibility = Visibility.Visible; break;
+                    ChoiceGrid4.Visibility = Visibility.Visible;
+                    FourthChoice.Visibility = Visibility.Visible; 
+                    break;
+
             }
         }
 
@@ -225,16 +239,16 @@ namespace SocialMediaApplication.Presenter.View
         //    }
         //    public event PropertyChangedEventHandler PropertyChanged;
 
-        //    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //    private void OnPropertyChanged([CallerMemberName] string FollowingIds = null)
         //    {
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FollowingIds));
         //    }
 
-        //    private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        //    private bool SetField<T>(ref T field, T value, [CallerMemberName] string FollowingIds = null)
         //    {
         //        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         //        field = value;
-        //        OnPropertyChanged(propertyName);
+        //        OnPropertyChanged(FollowingIds);
         //        return true;
         //    }
     }

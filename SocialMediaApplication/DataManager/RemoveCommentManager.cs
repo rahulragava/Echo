@@ -39,10 +39,10 @@ namespace SocialMediaApplication.DataManager
             }
         }
         private readonly ICommentDbHandler _commentDbHandler = CommentDbHandler.GetInstance;
-        private readonly IReactionManager _reactionManager = ReactionManager.GetInstance;
+        private readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
         private readonly IUserDbHandler _userDbHandler= UserDbHandler.GetInstance;
 
-        public static event Action CommentRemoved;
+        //public static event Action CommentRemoved;
 
 
         public async Task RemoveCommentAsync(RemoveCommentRequest removeCommentRequest,
@@ -51,22 +51,40 @@ namespace SocialMediaApplication.DataManager
             try
             {
                 var comments = (await _commentDbHandler.GetPostCommentsAsync(removeCommentRequest.Comment.PostId)).ToList();
+
                 var (childComments,removedCommentIdList) = RemovableCommentList(comments, removeCommentRequest.Comment.Id);
                 var commentBObjList =  await AddCommentManager.GetInstance.GetSortedCommentBObjList(comments);
+
                 foreach (var comment in childComments)
                 {
                     var user = await _userDbHandler.GetUserAsync(AppSettings.UserId);
+                    var reactions = await _reactionDbHandler.GetReactionsAsync(comment.Id);
+
                     await _commentDbHandler.RemoveCommentAsync(comment.Id);
+                    foreach (var reaction in reactions)
+                    {
+                        await _reactionDbHandler.RemoveReactionAsync(reaction.Id);
+                    }
                     var commentBObj = commentBObjList.First(c => c.Id == comment.Id);
                     commentBObjList.Remove(commentBObj);
                 }
+                var parentCommentReactions = await _reactionDbHandler.GetReactionsAsync(removeCommentRequest.Comment.Id);
                 await _commentDbHandler.RemoveCommentAsync(removeCommentRequest.Comment.Id);
+                foreach (var reaction in parentCommentReactions)
+                {
+                    await _reactionDbHandler.RemoveReactionAsync(reaction.Id);
+                }
+
+                
                 var commentBusinessObj = commentBObjList.First(c => c.Id == removeCommentRequest.Comment.Id);
                 commentBObjList.Remove(commentBusinessObj);
+                removedCommentIdList.Add(commentBusinessObj.Id);
 
-                CommentRemoved?.Invoke();
+                    
 
-                removeCommentUseCaseCallBack?.OnSuccess(new RemoveCommentResponse());
+                //CommentRemoved?.Invoke();
+
+                removeCommentUseCaseCallBack?.OnSuccess(new RemoveCommentResponse(removedCommentIdList));
             }
             catch (Exception e)
             {

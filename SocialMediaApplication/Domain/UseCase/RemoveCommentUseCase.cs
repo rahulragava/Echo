@@ -67,10 +67,11 @@ namespace SocialMediaApplication.Domain.UseCase
     //response object
     public class RemoveCommentResponse
     {
-        //public List<string> RemovedCommentIds;
+        public List<string> RemovedCommentIds;
 
-        public RemoveCommentResponse()
+        public RemoveCommentResponse(List<string> removedCommentIds)
         {
+            RemovedCommentIds = removedCommentIds;
             //RemovedCommentIds = removedCommentIds;
         }
     }

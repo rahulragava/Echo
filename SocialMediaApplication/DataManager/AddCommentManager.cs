@@ -59,6 +59,7 @@ namespace SocialMediaApplication.DataManager
             {
                 var commentReactions =
                     reactions.Where((reaction) => reaction.ReactionOnId == comment.Id).ToList();
+                var userName = (await _userDbHandler.GetUserAsync(comment.CommentedBy)).UserName;
                 commentBobj = new CommentBObj
                 {
                     Id = comment.Id,
@@ -68,6 +69,7 @@ namespace SocialMediaApplication.DataManager
                     CommentedAt = comment.CommentedAt,
                     FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
                     Content = comment.Content,
+                    CommentedUserName = userName,
                     Reactions = reactions
                 };
 
@@ -78,7 +80,7 @@ namespace SocialMediaApplication.DataManager
         
         }
 
-        public static event Action CommentInserted;
+        //public static event Action CommentInserted;
 
         public async Task InsertCommentAsync(InsertCommentRequest insertCommentRequest,
             InsertCommentUseCaseCallBack insertCommentUseCaseCallBack)
@@ -94,6 +96,11 @@ namespace SocialMediaApplication.DataManager
                     PostId = insertCommentRequest.CommentOnPostId
                 };
                 await _commentDbHandler.InsertCommentAsync(comment);
+
+                var comments = (await _commentDbHandler.GetPostCommentsAsync(comment.PostId)).ToList();
+                var sortedComments = await GetSortedCommentBObjList(comments);
+                var commentBObj = sortedComments.SingleOrDefault(c => c.Id == comment.Id);
+                var insertedIndex = sortedComments.IndexOf(commentBObj);
                 //var user = await _userDbHandler.GetUserAsync(AppSettings.UserId);
                 //var commentBObj = new CommentBObj()
                 //{
@@ -154,9 +161,9 @@ namespace SocialMediaApplication.DataManager
                 //    commentBObjList.Insert(currentIndex, commentBObj);
                 //}
 
-                CommentInserted?.Invoke();
+                //CommentInserted?.Invoke();
                 //comment
-                insertCommentUseCaseCallBack?.OnSuccess(new InsertCommentResponse());
+                insertCommentUseCaseCallBack?.OnSuccess(new InsertCommentResponse(insertedIndex,commentBObj));
             }
             catch (Exception ex)
             {
@@ -195,8 +202,8 @@ namespace SocialMediaApplication.DataManager
 
         //public async Task RemoveCommentAsync(CommentBObj comment)
         //{
-        //    if (comment.Reactions != null && comment.Reactions.Any())
-        //        await _reactionManager.RemoveReactionsAsync(comment.Reactions).ConfigureAwait(false);
+        //    if (comment.ReactionList != null && comment.ReactionList.Any())
+        //        await _reactionManager.RemoveReactionsAsync(comment.ReactionList).ConfigureAwait(false);
         //    var entityComment = ConvertCommentBObjToEntity(comment);
         //    await Task.Run(() => _commentDbHandler.RemoveCommentAsync(entityComment.Id)).ConfigureAwait(false);
         //}

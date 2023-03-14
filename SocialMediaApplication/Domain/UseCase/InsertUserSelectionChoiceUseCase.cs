@@ -38,7 +38,8 @@ namespace SocialMediaApplication.Domain.UseCase
             Success = success;
         }
 
-        public bool Success { get; }
+        //public UserPollChoiceSelection UserPollChoiceSelection;
+        public bool Success;
     }
 
     public class InsertUserChoiceSelectionRequest

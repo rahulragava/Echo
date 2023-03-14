@@ -48,10 +48,10 @@ namespace SocialMediaApplication.DataManager
                 var pollChoiceSelectedUsers = userPollChoiceSelections
                     .Where(userPollChoiceSelection => userPollChoiceSelection.ChoiceId == pollChoice.Id).ToList();
 
-
                 pollChoiceBobj.Id = pollChoice.Id;
                 pollChoiceBobj.Choice = pollChoice.Choice;
                 pollChoiceBobj.PostId = pollChoice.PostId;
+                pollChoiceBobj.PostFontStyle = pollChoice.PostFontStyle;
                 pollChoiceBobj.ChoiceSelectedUsers = pollChoiceSelectedUsers;
 
                 pollChoiceBobjs.Add(pollChoiceBobj);
@@ -72,6 +72,7 @@ namespace SocialMediaApplication.DataManager
             pollChoice.Id = pollChoiceBobj.Id;
             pollChoice.Choice = pollChoiceBobj.Choice;
             pollChoice.PostId = pollChoiceBobj.PostId;
+            pollChoice.PostFontStyle = pollChoiceBobj.PostFontStyle;
 
             return pollChoice;
         }

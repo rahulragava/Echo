@@ -169,9 +169,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
         }
 
         public EventHandler NavigateToLogInPage;
+        public Action<string> ErrorMessageNotification;
         public void SignInSuccess()
         {
             NavigateToLogInPage?.Invoke(this,EventArgs.Empty);
+        }
+        public void SignUpFailed(string errorMessage)
+        {
+            ErrorMessageNotification?.Invoke(errorMessage);
         }
     }
 
@@ -197,7 +202,12 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void OnError(Exception ex)
         {
-            throw new NotImplementedException();
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    _signUpViewModel.SignUpFailed(ex.Message);
+                }
+            );
         }
     }
 }

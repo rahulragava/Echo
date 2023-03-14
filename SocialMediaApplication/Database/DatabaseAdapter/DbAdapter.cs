@@ -11,7 +11,7 @@ using SocialMediaApplication.Models.BusinessModels;
 
 namespace SocialMediaApplication.Database.DatabaseAdapter
 {
-    public class DbAdapter : IDbAdapter
+    public sealed class DbAdapter : IDbAdapter
     {
         private static DbAdapter Instance { get; set; }
         private static readonly object PadLock = new object();
@@ -36,10 +36,11 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
             }
         }
 
-        public async Task InsertInTableAsync<T>(T obj) where T : new()
+        public async Task<int> InsertInTableAsync<T>(T obj) where T : new()
         {
             DatabaseInitializer.Instance.InitializeDatabase();
-            await DatabaseInitializer.Instance.Db.InsertAsync(obj);
+            var insertedId = await DatabaseInitializer.Instance.Db.InsertAsync(obj);
+            return insertedId;
         }
 
         public async Task InsertMultipleObjectInTableAsync<T>(List<T> objList) where T : new()
@@ -54,6 +55,8 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
             await DatabaseInitializer.Instance.Db.DeleteAsync<T>(id);
         }
 
+
+
         public async Task UpdateObjectInTableAsync<T>(T obj) where T : new()
         {
             DatabaseInitializer.Instance.InitializeDatabase();
@@ -65,6 +68,7 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
             DatabaseInitializer.Instance.InitializeDatabase();
             return await DatabaseInitializer.Instance.Db.GetAsync<T>(id);
         }
+
 
         public async Task<IEnumerable<T>> GetAllObjectsInTableAsync<T>() where T : new()
         {

@@ -7,12 +7,13 @@
         <ResourceDictionary x:Key="Light">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <SolidColorBrush x:Key="BackgroundColor" Color="LightGray"></SolidColorBrush>
+                    <SolidColorBrush x:Key="BackgroundColor" Color="#f0f2f5"></SolidColorBrush>
                     <SolidColorBrush x:Key="ControlBackground" Color="LightGray"></SolidColorBrush>
                     <SolidColorBrush x:Key="PrimaryColor" Color="#0DA9E9"></SolidColorBrush>
                     <SolidColorBrush x:Key="SecondaryColor" Color="#0D64FF"></SolidColorBrush>
                     <SolidColorBrush x:Key="TernaryColor" Color="Gold"></SolidColorBrush>
                     <SolidColorBrush x:Key="SubtleText" Color="Gray"></SolidColorBrush>
+                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#ffffff"></SolidColorBrush>
                     <!--<brushes:AcrylicBrush x:Key="AcrylicBrushBackground" BackgroundSource="Backdrop"
                                         TintColor="LightSlateGray"
                                         TintOpacity="0.2"/>-->
@@ -47,7 +48,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <SolidColorBrush x:Key="ControlBackground" Color="DimGray"></SolidColorBrush>
-                    <SolidColorBrush x:Key="BackgroundColor" Color="Black"></SolidColorBrush>
+                    <SolidColorBrush x:Key="BackgroundColor" Color="#18191a"></SolidColorBrush>
                     <SolidColorBrush x:Key="PrimaryColor" Color="#0D64FF"></SolidColorBrush>
                     <SolidColorBrush x:Key="SecondaryColor" Color="#6F32FF"></SolidColorBrush>
                     <SolidColorBrush x:Key="TernaryColor" Color="Gold"></SolidColorBrush>

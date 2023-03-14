@@ -1,8 +1,18 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.Constant;
+using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using SocialMediaApplication.Util;
+using Windows.System;
+using Windows.UI.Xaml.Input;
+using Microsoft.Toolkit.Parsers.Markdown.Inlines;
+using User = SocialMediaApplication.Models.EntityModels.User;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,14 +35,49 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
 
         private void ProfilePage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            _profilePageViewModel.GetUser(ProfileUserId == AppSettings.LocalSettings.Values["user"].ToString()
-                ? null
-                : ProfileUserId);
-            if (ProfileUserId != null)
+            _profilePageViewModel.GetUserSucceed += GetUserSucceed;
+            _profilePageViewModel.UserNameAlreadyExist += UserNameAlreadyExist;
+        }
+
+        private void GetUserSucceed()
+        {
+            if (_profilePageViewModel.user.Id == AppSettings.UserId)
             {
-                FollowButton.Visibility = Visibility.Visible;
-                EditButton.Visibility = Visibility.Collapsed;
+                FollowButton.Visibility = Visibility.Collapsed;
+                EditButton.Visibility = Visibility.Visible;
+                CreatePostButton.Visibility = Visibility.Visible;
             }
+            else
+            {
+                if (_profilePageViewModel.Followings.Contains(AppSettings.UserId))
+                {
+                    UnFollowButton.Visibility = Visibility.Visible;
+                    FollowButton.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    FollowButton.Visibility = Visibility.Visible;
+                    UnFollowButton.Visibility = Visibility.Collapsed;
+                }
+                EditButton.Visibility = Visibility.Collapsed;
+                CreatePostButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public static event Action NavigateToPostCreationPage;
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            var userId = (string)e.Parameter;
+            if (userId != null)
+            {
+                _profilePageViewModel.GetUser(userId);
+                
+            }
+
+            //Us.UserIds = userIds;
+            //GetUserDetailViewModel.GetUsers();
         }
 
         public static readonly DependencyProperty ProfileUserIdProperty = DependencyProperty.Register(
@@ -56,7 +101,7 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         private void ClosePopupClicked(object sender, RoutedEventArgs e)
         {
             // if the Popup is open, then close it 
-            if (string.IsNullOrEmpty(UserNameTextBox.Text))
+            if (string.IsNullOrEmpty(UserNameTextBox.Text) || (string.IsNullOrWhiteSpace(UserNameTextBox.Text)))
             {
                 ExampleVsCodeInAppNotification.Show("User Name Field Cannot Be Empty!", 5000);
                 return;
@@ -68,20 +113,19 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             _profilePageViewModel.EditUserProfile(UserNameTextBox.Text,FirstNameTextBox.Text,LastNameTextBox.Text,gender,maritalStatus,EducationTextBox.Text,OccupationTextBox.Text,PlaceTextBox.Text);
         }
 
+        private void UserNameAlreadyExist()
+        {
+            ExampleVsCodeInAppNotification.Show("Already User with this UserName Exist! Try Something new", 5000);
+            return;
+        }
+
         private void ShowFollowerPopup(object sender, RoutedEventArgs e)
         {
             // open the Popup if it isn't open already 
+            FollowerPopUp.Visibility = Visibility.Visible;
             if (!FollowerPopUp.IsOpen) { FollowerPopUp.IsOpen = true; }
-
-        }
-
-        //changes has to be done,
-        private void CloseFollowerPopup(object sender, RoutedEventArgs e)
-        {
-            // if the Popup is open, then close it 
-            if (FollowerPopUp.IsOpen) { FollowerPopUp.IsOpen = false; }
-
-            //_profilePageViewModel.EditUserProfile();
+            NavigationViewItem itemContent = FollowerFollowing.MenuItems.ElementAt(0) as NavigationViewItem;
+            FollowerFollowing.SelectedItem = itemContent;
         }
 
         private void ShowFilterPopupOffsetClicked(object sender, RoutedEventArgs e)
@@ -119,6 +163,82 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         {
             FilterPopup.IsOpen = false;
 
+        }
+
+        private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
+        {
+            ReactionsPopup.Visibility = Visibility.Visible;
+            ReactionsPopup.IsOpen = true;
+            _profilePageViewModel.SetReactions(reactions);
+            //_profilePageViewModel.Reactions = new ObservableCollection<Reaction>();
+            //_profilePageViewModel.Reactions = new ObservableCollection<Reaction>(reactions);
+        }
+
+        private void FollowerFollowing_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedTag = args.SelectedItemContainer.Tag.ToString();
+
+            if (selectedTag == "FollowerTag")
+            {
+                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.user.FollowersId);
+            }
+            else if (selectedTag == "FollowingTag")
+            {
+                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.user.FollowingsId);
+            }
+        }
+
+        private void ShowFolloweePopup(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            FollowerPopUp.Visibility = Visibility.Visible;
+            if (!FollowerPopUp.IsOpen) { FollowerPopUp.IsOpen = true; }
+            NavigationViewItem itemContent = FollowerFollowing.MenuItems.ElementAt(2) as NavigationViewItem;
+            FollowerFollowing.SelectedItem = itemContent;
+
+        }
+
+        private void FollowButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _profilePageViewModel.FollowUnFollowSearchedUser();
+            FollowButton.Visibility = Visibility.Collapsed;
+            UnFollowButton.Visibility = Visibility.Visible;
+        }
+
+        private void UnFollowButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _profilePageViewModel.FollowUnFollowSearchedUser();
+            UnFollowButton.Visibility = Visibility.Collapsed;
+            FollowButton.Visibility = Visibility.Visible;
+        }
+
+        private void PostControl_OnFollowerListChanged(ObservableCollection<string> followings)
+        {
+            _profilePageViewModel.Followings = followings;
+            if (_profilePageViewModel.Followings.Contains(AppSettings.UserId))
+            {
+                _profilePageViewModel.UserFollowingCount += 1;
+            }
+            else
+            {
+                _profilePageViewModel.UserFollowingCount -= 1;
+            }
+
+
+        }
+
+        private void PollPostControl_OnPostRemoved(string postId)
+        {
+            _profilePageViewModel.PollPosts.Remove(_profilePageViewModel.PollPosts.SingleOrDefault(p => p.Id == postId));
+        }
+
+        private void PostControl_OnPostRemoved(string postId)
+        {
+            _profilePageViewModel.TextPosts.Remove(_profilePageViewModel.TextPosts.SingleOrDefault(p => p.Id == postId));
+        }
+
+        private void CreatePostButton_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            NavigateToPostCreationPage?.Invoke();
         }
     }
 

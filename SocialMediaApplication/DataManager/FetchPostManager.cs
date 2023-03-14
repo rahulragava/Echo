@@ -116,7 +116,7 @@ namespace SocialMediaApplication.DataManager
 
         //    postBObj.Id = post.Id;
         //    postBObj.PostedBy = post.PostedBy;
-        //    postBObj.Reactions = reactions;
+        //    postBObj.ReactionList = reactions;
         //    postBObj.Comments = CommentCacheList;
         //    postBObj.Title = post.Title;
         //    postBObj.FormattedCreatedTime = post.CreatedAt.ToString("dddd, dd MMMM yyyy");
@@ -163,8 +163,8 @@ namespace SocialMediaApplication.DataManager
         //        await Task.Run(() => _textPostDbHandler.RemoveTextPostAsync(textPost.Id)).ConfigureAwait(false);
         //        PostBobjs?.Remove(postBObj as TextPostBObj);
         //    }
-        //    //if (postBObj.Reactions != null && postBObj.Reactions.Any())
-        //    //    await _reactionManager.RemoveReactionsAsync(postBObj.Reactions);
+        //    //if (postBObj.ReactionList != null && postBObj.ReactionList.Any())
+        //    //    await _reactionManager.RemoveReactionsAsync(postBObj.ReactionList);
         //    //if (postBObj.Comments != null && postBObj.Comments.Any())
         //    //    await _addCommentManager.RemoveCommentsAsync(postBObj.Comments);
         //}
@@ -275,6 +275,7 @@ namespace SocialMediaApplication.DataManager
                     FormattedCreatedTime = textPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
                     LastModifiedAt = textPost.LastModifiedAt,
                     Comments = sortedCommentBobjs,
+                    FontStyle = textPost.FontStyle,
                     Reactions = postReactions,
                     Content = textPost.Content
                 };
@@ -312,6 +313,7 @@ namespace SocialMediaApplication.DataManager
                     Comments = sortedCommentBobjs,
                     Reactions = postReactions,
                     Question = pollPost.Question,
+                    FontStyle = pollPost.FontStyle,
                     Choices = choices
                 };
                 pollPostBObjs.Add(pollPostBObj);

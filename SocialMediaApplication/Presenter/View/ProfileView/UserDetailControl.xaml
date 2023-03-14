@@ -11,21 +11,19 @@
 
     <UserControl.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <!--<Setter Property="HorizontalAlignment" Value="Left"/>-->
             <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
-            <Setter Property="MaxWidth" Value="250"></Setter>
-            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="CharacterSpacing" Value="20"></Setter>
+            <Setter Property="FontSize" Value="14"></Setter>
         </Style>
 
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
-        <StackPanel 
-
-            Padding="100 10"
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <StackPanel CornerRadius="10"
+            Padding="80 30"
             Spacing="25"
             BorderThickness="1"
-            CornerRadius="10"
-            Margin="120 0 20 0"
+            Margin="120 5 20 0"
             VerticalAlignment="Center"
             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
             HorizontalAlignment="Center">
@@ -54,7 +52,7 @@
                         </LinearGradientBrush>
                 </FontIcon.Foreground>-->
                 </FontIcon>
-                <TextBlock CharacterSpacing="50">
+                <TextBlock>
                 <Run Text="Call me"/>
                 <Run Text="{x:Bind FirstName,Mode=OneWay}" 
                      FontWeight="Medium" />
@@ -68,8 +66,8 @@
                     Spacing="10">
                 <FontIcon Glyph="&#xE7BE;"></FontIcon>
                 <TextBlock>
-                <Run Text="Studied at"/>
-                <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Medium"/>
+                    <Run Text="Studied at"/>
+                    <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
 

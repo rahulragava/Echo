@@ -45,11 +45,13 @@ namespace SocialMediaApplication.DataManager
 
         private readonly IPollPostDbHandler _pollPostDbHandler = PollPostDbHandler.GetInstance;
         private readonly ITextPostDbHandler _textPostDbHandler = TextPostDbHandler.GetInstance;
+        private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
         private readonly ICommentDbHandler _commentDbHandler = CommentDbHandler.GetInstance;
         private readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
         private readonly IPollChoiceDbHandler _pollChoiceDbHandler = PollChoiceDbHandler.GetInstance;
         private readonly IUserPollChoiceSelectionDbHandler _userPollChoiceSelectionDbHandler = UserPollChoiceSelectionDbHandler.GetInstance;
-        
+        private static Dictionary<string,string> _userNames = new Dictionary<string,string>();
+
         public async void FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack)
         {
             try
@@ -58,10 +60,18 @@ namespace SocialMediaApplication.DataManager
                     fetchFeedRequest.TextPostFeedsSkipped);
                 var pollPosts = await _pollPostDbHandler.GetSpecificPostAsync(fetchFeedRequest.PollPostFeedsFetched,
                     fetchFeedRequest.PollPostFeedsSkipped);
-
+                if (!_userNames.Any())
+                {
+                    var users = await _userDbHandler.GetAllUserAsync();
+                    foreach (var user in users)
+                    {
+                        _userNames.Add(user.Id,user.UserName);
+                    }
+                    //var userNames = users.Select(u => u.UserName).ToList();
+                }
                 var pollPostBObjs = new List<PollPostBObj>();
                 var textPostBObjs = new List<TextPostBObj>();
-                foreach (var pollPost in pollPostBObjs)
+                foreach (var pollPost in pollPosts)
                 {
                     var commentBObjs = new List<CommentBObj>();
                     var comments = (await _commentDbHandler.GetPostCommentsAsync(pollPost.Id)).ToList();
@@ -87,6 +97,7 @@ namespace SocialMediaApplication.DataManager
                         {
                             Id = comment.Id,
                             PostId = comment.PostId,
+                            CommentedUserName = _userNames[comment.CommentedBy],
                             ParentCommentId = comment.ParentCommentId,
                             CommentedBy = comment.CommentedBy,
                             CommentedAt = comment.CommentedAt,
@@ -97,11 +108,13 @@ namespace SocialMediaApplication.DataManager
                         commentBObjs.Add(commentBobj);
                     }
                     var sortedCommentBobjs = FetchPostManager.GetSortedComments(commentBObjs);
+                    
                     var pollPostBObj = new PollPostBObj()
                     {
                         Id = pollPost.Id,
                         Title = pollPost.Title,
                         PostedBy = pollPost.PostedBy,
+                        UserName = _userNames[pollPost.PostedBy],
                         CreatedAt = pollPost.CreatedAt,
                         LastModifiedAt = pollPost.LastModifiedAt,
                         FormattedCreatedTime = pollPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
@@ -110,8 +123,9 @@ namespace SocialMediaApplication.DataManager
                         Question = pollPost.Question,
                         Choices = choiceBObjs,
                     };
+                    pollPostBObjs.Add(pollPostBObj);
                 }
-                foreach (var textPost in textPostBObjs)
+                foreach (var textPost in textPosts)
                 {
                     var comments = (await _commentDbHandler.GetPostCommentsAsync(textPost.Id)).ToList();
                     var commentBObjs = new List<CommentBObj>();
@@ -129,6 +143,7 @@ namespace SocialMediaApplication.DataManager
                             CommentedAt = comment.CommentedAt,
                             FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
                             Content = comment.Content,
+                            CommentedUserName = _userNames[comment.CommentedBy],
                             Reactions = commentsReactions,
                         };
                         commentBObjs.Add(commentBobj);
@@ -140,12 +155,14 @@ namespace SocialMediaApplication.DataManager
                         Title = textPost.Title,
                         PostedBy = textPost.PostedBy,
                         CreatedAt = textPost.CreatedAt,
+                        UserName = _userNames[textPost.PostedBy], 
                         LastModifiedAt = textPost.LastModifiedAt,
                         FormattedCreatedTime = textPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
                         Comments = sortedCommentBobjs,
                         Reactions = reactions,
                         Content= textPost.Content,
                     };
+                    textPostBObjs.Add(textPostBObj);
                 }
 
 
@@ -156,7 +173,5 @@ namespace SocialMediaApplication.DataManager
                 fetchFeedUseCaseCallBack?.OnError(e);
             }
         }
-
-       
     }
 }

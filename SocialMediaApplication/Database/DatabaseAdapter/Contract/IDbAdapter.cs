@@ -6,7 +6,7 @@ namespace SocialMediaApplication.Database.DatabaseAdapter.Contract
 {
     public interface IDbAdapter
     {
-        Task InsertInTableAsync<T>(T obj) where T : new();
+        Task<int> InsertInTableAsync<T>(T obj) where T : new();
         Task InsertMultipleObjectInTableAsync<T>(List<T> objList) where T : new();
         Task RemoveObjectFromTableAsync<T>(string id) where T : new();
         Task UpdateObjectInTableAsync<T>(T obj) where T : new();

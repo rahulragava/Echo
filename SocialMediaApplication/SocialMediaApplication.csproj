@@ -121,31 +121,43 @@
     </Compile>
     <Compile Include="Database\DatabaseHandler\Contract\IFetchPostManager.cs" />
     <Compile Include="DataManager\Contract\IFeedManager.cs" />
+    <Compile Include="DataManager\Contract\IFollowUnFollowManager.cs" />
     <Compile Include="DataManager\Contract\IGetCommentManager.cs" />
+    <Compile Include="DataManager\Contract\IGetUserManager.cs" />
+    <Compile Include="DataManager\Contract\IRemovePostManager.cs" />
+    <Compile Include="DataManager\Contract\IUserMiniDetailManager.cs" />
     <Compile Include="DataManager\Contract\IUserPollChoiceSelectionManager.cs" />
     <Compile Include="DataManager\Contract\RemoveCommentManager.cs" />
     <Compile Include="DataManager\CreatePostManager.cs" />
     <Compile Include="DataManager\FeedManager.cs" />
+    <Compile Include="DataManager\FollowUnFollowManager.cs" />
     <Compile Include="DataManager\GetCommentManager.cs" />
+    <Compile Include="DataManager\GetUserManager.cs" />
     <Compile Include="DataManager\LogInManager.cs" />
     <Compile Include="DataManager\RemoveCommentManager.cs" />
+    <Compile Include="DataManager\RemovePostManager.cs" />
+    <Compile Include="DataManager\UserMiniDetailManager.cs" />
     <Compile Include="DataManager\UserPollChoiceSelectionManager.cs" />
     <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\FetchFeedUseCase.cs" />
+    <Compile Include="Domain\UseCase\FollowUnFollowSearchedUserUseCase.cs" />
     <Compile Include="Domain\UseCase\GetCommentUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserNameUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\GetUserReactionUseCase.cs" />
+    <Compile Include="Domain\UseCase\GetUserUseCase.cs" />
     <Compile Include="Domain\UseCase\InsertCommentUseCase.cs" />
     <Compile Include="Domain\UseCase\InsertUserSelectionChoiceUseCase.cs" />
     <Compile Include="Domain\UseCase\PollPostCreationUseCase.cs" />
+    <Compile Include="Domain\UseCase\RemovePostUseCase.cs" />
     <Compile Include="Domain\UseCase\TextPostCreationUseCase.cs" />
     <Compile Include="Domain\UseCase\ReactionToPostUseCase.cs" />
     <Compile Include="Domain\UseCase\RemoveCommentUseCase.cs" />
     <Compile Include="Domain\UseCase\SignUpUseCase.cs" />
+    <Compile Include="Domain\UseCase\UserMiniDetailUseCase.cs" />
     <Compile Include="Models\Constant\Gender.cs" />
     <Compile Include="Models\Constant\MaritalStatus.cs" />
-    <Compile Include="Models\Constant\PostFontStyleEntity.cs" />
+    <Compile Include="Models\Constant\PostFontStyle.cs" />
     <Compile Include="Models\Constant\ReactionType.cs" />
     <Compile Include="Database\DatabaseAdapter\Contract\IDbAdapter.cs" />
     <Compile Include="Database\DatabaseAdapter\DbAdapter.cs" />
@@ -174,16 +186,20 @@
     <Compile Include="Domain\UseCase\UseCaseBase.cs" />
     <Compile Include="Presenter\ViewModel\CommentViewModel.cs" />
     <Compile Include="Presenter\ViewModel\FeedPageViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\GetUsersDetailViewModel.cs" />
     <Compile Include="Presenter\ViewModel\PostControlViewModel.cs" />
     <Compile Include="Presenter\ViewModel\PostCreationPageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ReactionViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SearchViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\UserSelectionChoiceViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\UserSelectionReactionsViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
     <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\ValueConverter\PostFontStyleConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\RelativeDateTimeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
     <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
@@ -194,9 +210,6 @@
     </Compile>
     <Compile Include="Presenter\View\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Presenter\View\LabelPage.xaml.cs">
-      <DependentUpon>LabelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
@@ -221,19 +234,22 @@
     <Compile Include="Models\EntityModels\User.cs" />
     <Compile Include="Models\EntityModels\UserCredential.cs" />
     <Compile Include="Models\EntityModels\UserPollChoiceSelection.cs" />
-    <Compile Include="Presenter\View\PollChoiceUserControl.xaml.cs">
+    <Compile Include="Presenter\View\PostView\PollPostView\PollChoiceSelectedUser.xaml.cs">
+      <DependentUpon>PollChoiceSelectedUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\PostView\PollPostView\PollChoiceUserControl.xaml.cs">
       <DependentUpon>PollChoiceUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\CommentView\CommentUserControl.xaml.cs">
       <DependentUpon>CommentUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\PostView\PollPostUserControl.xaml.cs">
+    <Compile Include="Presenter\View\PostView\PollPostView\PollPostUserControl.xaml.cs">
       <DependentUpon>PollPostUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\PostPage.xaml.cs">
       <DependentUpon>PostPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\PostView\TextPostUserControl.xaml.cs">
+    <Compile Include="Presenter\View\PostView\TextPostView\TextPostUserControl.xaml.cs">
       <DependentUpon>TextPostUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\ProfileView\FollowerUserControl.xaml.cs">
@@ -253,6 +269,12 @@
     </Compile>
     <Compile Include="Presenter\View\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\UserListPage.xaml.cs">
+      <DependentUpon>UserListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\UserListUserControl.xaml.cs">
+      <DependentUpon>UserListUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataManager\AddCommentManager.cs" />
@@ -323,10 +345,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\LabelPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Presenter\View\LogInPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -339,7 +357,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Presenter\View\PollChoiceUserControl.xaml">
+    <Page Include="Presenter\View\PostView\PollPostView\PollChoiceSelectedUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PostView\PollPostView\PollChoiceUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -347,7 +369,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\PostView\PollPostUserControl.xaml">
+    <Page Include="Presenter\View\PostView\PollPostView\PollPostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -355,7 +377,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\PostView\TextPostUserControl.xaml">
+    <Page Include="Presenter\View\PostView\TextPostView\TextPostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -387,6 +409,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presenter\View\UserListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\UserListUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
@@ -408,7 +438,7 @@
       <Version>2.8.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Utilities">
-      <Version>17.4.33103.184</Version>
+      <Version>17.5.33428.366</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.8.116</Version>

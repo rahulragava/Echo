@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SocialMediaApplication.Presenter.View.ProfileView;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,14 +30,28 @@ namespace SocialMediaApplication.Presenter.View
             SearchViewModel = new SearchViewModel();
             this.InitializeComponent();
             Loaded += SearchPage_Loaded;
-
         }
         private void SearchPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            SearchViewModel.NavigateToProfilePage += NavigateToProfilePage;
             SearchViewModel.GetUserNames();
             //Bindings.Update();
         }
 
+        private void NavigateToProfilePage(object sender, EventArgs e)
+        {
+            UserProfileFrame.Navigate(typeof(ProfilePage), SearchViewModel.UserId);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is string userId)
+            {
+                SearchViewModel.UserId = userId;
+                UserProfileFrame.Navigate(typeof(ProfilePage), SearchViewModel.UserId);
+            }
+        }
 
 
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -54,10 +69,10 @@ namespace SocialMediaApplication.Presenter.View
 
         private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if (args.SelectedItem is string selectedUserName)
-            {
-                SearchViewModel.PerformSearch(selectedUserName);
-            }
+            //if (args.SelectedItem is string selectedUserName)
+            //{
+            //    SearchViewModel.PerformSearch(selectedUserName);
+            //}
         }
     }
 }

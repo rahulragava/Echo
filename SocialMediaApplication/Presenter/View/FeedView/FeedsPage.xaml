@@ -1,43 +1,209 @@
-﻿<Page
-    x:Class="SocialMediaApplication.Presenter.View.FeedView.FeedsPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SocialMediaApplication.Presenter.View"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
-    xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="SocialMediaApplication.Presenter.View.FeedView.FeedsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:SocialMediaApplication.Presenter.View"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
+      xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
+      xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
+      xmlns:pollPostView="using:SocialMediaApplication.Presenter.View.PostView.PollPostView"
+      xmlns:textPostView="using:SocialMediaApplication.Presenter.View.PostView.TextPostView"
+      mc:Ignorable="d"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+
+    </Page.Resources>
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      VerticalScrollMode="Enabled"
-                      ViewChanged="{x:Bind FeedPageViewModel.ScrollViewer_ViewChanged}">
-        </ScrollViewer>
-        <ListView
-            x:Name="TextPostListView"
-            Margin="-10 10"
-            x:FieldModifier="public"
-            DataFetchSize="10"
-            ItemsSource="{x:Bind FeedPageViewModel.TextPosts,Mode=TwoWay}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!--<Popup Grid.Column="1"
+               x:Name="ReactionsPopup"
+               
+               HorizontalOffset="-400"
+               KeyTipPlacementMode="Right"
+               VerticalAlignment="Stretch"
+               VerticalOffset="0"
+               Visibility="Collapsed">-->
+        <Grid Grid.Column="1"
+              Visibility="Collapsed"
+              VerticalAlignment="Top"
+              x:Name="ReactionsPopup">
+            <StackPanel>
+                <Button Margin="5"
+                        x:Name="HideReaction"
+                        Click="HideReaction_OnClick">
+                    <Button.Content>
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  Glyph="&#xE111;" />
+                    </Button.Content>
+                </Button>
+                <reactionView:UserSelectedReaction x:Name="UserSelectedReactionControl"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   ReactionList="{x:Bind FeedPageViewModel.Reactions,Mode=OneWay}" />
+
+            </StackPanel>
+        </Grid>
+
+        <!--</Popup>-->
+
+        <Grid  Grid.Column="0"
+               Background="{ThemeResource BackgroundColor}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Grid.Column="0"
+                          Margin="0 60 10 0"
+                          Height="60"
+                          x:Name="TextPostClicked"
+                          IsChecked="True"
+                          Click="TextPostClicked_OnClick"
+                          Width="300"
+                          HorizontalAlignment="Right"
+                          Grid.Row="0">
+                TextPosts
+            </ToggleButton>
+            <ToggleButton Grid.Row="0"
+                          IsChecked="false"
+                          Margin="10 60 0 0"
+                          Height="60"
+                          Width="300"
+                          x:Name="PollPostClicked"
+                          Click="PollPostClicked_OnClick"
+                          HorizontalAlignment="Left"
+                          Grid.Column="1">
+                PollPosts
+            </ToggleButton>
+            <ScrollViewer Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          Grid.Column="0"
+                          x:Name="ListScroll"
+                          VerticalScrollBarVisibility="Hidden"
+                          VerticalScrollMode="Enabled"
+                          Background="{ThemeResource BackgroundColor}"
+                          ViewChanged="ScrollViewer_ViewChanged">
+                <Grid>
+                    <ListView HorizontalAlignment="Center"
+                              x:Name="TextPostListView"
+                              Margin="-10 10"
+                              x:FieldModifier="public"
+                              ScrollViewer.VerticalScrollMode="Disabled"
+                              ItemsSource="{x:Bind FeedPageViewModel.TextPosts,Mode=OneWay}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="businessModels:TextPostBObj">
+                                <textPostView:TextPostUserControl x:Name="PostControl"
+                                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                                              PostedByUserName="{x:Bind UserName,Mode=OneWay}"
+                                                              PostContent="{x:Bind Content,Mode=OneWay}"
+                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                              PostRemoved="PostControl_OnPostRemoved"
+                                                              ReactionChanged="PostControl_OnReactionChanged"
+                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                                              HorizontalAlignment="Stretch"
+                                                              VerticalAlignment="Stretch" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <ListView HorizontalAlignment="Stretch"
+                              x:Name="PollPostListView"
+                              Visibility="Collapsed"
+                              Margin="-10 10"
+                              MaxWidth="600"
+                              x:FieldModifier="public"
+                              ItemsSource="{x:Bind FeedPageViewModel.PollPosts,Mode=OneWay}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="businessModels:PollPostBObj">
+                                <pollPostView:PollPostUserControl x:Name="PostControl"
+                                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                                              PostedByUser="{x:Bind UserName,Mode=OneWay}"
+                                                              PostQuestion="{x:Bind Question,Mode=OneWay}"
+                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                              PollChoiceList="{x:Bind Choices,Mode=OneWay}"
+                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                              ReactionChanged="PostControl_OnReactionChanged"
+                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                              PostRemoved="PostControl_OnPostRemoved"
+                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                                              HorizontalAlignment="Stretch"
+                                                              VerticalAlignment="Stretch" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+            </ScrollViewer>
+
+            <!--<ListView Grid.Column="1"
+                  Width="600"
+                  HorizontalAlignment="Center"
+                  x:Name="PollPostListView"
+                  Margin="-10 10"
+                  x:FieldModifier="public"
+                  ItemsSource="{x:Bind FeedPageViewModel.PollPosts,Mode=OneWay}">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="businessModels:TextPostBObj">
-                    <postView:TextPostUserControl
+                <DataTemplate x:DataType="businessModels:PollPostBObj">
+                    <postView:PollPostUserControl
                         x:Name="PostControl"
                         PostId ="{x:Bind Id,Mode=OneWay}"
                         PostedByUser="{x:Bind UserName,Mode=OneWay}"
-                        PostContent="{x:Bind Content,Mode=OneWay}"
+                        PostQuestion="{x:Bind Question,Mode=OneWay}"
+                        CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                        PollChoiceList="{x:Bind Choices,Mode=OneWay}"
                         PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
                         PostTitle="{x:Bind Title,Mode=OneWay}"
                         PostComments="{x:Bind Comments,Mode=OneWay}"
+                        PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
                         PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                        PostRemoved="PostControl_OnPostRemoved"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
+        </ListView>-->
 
-
+        </Grid>
     </Grid>
 </Page>

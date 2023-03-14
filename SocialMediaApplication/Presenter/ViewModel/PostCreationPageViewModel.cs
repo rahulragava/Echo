@@ -32,6 +32,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _content, value);
         }
 
+        public List<PostFontStyle> PostFontStyles;
+
+        public PostCreationPageViewModel()
+        {
+            //PostFontStyles.Add();
+            PostFontStyles = Enum.GetValues(typeof(PostFontStyle)).Cast<PostFontStyle>().ToList();
+        }
         private Style _style;
 
         public Style Style
@@ -93,11 +100,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             get => _fontStyle;
             
-            set 
-            {
-                SetProperty(ref _fontStyle, value);
-                var a = Style;
-            }
+            set => SetProperty(ref _fontStyle, value);
         }
 
         public void DiscardButtonClicked()
@@ -130,11 +133,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             {
                 Choice = PollChoice1,
                 PostId = pollPost.Id,
+                PostFontStyle = FontStyle
             };
             var pollChoice2 = new PollChoice()
             {
-                Choice = PollChoice1,
+                Choice = PollChoice2,
                 PostId = pollPost.Id,
+                PostFontStyle = FontStyle
+
             };
 
             choices.Add(pollChoice1);
@@ -149,7 +155,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 case 3:
                     pollChoice3 = new PollChoice()
                     {
-                        Choice = PollChoice1,
+                        Choice = PollChoice3,
+                        PostFontStyle = FontStyle,
                         PostId = pollPost.Id,
                     };
                     choices.Add(pollChoice3);
@@ -157,13 +164,17 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 case 4:
                     pollChoice3 = new PollChoice()
                     {
-                        Choice = PollChoice1,
+                        Choice = PollChoice3,
                         PostId = pollPost.Id,
+                        PostFontStyle = FontStyle
+
                     };
                     pollChoice4 = new PollChoice()
                     {
-                        Choice = PollChoice1,
+                        Choice = PollChoice4,
                         PostId = pollPost.Id,
+                        PostFontStyle = FontStyle
+
                     };
                     choices.Add(pollChoice4);
                     choices.Add(pollChoice3);

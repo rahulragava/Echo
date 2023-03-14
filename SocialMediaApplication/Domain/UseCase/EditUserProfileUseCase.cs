@@ -40,10 +40,10 @@ namespace SocialMediaApplication.Domain.UseCase
         public string Education { get; }
         public string Occupation { get; }
         public string Place { get; }
-        public EditUserProfilePresenterCallBack EditUserProfilePresenterCallBack { get; }
+        public ProfilePageViewModel.EditUserProfilePresenterCallBack EditUserProfilePresenterCallBack { get; }
 
 
-        public EditUserProfileRequestObj(string userName, string firstName, string lastName, Gender gender, MaritalStatus maritalStatus, string education, string occupation, string place, EditUserProfilePresenterCallBack editUserProfilePresenterCallBack)
+        public EditUserProfileRequestObj(string userName, string firstName, string lastName, Gender gender, MaritalStatus maritalStatus, string education, string occupation, string place, ProfilePageViewModel.EditUserProfilePresenterCallBack editUserProfilePresenterCallBack)
         {
             UserName = userName;
             FirstName = firstName;

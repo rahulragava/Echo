@@ -1,45 +1,31 @@
-﻿using SocialMediaApplication.Models.BusinessModels;
-using SocialMediaApplication.Presenter.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.ServiceModel.Channels;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.EntityModels;
-using SocialMediaApplication.Util;
+using SocialMediaApplication.Presenter.ViewModel;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SocialMediaApplication.Presenter.View
+namespace SocialMediaApplication.Presenter.View.PostView.PollPostView
 {
     public sealed partial class PollChoiceUserControl : UserControl
     {
-        public readonly PostControlViewModel PostControlViewModel;
+        //public readonly PostControlViewModel PostControlViewModel;
+        public readonly UserSelectionChoiceViewModel UserSelectionChoiceViewModel;
         public PollChoiceUserControl()
         {
-            PostControlViewModel = new PostControlViewModel();
+            UserSelectionChoiceViewModel = new UserSelectionChoiceViewModel();
+            //PostControlViewModel = new PostControlViewModel();
             this.InitializeComponent();
             Loaded += PollChoiceUserControl_Loaded;
-
         }
 
         private void PollChoiceUserControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             
-            if (TotalVotesProperty != null)
+            if (ChoicePercentageProperty != null)
             {
-                PostControlViewModel.GetCount(ChoiceSelectedUserList.Count, TotalVotes);
+                //PostControlViewModel.GetCount(ChoiceSelectedUserList.Count, ChoicePercentage);
             }
         }
 
@@ -67,15 +53,13 @@ namespace SocialMediaApplication.Presenter.View
             set => SetValue(ChoiceSelectedUserListProperty, value);
         }
 
-        public static readonly DependencyProperty TotalVotesProperty = DependencyProperty.Register(
-            nameof(TotalVotes), typeof(int), typeof(PollChoiceUserControl), new PropertyMetadata(default(int)));
+        public static readonly DependencyProperty ChoicePercentageProperty = DependencyProperty.Register(
+            nameof(ChoicePercentage), typeof(int), typeof(PollChoiceUserControl), new PropertyMetadata(default(int)));
 
-        public int TotalVotes
+        public int ChoicePercentage
         {
-            get => (int)GetValue(TotalVotesProperty);
-            set => SetValue(TotalVotesProperty, value);
+            get => (int)GetValue(ChoicePercentageProperty);
+            set => SetValue(ChoicePercentageProperty, value);
         }
-
-        
     }
 }

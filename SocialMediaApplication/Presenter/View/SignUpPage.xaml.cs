@@ -3,6 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using SocialMediaApplication.Presenter.ViewModel;
+using System.ServiceModel.Channels;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,8 +19,22 @@ namespace SocialMediaApplication.Presenter.View
         {
             this.InitializeComponent();
             _signUpViewModel = new SignUpViewModel();
-            _signUpViewModel.NavigateToLogInPage += GoToLogInPage;
+            Loaded += SignUpPage_Loaded;
+
         }
+
+        private void SignUpPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            _signUpViewModel.NavigateToLogInPage += GoToLogInPage;
+            _signUpViewModel.ErrorMessageNotification += ErrorMessageNotification;
+        }
+
+        private void ErrorMessageNotification(string message)
+        {
+            ExampleVsCodeInAppNotification.Show(message, 5000);
+            return;
+        }
+
 
         private void GotoSignInPageClick(object sender, RoutedEventArgs e)
         {

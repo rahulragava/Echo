@@ -6,9 +6,12 @@ using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using System.Xml.Linq;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using SocialMediaApplication.DataManager;
 using SocialMediaApplication.Util;
+using SocialMediaApplication.Models.Constant;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -22,20 +25,57 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentViewModel = new CommentViewModel();
             this.InitializeComponent();
             Loaded += CommentUserControl_Loaded;
+            Unloaded -= OnUnloaded;
         }
+
 
         private void CommentUserControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            UserManager.UserNameChanged += UserNameChanged; 
             if (CommentDepthProperty != null)
             {
                 CommentViewModel.SetStackPanelDepth(CommentDepth);
             }
 
+            CommentViewModel.CommentId = CommentId;
+            CommentViewModel.Reactions = CommentReactions;
+            CommentViewModel.GetCommentReaction();
+            CommentViewModel.CommentInserted = InsertComment;
+            CommentViewModel.CommentRemoved = RemoveComments;
+            if (CommentViewModel.Reaction == null) 
+            {
+                ReactionOnComment.Visibility = Visibility.Collapsed;
+                ReactionIcon.Visibility = Visibility.Collapsed;
+            }
+            if (CommentedBy != AppSettings.UserId)
+            {
+                RemoveComment.Visibility = Visibility.Collapsed;
+            }
             CommentViewModel.RemoveButtonVisibility = AppSettings.UserId == CommentedBy ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public static event Action<string> NavigateToSearchPage;
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            UserManager.UserNameChanged -= UserNameChanged;
+        }
+        private void UserNameChanged(string userName)
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    if (CommentedBy == AppSettings.UserId)
+                    {
+                        CommentedByUserName = userName;
+                    }
+                }
+            );
         }
 
         //public event Action CommentsChanged;
-        //public event Action<List<string>> CommentsRemoved;
+        public event Action<CommentBObj, int> CommentInserted;
+
+        public event Action<List<string>> CommentsRemoved;
 
         //public Thickness Thickness
 
@@ -163,6 +203,16 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             }
         }
 
+        private void InsertComment(CommentBObj comment, int index)
+        {
+            CommentInserted?.Invoke(comment, index);
+        }
+
+        private void RemoveComments(List<string> commentIds)
+        {
+            CommentsRemoved?.Invoke(commentIds);
+        }
+
         private void ReplyButton_OnClick(object sender, RoutedEventArgs e)
         {
             ReplyPanel.Visibility = Visibility.Visible;
@@ -180,6 +230,54 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             ReplyPanel.Visibility = Visibility.Collapsed;
             //CommentsChanged?.Invoke();
 
+        }
+
+        private void SetReaction(Reaction reaction)
+        {
+            CommentViewModel.Reaction = reaction;
+            switch (reaction.ReactionType)
+            {
+                case ReactionType.Heart:
+                    CommentViewModel.ReactionIcon = "♥";
+                    break;
+                case ReactionType.ThumbsDown:
+                    CommentViewModel.ReactionIcon = "👎";
+                    break;
+                case ReactionType.ThumbsUp:
+                    CommentViewModel.ReactionIcon = "👍";
+
+                    break;
+                case ReactionType.Happy:
+                    CommentViewModel.ReactionIcon = "😁";
+                    break;
+                case ReactionType.Mad:
+                    CommentViewModel.ReactionIcon = "😡";
+                    break;
+                case ReactionType.HeartBreak:
+                    CommentViewModel.ReactionIcon = "💔";
+                    break;
+                case ReactionType.Sad:
+                    CommentViewModel.ReactionIcon = "😕";
+                    break;
+                default:
+                    CommentViewModel.ReactionIcon = "👍";
+                    break;
+            }
+            ReactionOnComment.Visibility = Visibility.Visible;
+            ReactionIcon.Visibility = Visibility.Visible;
+        }
+
+        //private void UserTextBlock_OnTapped(object sender, TappedRoutedEventArgs e)
+        //{
+        //}
+
+        private void NavigateToSearchPageTextBlock_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (CommentedBy == AppSettings.UserId)
+            {
+                return;
+            }
+            NavigateToSearchPage?.Invoke(CommentedBy);
         }
     }
 }

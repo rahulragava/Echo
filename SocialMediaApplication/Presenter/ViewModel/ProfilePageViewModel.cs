@@ -24,6 +24,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public ObservableCollection<PollPostBObj> PollPosts;
         public ObservableCollection<string> Followers;
         public ObservableCollection<string> Followings;
+        public List<MaritalStatus> MaritalStatuses;
+        public List<Gender> Genders;
+
+        public event Action UserNameAlreadyExist;
 
         private int _userPostCount;
         public int UserPostCount
@@ -122,17 +126,31 @@ namespace SocialMediaApplication.Presenter.ViewModel
             PollPosts = new ObservableCollection<PollPostBObj>();
             Followers = new ObservableCollection<string>();
             Followings = new ObservableCollection<string>();
+            Genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
+            MaritalStatuses = Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>().ToList();
         }
+
+        public ObservableCollection<Reaction> Reactions = new ObservableCollection<Reaction>();
+
+        public void SetReactions(List<Reaction> reactions)
+        {
+            Reactions.Clear();
+            foreach (var reaction in reactions)
+            {
+                Reactions.Add(reaction);
+            }
+        }
+
         public void GetUser(string userId)
         {
-            if (userId == null)
-            {
-                userId = AppSettings.LocalSettings.Values["user"].ToString();
-            }
-            else if(string.Empty == userId)
-            {
-                return;
-            }  
+            //if (userId == null)
+            //{
+            //    userId = AppSettings.LocalSettings.Values["user"].ToString();
+            //}
+            //else if(string.Empty == userId)
+            //{
+            //    return;
+            //}  
 
             var getUserProfileRequestObj = new GetUserProfileRequestObj(userId,new GetUserProfilePresenterCallBack(this));
             var getUserProfileUseCase = new GetUserProfileUseCase(getUserProfileRequestObj);
@@ -148,9 +166,20 @@ namespace SocialMediaApplication.Presenter.ViewModel
             editUserProfileUseCase.Execute();
         }
 
+        public void FollowUnFollowSearchedUser()
+        {
+
+            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(user.Id,AppSettings.UserId,new FollowUnFollowPresenterCallBack(this));
+            var followUnFollowSearchedUserUseCase =
+                new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest);
+            followUnFollowSearchedUserUseCase.Execute();
+        }
+
+        public Action GetUserSucceed;
         public void GetUserSuccess(UserBObj userBObj)
         {
             this.user = userBObj;
+
             UserPostCount = user.TextPosts.Count + user.PollPosts.Count;
             UserFollowerCount = user.FollowersId.Count;
             UserFollowingCount= user.FollowingsId.Count;
@@ -183,8 +212,9 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Followings.Clear();
             foreach (var following in user.FollowingsId)
             {
-                Followers.Add(following);
+                Followings.Add(following);
             }
+            GetUserSucceed?.Invoke();
         }
 
         public void EditUserSuccess(UserBObj userBObj)
@@ -199,6 +229,37 @@ namespace SocialMediaApplication.Presenter.ViewModel
             MaritalStatus = user.MaritalStatus;
             UserName = user.UserName;
         }
+
+        public class EditUserProfilePresenterCallBack : IPresenterCallBack<EditUserProfileResponseObj>
+        {
+            private readonly ProfilePageViewModel _profilePageViewModel;
+
+            public EditUserProfilePresenterCallBack(ProfilePageViewModel profilePageViewModel)
+            {
+                this._profilePageViewModel = profilePageViewModel;
+            }
+
+            public void OnSuccess(EditUserProfileResponseObj editedUserProfileResponseObj)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _profilePageViewModel.EditUserSuccess(editedUserProfileResponseObj.User);
+                    }
+                );
+            }
+
+            public void OnError(Exception ex)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                         _profilePageViewModel.UserNameAlreadyExist?.Invoke();
+                    }
+                );
+            }
+        }
+
     }
 
     public class GetUserProfilePresenterCallBack : IPresenterCallBack<GetUserProfileResponseObj>
@@ -225,21 +286,29 @@ namespace SocialMediaApplication.Presenter.ViewModel
         }
     }
 
-    public class EditUserProfilePresenterCallBack : IPresenterCallBack<EditUserProfileResponseObj>
+    public class FollowUnFollowPresenterCallBack : IPresenterCallBack<FollowUnFollowSearchedUserResponse>
     {
         private readonly ProfilePageViewModel _profilePageViewModel;
 
-        public EditUserProfilePresenterCallBack(ProfilePageViewModel profilePageViewModel)
+        public FollowUnFollowPresenterCallBack(ProfilePageViewModel profilePageViewModel)
         {
             this._profilePageViewModel = profilePageViewModel;
         }
-
-        public void OnSuccess(EditUserProfileResponseObj editedUserProfileResponseObj)
+        public void OnSuccess(FollowUnFollowSearchedUserResponse followUnFollowSearchedUserResponse)
         {
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    _profilePageViewModel.EditUserSuccess(editedUserProfileResponseObj.User);
+                    if (followUnFollowSearchedUserResponse.FollowingSuccess)
+                    {
+                        _profilePageViewModel.Followers.Add(AppSettings.UserId);
+                        _profilePageViewModel.UserFollowingCount += 1;
+                    }
+                    else
+                    {
+                        _profilePageViewModel.Followers.Remove(AppSettings.UserId);
+                        _profilePageViewModel.UserFollowingCount -= 1;
+                    }
                 }
             );
         }
@@ -249,4 +318,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
             throw new NotImplementedException();
         }
     }
+
+    
 }

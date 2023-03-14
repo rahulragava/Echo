@@ -22,6 +22,7 @@ namespace SocialMediaApplication.Models.EntityModels
         public MaritalStatus MaritalStatus { get; set; }
         public string Place { get; set; }
         public string Education { get; set; }
+        public string ProfileIcon { get; set; }
         public string Occupation { get; set; }
 
         public User()

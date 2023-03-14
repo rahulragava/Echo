@@ -73,20 +73,20 @@ namespace SocialMediaApplication.Util
                 FollowersId = followersId,
                 FollowingsId = followingsId
             };
-            foreach (var textPost in userBObj.TextPosts)
-            {
-                foreach (var comment in textPost.Comments)
-                {
-                    comment.CommentedUserName = userBObj.UserName;
-                }
-            }
-            foreach (var pollPost in userBObj.PollPosts)
-            {
-                foreach (var comment in pollPost.Comments)
-                {
-                    comment.CommentedUserName = userBObj.UserName;
-                }
-            }
+            //foreach (var textPost in userBObj.TextPosts)
+            //{
+            //    foreach (var comment in textPost.Comments)
+            //    {
+            //        comment.CommentedUserName = userBObj.UserName;
+            //    }
+            //}
+            //foreach (var pollPost in userBObj.PollPosts)
+            //{
+            //    foreach (var comment in pollPost.Comments)
+            //    {
+            //        comment.CommentedUserName = userBObj.UserName;
+            //    }
+            //}
             return userBObj;
         }
     }

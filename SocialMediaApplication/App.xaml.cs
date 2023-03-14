@@ -29,7 +29,6 @@ namespace SocialMediaApplication
     /// </summary>
     sealed partial class App : Application
     {
-        public static string UserId ;
         //public static ApplicationDataContainer LocalSettings;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -39,7 +38,7 @@ namespace SocialMediaApplication
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            Container = ConfigureDependencyInjection();
+            //Container = ConfigureDependencyInjection();
             var dbInstance = DatabaseInitializer.Instance;
             dbInstance.InitializeDatabase();
             Task.Run(async () => await dbInstance.CreateAllTablesAsync());
@@ -114,16 +113,16 @@ namespace SocialMediaApplication
             deferral.Complete();
         }
 
-        public IServiceProvider Container { get; }
+        //public IServiceProvider Container { get; }
 
-        IServiceProvider ConfigureDependencyInjection()
-        {
-            var serviceCollection = new ServiceCollection();
-             // dependency mapping, i.e., when we need the interface container will create and provide the needed object
-            //serviceCollection.AddTransient<IMessageService, MessageService>();
-            //serviceCollection.AddMemoryCache();
+        //IServiceProvider ConfigureDependencyInjection()
+        //{
+        //    var serviceCollection = new ServiceCollection();
+        //     // dependency mapping, i.e., when we need the interface container will create and provide the needed object
+        //    //serviceCollection.AddTransient<IMessageService, MessageService>();
+        //    //serviceCollection.AddMemoryCache();
 
-            return serviceCollection.BuildServiceProvider();
-        }
+        //    return serviceCollection.BuildServiceProvider();
+        //}
     }
 }

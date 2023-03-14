@@ -150,12 +150,24 @@
             <!--<RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>-->
         </Grid.RowDefinitions>
-            
-        <ListView Style="{StaticResource ListViewStyle1}" Grid.Row="0"
+
+        <ListView Grid.Row="0"
                   Grid.Column="0"
+                  Grid.ColumnSpan="2"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                   x:Name="CommentList" 
                   ItemsSource="{x:Bind CommentViewModel.PostComments,Mode=OneWay}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="businessModels:CommentBObj">
 
@@ -170,6 +182,8 @@
                                               CommentReactions="{x:Bind Reactions,Mode=OneWay}"
                                               CommentedBy="{x:Bind CommentedBy,Mode=OneWay}"
                                               CommentId="{x:Bind Id,Mode=OneWay}"
+                                              CommentInserted="InsertingCommentInList"
+                                              CommentsRemoved="RemoveCommentsInList"
                                               PostId ="{x:Bind PostId,Mode=OneWay}"/>
 
                     
@@ -272,7 +286,8 @@
                   Visibility="Collapsed"/>
         <TextBox Grid.Column="0"
                  x:Name="CommentContent"
-                 Grid.Row="1" 
+                 Grid.Row="1"
+                 Grid.ColumnSpan="1"
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Center" 
                  PlaceholderText="type your comment here ..." 
