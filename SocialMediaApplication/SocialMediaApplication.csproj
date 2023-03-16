@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Database\DatabaseHandler\Contract\IFetchPostManager.cs" />
+    <Compile Include="DataManager\Contract\IEditProfileImageManager.cs" />
     <Compile Include="DataManager\Contract\IFeedManager.cs" />
     <Compile Include="DataManager\Contract\IFollowUnFollowManager.cs" />
     <Compile Include="DataManager\Contract\IGetCommentManager.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="DataManager\Contract\IUserPollChoiceSelectionManager.cs" />
     <Compile Include="DataManager\Contract\RemoveCommentManager.cs" />
     <Compile Include="DataManager\CreatePostManager.cs" />
+    <Compile Include="DataManager\EditProfileImageManager.cs" />
     <Compile Include="DataManager\FeedManager.cs" />
     <Compile Include="DataManager\FollowUnFollowManager.cs" />
     <Compile Include="DataManager\GetCommentManager.cs" />
@@ -138,6 +140,8 @@
     <Compile Include="DataManager\RemovePostManager.cs" />
     <Compile Include="DataManager\UserMiniDetailManager.cs" />
     <Compile Include="DataManager\UserPollChoiceSelectionManager.cs" />
+    <Compile Include="Domain\UseCase\EditHomeImageUseCase.cs" />
+    <Compile Include="Domain\UseCase\EditProfileImageUseCase.cs" />
     <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\FetchFeedUseCase.cs" />
     <Compile Include="Domain\UseCase\FollowUnFollowSearchedUserUseCase.cs" />
@@ -201,6 +205,7 @@
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\PostFontStyleConverter.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\RelativeDateTimeConverter.cs" />
+    <Compile Include="Presenter\ViewModel\ValueConverter\StringToImageConverter.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
     <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
       <DependentUpon>CommentsViewUserControl.xaml</DependentUpon>
@@ -296,7 +301,7 @@
     </Compile>
     <Compile Include="Util\AppSettings.cs" />
     <Compile Include="Presenter\ViewModel\ValueConverter\MarginConverter.cs" />
-    <Compile Include="Util\IncrementalLoadingCollection .cs" />
+    <Compile Include="Util\SelectTemplate.cs" />
     <Compile Include="Util\Validation.cs" />
     <Compile Include="Util\UserManagerHelper.cs" />
   </ItemGroup>
@@ -308,6 +313,7 @@
   <ItemGroup>
     <Content Include="Assets\44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" />
     <Content Include="Assets\AddIcon.png" />
+    <Content Include="Assets\placeholder profile.jpg" />
     <Content Include="Assets\textIcon.png" />
     <Content Include="Assets\facebook_dark.png" />
     <Content Include="Assets\facebook_light.png" />

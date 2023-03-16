@@ -570,7 +570,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock HorizontalAlignment="Center"
-                                       Margin="0 -5 0 0"
+                                       Margin="0 0 0 0"
                                        VerticalAlignment="Center"
                                        FontSize="18"
                                        TextWrapping="WrapWholeWords"

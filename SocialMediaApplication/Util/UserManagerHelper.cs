@@ -67,6 +67,8 @@ namespace SocialMediaApplication.Util
                 MaritalStatus = user.MaritalStatus,
                 Occupation = user.Occupation,
                 Education = user.Education,
+                ProfileIcon = user.ProfileIcon,
+                HomePageIcon = user.HomePageIcon,
                 Place = user.Place,
                 TextPosts = textPosts,
                 PollPosts = pollPosts,

@@ -9,7 +9,6 @@
       xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
       xmlns:pages="using:SocialMediaApplication.Presenter.View"
       xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-      xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
       xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
       xmlns:pollPostView="using:SocialMediaApplication.Presenter.View.PostView.PollPostView"
       xmlns:textPostView="using:SocialMediaApplication.Presenter.View.PostView.TextPostView"
@@ -284,33 +283,71 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
 
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0"
+        <!--<Grid Grid.Column="0"
               HorizontalAlignment="Center"
               Grid.Row="0"
-              Grid.ColumnSpan="2">
-            <RelativePanel Margin="5"
-                           Height="400"
-                           Width="1300"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top">
-                <Border Name="Border1"
-                        CornerRadius="10"
-                        BorderThickness="1">
-                    <Image Stretch="Fill"
-                           Source="../../../Assets/wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
-                </Border>
-                <Border CornerRadius="80"
-                        Margin="60 -70"
-                        BorderBrush="DarkBlue"
-                        BorderThickness="5"
-                        RelativePanel.AlignBottomWith="Border1">
-                    <Image Source="../../../Assets/signInBackground.jpg"
-                           Width="150"
-                           Height="150" />
-                </Border>
-            </RelativePanel>
+              Grid.ColumnSpan="2">-->
+        <RelativePanel Margin="20 8 0 0"
+                       Grid.ColumnSpan="2"
+                       Height="400"
+                       Width="1300"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top">
+            <Border x:Name="Border1"
+                    CornerRadius="10"
+                    BorderThickness="1">
+                <Image Stretch="Fill"
+                       x:Name="HomeImage"
+                       Source="../../../Assets/wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
+            </Border>
 
-        </Grid>
+            <Border  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                     Width="40"
+                     Height="40"
+                     RelativePanel.AlignBottomWith="Border1"
+                     RelativePanel.AlignRightWith="Border1"
+                     Margin="5"
+                     CornerRadius="20"
+                     x:Name="HomeIconEditButton"
+                     Tapped="HomeIconEditButton_OnTapped"
+            >
+                <FontIcon FontFamily="Segoe MDL2 Assets"
+                          FontSize="20"
+                          Visibility="Visible"
+                          Glyph="&#xE104;" />
+            </Border>
+
+            <Border CornerRadius="80"
+                    Margin="50 0 0 -50"
+                    BorderBrush="{ThemeResource BackgroundColor}"
+                    x:Name="ProfileImage1"
+                    BorderThickness="3"
+                    RelativePanel.AlignBottomWith="Border1">
+                <Image Source="../../../Assets/placeholder profile.jpg"
+                       x:Name="ProfileImage"
+                       Stretch="UniformToFill"
+                       Width="150"
+                       Height="150" />
+            </Border>
+            <Border  RelativePanel.AlignHorizontalCenterWith="ProfileImage1"
+                     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                     x:Name="EditPhoto"
+                     Width="30"
+                     Height="30"
+                     Visibility="Collapsed"
+                     CornerRadius="30"
+                     Margin="150 0 0 -50"
+                     Tapped="EditPhoto_OnTapped"
+                     RelativePanel.AlignTopWith="ProfileImage1">
+                <FontIcon FontFamily="Segoe MDL2 Assets"
+                          FontSize="20"
+                          Visibility="Visible"
+                          Glyph="&#xE104;" />
+            </Border>
+
+        </RelativePanel>
+
+        <!--</Grid>-->
 
         <Grid Grid.Row="1"
               Grid.Column="0"
@@ -633,7 +670,7 @@
                        HorizontalAlignment="Center"
                        Margin="5 0" />
             <FontIcon Grid.Column="2"
-                      Glyph="&#xE16E;"
+                      Glyph=""
                       HorizontalAlignment="Right"
                       Tapped="ShowFilterPopupOffsetClicked"
                       Margin="0 0 10 0"
@@ -714,21 +751,21 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:TextPostBObj">
                             <textPostView:TextPostUserControl x:Name="PostControl"
-                                                          PostId="{x:Bind Id,Mode=OneWay}"
-                                                          PostedByUserName="{x:Bind UserName,Mode=OneWay}"
-                                                          PostContent="{x:Bind Content,Mode=OneWay}"
-                                                          PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                                          PostTitle="{x:Bind Title,Mode=OneWay}"
-                                                          PostComments="{x:Bind Comments,Mode=OneWay}"
-                                                          CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                                          PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                                          PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                                          HorizontalAlignment="Stretch"
-                                                          PostRemoved="PostControl_OnPostRemoved"
-                                                          PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
-                                                          FollowerListChanged="PostControl_OnFollowerListChanged"
-                                                          ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                                          VerticalAlignment="Stretch" />
+                                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                                              PostedByUserName="{x:Bind UserName,Mode=OneWay}"
+                                                              PostContent="{x:Bind Content,Mode=OneWay}"
+                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                              HorizontalAlignment="Stretch"
+                                                              PostRemoved="PostControl_OnPostRemoved"
+                                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
+                                                              FollowerListChanged="PostControl_OnFollowerListChanged"
+                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                                              VerticalAlignment="Stretch" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
@@ -753,20 +790,20 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:PollPostBObj">
                             <pollPostView:PollPostUserControl x:Name="PollPostControl"
-                                                          PostedByUser="{x:Bind UserName,Mode=OneWay}"
-                                                          PostQuestion="{x:Bind Question,Mode=OneWay}"
-                                                          PostId="{x:Bind Id,Mode=OneWay}"
-                                                          PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                                          CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                                          PostTitle="{x:Bind Title,Mode=OneWay}"
-                                                          PostComments="{x:Bind Comments,Mode=OneWay}"
-                                                          PollChoiceList="{x:Bind Choices,Mode=OneWay}"
-                                                          PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                                          PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                                          PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
-                                                          PostRemoved="PollPostControl_OnPostRemoved"
-                                                          FollowerListChanged="PostControl_OnFollowerListChanged"
-                                                          ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked" />
+                                                              PostedByUser="{x:Bind UserName,Mode=OneWay}"
+                                                              PostQuestion="{x:Bind Question,Mode=OneWay}"
+                                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                              PollChoiceList="{x:Bind Choices,Mode=OneWay}"
+                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
+                                                              PostRemoved="PollPostControl_OnPostRemoved"
+                                                              FollowerListChanged="PostControl_OnFollowerListChanged"
+                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

@@ -29,6 +29,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public event Action UserNameAlreadyExist;
 
+
         private int _userPostCount;
         public int UserPostCount
         {
@@ -118,7 +119,26 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _userFollowingCount;
             set => SetProperty(ref _userFollowingCount, value);
         }
-        
+
+        private string _profileImage;
+        public string ProfileImage
+        {
+            get => _profileImage;
+            set => SetProperty(ref _profileImage, value);
+        }
+
+        private string _homePageImage = "";
+        public string HomePageImage
+        {
+            get => _homePageImage;
+            set => SetProperty(ref _homePageImage, value);
+        }
+
+        public bool ProfilePageIconUpdation { get; set; }
+
+        public Action ProfilePictureUpdated;
+        public Action HomePictureUpdated;
+
         public ProfilePageViewModel()
         {
             user = new UserBObj();
@@ -128,6 +148,22 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Followings = new ObservableCollection<string>();
             Genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
             MaritalStatuses = Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>().ToList();
+        }
+
+        public void EditProfileImage()
+        {
+            var editProfileImageRequest = 
+                new EditProfileImageRequest(AppSettings.UserId, ProfileImage, new EditProfileImagePresenterCallBack(this));
+            var editProfileImageUseCase = new EditProfileImageUseCase(editProfileImageRequest);
+            editProfileImageUseCase.Execute();
+        }
+
+        public void EditHomeImage()
+        {
+            var editHomeIconRequest =
+                new EditHomeImageRequest(AppSettings.UserId, HomePageImage, new EditHomeImagePresenterCallBack(this));
+            var editHomeIconUseCase = new EditHomeImageUseCase(editHomeIconRequest);
+            editHomeIconUseCase.Execute();
         }
 
         public ObservableCollection<Reaction> Reactions = new ObservableCollection<Reaction>();
@@ -190,6 +226,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Education = user.Education;
             Gender = user.Gender;   
             MaritalStatus = user.MaritalStatus;
+            ProfileImage = user.ProfileIcon;
+            HomePageImage = user.HomePageIcon;
             CreatedAt = user.CreatedAt;
             FormattedCreatedTime = user.FormattedCreatedTime;
             UserName = user.UserName;
@@ -277,6 +315,54 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 () =>
                 {
                     _profilePageViewModel.GetUserSuccess(getUserProfileResponseObj.User);
+                }
+            );
+        }
+
+        public void OnError(Exception ex)
+        {
+        }
+    }
+
+    public class EditProfileImagePresenterCallBack : IPresenterCallBack<EditProfileImageResponse>
+    {
+        private readonly ProfilePageViewModel _profilePageViewModel;
+        public EditProfileImagePresenterCallBack(ProfilePageViewModel profilePageViewModel)
+        {
+            _profilePageViewModel = profilePageViewModel;
+        }
+
+        public void OnSuccess(EditProfileImageResponse response)
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+
+                    _profilePageViewModel.ProfilePictureUpdated?.Invoke();
+                }
+            );
+        }
+
+        public void OnError(Exception ex)
+        {
+        }
+    }
+
+    public class EditHomeImagePresenterCallBack : IPresenterCallBack<EditHomeImageResponse>
+    {
+        private readonly ProfilePageViewModel _profilePageViewModel;
+        public EditHomeImagePresenterCallBack(ProfilePageViewModel profilePageViewModel)
+        {
+            _profilePageViewModel = profilePageViewModel;
+        }
+
+        public void OnSuccess(EditHomeImageResponse response)
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+
+                    _profilePageViewModel.HomePictureUpdated?.Invoke();
                 }
             );
         }

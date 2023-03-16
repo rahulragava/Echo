@@ -148,6 +148,12 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
+        <!--<ContentDialog Grid.Row="0"
+                       Grid.RowSpan="4"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       x:Name="AssuranceContentDialog"></ContentDialog>-->
+
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
                     Grid.Column="0"
@@ -226,7 +232,7 @@
                                x:Name="UserTextBlock"
                                Tapped="UserTextBlock_OnTapped"
                                Grid.ColumnSpan="2"
-                               Margin="0 8 3 0"
+                               Margin="0 14 3 0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                Text="{x:Bind PostedByUserName,Mode=OneWay}"></TextBlock>
@@ -418,7 +424,7 @@
                                          Grid.Column="0"
                                          Grid.ColumnSpan="2"
                                          Margin=" 0 -15 0 0" />
-
+            
             <HyperlinkButton Height="50"
                              Grid.Row="1"
                              Grid.Column="0"

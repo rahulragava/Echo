@@ -343,9 +343,17 @@ namespace SocialMediaApplication.DataManager
                 foreach (var comment in childComments)
                 {
                     sortedComments.Add(comment);
-                    comment.Depth = depth*10;
+                    comment.Depth = depth*15;
                     //done change here
                     RecursiveSort(comment.Id, depth + 1);
+                }
+            }
+
+            foreach (var sortedComment in sortedComments)
+            {
+                if (sortedComment.Depth > 60)
+                {
+                    sortedComment.Depth = 60;
                 }
             }
             return sortedComments;

@@ -169,8 +169,25 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             set => SetValue(PostIdProperty, value);
         }
 
-        private void RemoveComment_OnTapped(object sender, TappedRoutedEventArgs e)
+        private async void RemoveComment_OnTapped(object sender, TappedRoutedEventArgs e)
         {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Comment Deletion",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = "The Comment about to be removed cannot be retrieved! \n Are you sure, you want to delete ?"
+            };
+
+            var result = await dialog.ShowAsync();
+            switch (result)
+            {
+                case ContentDialogResult.None:
+                    return;
+                case ContentDialogResult.Primary:
+                    break;
+            }
             var comment = new CommentBObj()
             {
                 Id = CommentId,

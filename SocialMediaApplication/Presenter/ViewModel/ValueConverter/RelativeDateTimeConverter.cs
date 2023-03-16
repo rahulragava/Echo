@@ -10,11 +10,11 @@ namespace SocialMediaApplication.Presenter.ViewModel.ValueConverter
 {
     public class RelativeDateTimeConvertor : IValueConverter
     {
-        const int Second = 1;
-        const int Minute = 60 * Second;
-        const int Hour = 60 * Minute;
-        const int Day = 24 * Hour;
-        const int Month = 30 * Day;
+        private const int Second = 1;
+        private const int Minute = 60 * Second;
+        private const int Hour = 60 * Minute;
+        private const int Day = 24 * Hour;
+        private const int Month = 30 * Day;
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {

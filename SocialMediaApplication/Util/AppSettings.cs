@@ -17,7 +17,7 @@ namespace SocialMediaApplication.Util
         //static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
         public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
         public static string UserId = LocalSettings.Values["user"]?.ToString();
-
+        
 
         static AppSettings()
         {

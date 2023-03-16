@@ -27,6 +27,7 @@
                         Margin="0 12 0 5" />
 
         <FontIcon Grid.Row="1"
+                  Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
                   FontSize="100"
                   Glyph="&#xE945;" />

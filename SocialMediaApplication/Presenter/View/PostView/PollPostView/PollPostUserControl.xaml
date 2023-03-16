@@ -9,7 +9,6 @@
              xmlns:commentView="using:SocialMediaApplication.Presenter.View.CommentView"
              xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
              xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
-             xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
              mc:Ignorable="d">
     <UserControl.Resources>
         <valueConverter:PostFontStyleConverter x:Key="FontStyleConverter"></valueConverter:PostFontStyleConverter>
@@ -175,7 +174,7 @@
                        Margin="15 0 0 0"
                        HorizontalAlignment="Left"
                        TextWrapping="WrapWholeWords"
-                       FontSize="20"
+                       FontSize="17"
                        FontFamily="{x:Bind PostContentFont,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
                        Text="{x:Bind PostQuestion,Mode=OneWay}" />
             <ListView Grid.Row="2"
@@ -184,7 +183,7 @@
                       IsItemClickEnabled="True"
                       SelectionChanged="PollChoiceList_OnSelectionChanged"
                       ItemsSource="{x:Bind PostControlViewModel.PollChoices,Mode=OneWay}">
-                <!--<ListView.ItemContainerStyle>
+                <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Template">
                             <Setter.Value>
@@ -194,7 +193,7 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ListView.ItemContainerStyle>-->
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="data:PollChoiceBObj">
                         <!--<postView:PollChoiceUserControl HorizontalAlignment="Stretch"
@@ -221,13 +220,14 @@
                             <TextBlock Grid.Column="1"
                                        Margin="10 0"
                                        VerticalAlignment="Center"
+                                       MaxWidth="40"
                                        FontFamily="{x:Bind PostFontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
                                        x:Name="ChoiceCountPercentage">
                                 <Run Text="{x:Bind ChoiceSelectionPercent,Mode=OneWay}"></Run>
                                 <Run>%</Run>
                             </TextBlock>
                             <TextBlock Grid.Column="0"
-                                       FontSize="18"
+                                       FontSize="16"
                                        x:Name="ChoiceTextBlock"
                                        Padding="10"
                                        FontFamily="{x:Bind PostFontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"

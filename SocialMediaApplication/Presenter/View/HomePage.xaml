@@ -989,7 +989,7 @@
             <!--</NavigationView.Resources>-->
             <NavigationView.MenuItems>
                 <NavigationViewItem Icon="Home"
-                                    Content="Home"
+                                    Content="Feeds"
                                     Tag="HomePage" />
                 <NavigationViewItem Content="Search"
                                     Tag="SearchPage">
@@ -1025,13 +1025,12 @@
                 <StackPanel>
                     <Grid>
                         <NavigationViewItem x:Name="ThemeChangerNavigationItem"
-                                            Content="Change theme"
                                             Tapped="ThemeChanger_OnTapped">
 
                             <NavigationViewItem.Icon>
                                 <FontIcon x:Name="ThemeChanger"
                                           FontFamily="Segoe MDL2 Assets"
-                                          Glyph="&#xE793;" />
+                                          Glyph="{x:Bind ThemeIcon,Mode=OneWay}" />
                             </NavigationViewItem.Icon>
 
                         </NavigationViewItem>

@@ -18,6 +18,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
     {
         public ObservableCollection<TextPostBObj> TextPosts;
         public ObservableCollection<PollPostBObj> PollPosts;
+        public ObservableCollection<PostBObj> PostBObjs;
         public ObservableCollection<Reaction> Reactions;
         public bool Success = true;
 
@@ -26,6 +27,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             TextPosts = new ObservableCollection<TextPostBObj>();
             PollPosts = new ObservableCollection<PollPostBObj>();
             Reactions = new ObservableCollection<Reaction>();
+            PostBObjs = new ObservableCollection<PostBObj>();
         }
         private double _scrollPosition;
 
@@ -104,7 +106,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        if (fetchFeedResponse.TextPosts.Count == 0)
+                        if (fetchFeedResponse.TextPosts.Count == 0 && fetchFeedResponse.PollPosts.Count == 0)
                         {
                             return;
                         }
@@ -113,10 +115,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
                             foreach (var textPost in fetchFeedResponse.TextPosts)
                             {
                                 _feedPageViewModel.TextPosts.Add(textPost);
+                                _feedPageViewModel.PostBObjs.Add(textPost);
                             }
                             foreach (var pollPost in fetchFeedResponse.PollPosts)
                             {
                                 _feedPageViewModel.PollPosts.Add(pollPost);
+                                _feedPageViewModel.PostBObjs.Add(pollPost);
+
                             }
 
                             _feedPageViewModel.PollAmountToBeSkipped += 5;

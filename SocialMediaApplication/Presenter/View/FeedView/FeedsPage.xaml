@@ -10,10 +10,56 @@
       xmlns:pollPostView="using:SocialMediaApplication.Presenter.View.PostView.PollPostView"
       xmlns:textPostView="using:SocialMediaApplication.Presenter.View.PostView.TextPostView"
       mc:Ignorable="d"
+      xmlns:util="using:SocialMediaApplication.Util"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
+    
+
+
 
     <Page.Resources>
 
+        <DataTemplate x:DataType="businessModels:TextPostBObj"
+                      x:Key="TextPostDataTemplate">
+            <textPostView:TextPostUserControl x:Name="PostControl"
+                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                              PostedByUserName="{x:Bind UserName,Mode=OneWay}"
+                                              PostContent="{x:Bind Content,Mode=OneWay}"
+                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                              PostRemoved="PostControl_OnPostRemoved"
+                                              ReactionChanged="PostControl_OnReactionChanged"
+                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
+        </DataTemplate>
+
+        <DataTemplate x:DataType="businessModels:PollPostBObj" x:Key="PollPostDataTemplate">
+            <pollPostView:PollPostUserControl x:Name="PostControl"
+                                              PostId="{x:Bind Id,Mode=OneWay}"
+                                              PostedByUser="{x:Bind UserName,Mode=OneWay}"
+                                              PostQuestion="{x:Bind Question,Mode=OneWay}"
+                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                              PollChoiceList="{x:Bind Choices,Mode=OneWay}"
+                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                              PostTitle="{x:Bind Title,Mode=OneWay}"
+                                              PostComments="{x:Bind Comments,Mode=OneWay}"
+                                              ReactionChanged="PostControl_OnReactionChanged"
+                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                              PostRemoved="PostControl_OnPostRemoved"
+                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
+        </DataTemplate>
+        <util:SelectTemplate x:Key="MyDataTemplateSelector"
+                             TextPostDataTemplate="{StaticResource TextPostDataTemplate}"
+                             PollPostDataTemplate="{StaticResource PollPostDataTemplate}">
+        </util:SelectTemplate>
     </Page.Resources>
 
     <Grid>
@@ -21,17 +67,9 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
-        <!--<Popup Grid.Column="1"
-               x:Name="ReactionsPopup"
-               
-               HorizontalOffset="-400"
-               KeyTipPlacementMode="Right"
-               VerticalAlignment="Stretch"
-               VerticalOffset="0"
-               Visibility="Collapsed">-->
         <Grid Grid.Column="1"
               Visibility="Collapsed"
+              Width="300"
               VerticalAlignment="Top"
               x:Name="ReactionsPopup">
             <StackPanel>
@@ -47,7 +85,6 @@
                                                    HorizontalAlignment="Stretch"
                                                    VerticalAlignment="Stretch"
                                                    ReactionList="{x:Bind FeedPageViewModel.Reactions,Mode=OneWay}" />
-
             </StackPanel>
         </Grid>
 
@@ -64,6 +101,13 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
+            <!--<StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <PersonPicture Width="60"></PersonPicture>
+                    <TextBox HorizontalAlignment="Stretch"></TextBox>
+                </StackPanel>
+
+            </StackPanel>-->
             <ToggleButton Grid.Column="0"
                           Margin="0 60 10 0"
                           Height="60"
@@ -71,6 +115,7 @@
                           IsChecked="True"
                           Click="TextPostClicked_OnClick"
                           Width="300"
+                          FontSize="18"
                           HorizontalAlignment="Right"
                           Grid.Row="0">
                 TextPosts
@@ -81,6 +126,7 @@
                           Height="60"
                           Width="300"
                           x:Name="PollPostClicked"
+                          FontSize="18"
                           Click="PollPostClicked_OnClick"
                           HorizontalAlignment="Left"
                           Grid.Column="1">
@@ -94,6 +140,26 @@
                           VerticalScrollMode="Enabled"
                           Background="{ThemeResource BackgroundColor}"
                           ViewChanged="ScrollViewer_ViewChanged">
+                <!--<ListView HorizontalAlignment="Center"
+                          x:Name="TextPostListView"
+                          Margin="-10 10"
+                          x:FieldModifier="public"
+                          ScrollViewer.VerticalScrollMode="Disabled"
+                          ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"
+                          ItemsSource="{x:Bind FeedPageViewModel.PostBObjs,Mode=OneWay}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                </ListView>-->
                 <Grid>
                     <ListView HorizontalAlignment="Center"
                               x:Name="TextPostListView"
@@ -203,6 +269,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>-->
+
+
+            
+            <!--ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"-->
 
         </Grid>
     </Grid>

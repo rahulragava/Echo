@@ -54,8 +54,8 @@ namespace SocialMediaApplication.Presenter.View
                 NoUserFont.Visibility = Visibility.Visible;
                 //NoUserMessage.Visibility = Visibility.Visible;
                 UserList.Visibility = Visibility.Collapsed;
-
             }
+            
 
         }
 
@@ -86,6 +86,11 @@ namespace SocialMediaApplication.Presenter.View
                     NavigateToUser?.Invoke(user.Id);
                 }
             }
+        }
+
+        public void SetImageSource()
+        {
+
         }
     }
     

@@ -1,13 +1,12 @@
-﻿<Page
-    x:Class="SocialMediaApplication.Presenter.View.UserListPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SocialMediaApplication.Presenter.View"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:entityModels="using:SocialMediaApplication.Models.EntityModels"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="SocialMediaApplication.Presenter.View.UserListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:SocialMediaApplication.Presenter.View"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:entityModels="using:SocialMediaApplication.Models.EntityModels"
+      mc:Ignorable="d"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
         <ListView ItemsSource="{x:Bind GetUserDetailViewModel.UserList,Mode=OneWay}"
@@ -16,22 +15,29 @@
                   x:Name="UserList">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="entityModels:User">
-                    <StackPanel Orientation="Horizontal" Margin="5 15 0 0" Height="40" Padding="0 0 0 8">
-                        <PersonPicture Width="38" Margin="0 -5"/>
-                        <TextBlock Text="{x:Bind UserName,Mode=OneWay}" x:Name="UserId"
-                                   FontSize="15" Margin="10 5"/>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5 15 0 0"
+                                Height="40"
+                                Padding="0 0 0 8">
+                        <PersonPicture Width="38"
+                                       x:Name="Profile"
+                                       Margin="0 -5" />
+                        <TextBlock Text="{x:Bind UserName,Mode=OneWay}"
+                                   x:Name="UserId"
+                                   FontSize="15"
+                                   Margin="10 5" />
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <FontIcon Grid.Row="0"
-                  Grid.Column="0" 
-                  HorizontalAlignment="Center" 
+                  Grid.Column="0"
+                  HorizontalAlignment="Center"
                   VerticalAlignment="Center"
                   x:Name="NoUserFont"
                   Foreground="DarkGray"
                   Glyph=""
                   FontSize="60"
-                  Visibility="Collapsed"/>
+                  Visibility="Collapsed" />
     </Grid>
 </Page>

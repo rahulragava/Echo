@@ -13,6 +13,7 @@ using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using SocialMediaApplication.Util;
+using Windows.UI.Xaml.Documents;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -228,6 +229,7 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
 
         private void OpenReactionSection_OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
+
             //if (OpenReactionSection.ContextFlyout != null)
             //{
             //    OpenReactionSection.ContextFlyout.Hide();
@@ -369,8 +371,24 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
             NavigateToSearchPage?.Invoke(PostedByUserId);
         }
 
-        private void RemovePost_OnTapped(object sender, TappedRoutedEventArgs e)
+        private async void RemovePost_OnTapped(object sender, TappedRoutedEventArgs e)
         {
+            ContentDialog dialog = new ContentDialog();
+            dialog.Title = "Post Deletion";
+            dialog.PrimaryButtonText = "Yes";
+            dialog.CloseButtonText = "No";
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.Content = "The post about to be removed cannot be retrieved! \n Are you sure, you want to delete ?";
+
+            var result = await dialog.ShowAsync();
+            switch (result)
+            {
+                case ContentDialogResult.None:
+                    return;
+                case ContentDialogResult.Primary:
+                    break;
+            }
+
             var postToBeRemoved = new TextPostBObj()
             {
                 Id = PostId,

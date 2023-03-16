@@ -96,7 +96,8 @@ namespace SocialMediaApplication.DataManager
                 {
                     Id = _userBObj.Id,
                     UserName = _userBObj.UserName,
-                    MailId = _userBObj.MailId
+                    MailId = _userBObj.MailId,
+                    CreatedAt = DateTime.Now
                 };
                 
                 await _userDbHandler.InsertUserAsync(user);
@@ -126,12 +127,12 @@ namespace SocialMediaApplication.DataManager
             try
             {
                 var userId = getUserProfileRequest.UserId;
-                var user = await Task.Run(() => _userDbHandler.GetUserAsync(userId)).ConfigureAwait(false);
-                var textPosts = await _fetchPostManager.GetUserTextPostBObjsAsync(userId).ConfigureAwait(false);
-                var pollPosts = await _fetchPostManager.GetUserPollPostBObjsAsync(userId).ConfigureAwait(false);
-                var followerIds = (await _followerDbHandler.GetUserFollowerIdsAsync(userId).ConfigureAwait(false))
+                var user = await _userDbHandler.GetUserAsync(userId);
+                var textPosts = await _fetchPostManager.GetUserTextPostBObjsAsync(userId);
+                var pollPosts = await _fetchPostManager.GetUserPollPostBObjsAsync(userId);
+                var followerIds = (await _followerDbHandler.GetUserFollowerIdsAsync(userId))
                     .ToList();
-                var followingIds = (await _followerDbHandler.GetUserFollowingIdsAsync(userId).ConfigureAwait(false))
+                var followingIds = (await _followerDbHandler.GetUserFollowingIdsAsync(userId))
                     .ToList();
                 foreach (var t in textPosts)
                 {
@@ -229,6 +230,8 @@ namespace SocialMediaApplication.DataManager
                 MailId = userBObj.MailId,
                 Gender = userBObj.Gender,
                 CreatedAt = userBObj.CreatedAt,
+                HomePageIcon = userBObj.HomePageIcon,
+                ProfileIcon = userBObj.ProfileIcon,
                 MaritalStatus = userBObj.MaritalStatus,
             };
         }
@@ -247,19 +250,6 @@ namespace SocialMediaApplication.DataManager
         //    }
         //    return postBObjs;
         //}
-
-        public async Task<UserBObj> GetUserBObjWithoutIdAsync(string userMailId)
-        {
-            var user = (await Task.Run(() => _userDbHandler.GetAllUserAsync()).ConfigureAwait(false)).ToList().SingleOrDefault(u => u.MailId == userMailId);
-            if (user == null) return null;
-            var textPosts = (await Task.Run(() => _fetchPostManager.GetUserTextPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var pollPosts = (await Task.Run(() => _fetchPostManager.GetUserPollPostBObjsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var followerIds = (await Task.Run(() => _followerDbHandler.GetUserFollowerIdsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var followingIds = (await Task.Run(() => _followerDbHandler.GetUserFollowingIdsAsync(user.Id)).ConfigureAwait(false)).ToList();
-            var userBObj = _userManagerHelper.ConvertModelToBObj(user, textPosts, pollPosts, followerIds, followingIds);
-
-            return userBObj;
-        }
 
         //public UserBObj ConvertModelToBObj(User user, List<TextPostBObj> textPosts, List<PollPostBObj> pollPosts, List<string> followersId, List<string> followingsId)
         //{
@@ -285,24 +275,5 @@ namespace SocialMediaApplication.DataManager
         //    return userBObj;
         //}
 
-
-        public async Task UnFollowAsync(string viewingUserId, string searchedUserId)
-        {
-            var userFollowerId = (await Task.Run(() => _followerDbHandler.GetFollowerAsync(viewingUserId,searchedUserId)).ConfigureAwait(false)).Id;
-            await Task.Run(() => _followerDbHandler.RemoveFollowerAsync(userFollowerId)).ConfigureAwait(false);
-
-            _userBObj?.FollowingsId.Remove(searchedUserId);
-        }
-
-        public async Task FollowAsync(string viewingUserId, string searchedUserId)
-        {
-            var userFollowerId = (await Task.Run(() => _followerDbHandler.GetFollowerAsync(viewingUserId, searchedUserId)).ConfigureAwait(false)).Id;
-            await Task.Run(() => _followerDbHandler.InsertFollowerAsync(new Follower(){FollowerId = viewingUserId, FollowingId = searchedUserId})).ConfigureAwait(false);
-
-            _userBObj?.FollowingsId.Add(searchedUserId);
-        }
-
-
-        
     }
 }

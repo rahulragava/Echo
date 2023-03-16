@@ -1,13 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Presenter.View.ProfileView;
-using Windows.UI.Xaml.Controls.Primitives;
 using SocialMediaApplication.Presenter.View.CommentView;
 using SocialMediaApplication.Presenter.View.FeedView;
-using SocialMediaApplication.Presenter.View.PostView;
 using SocialMediaApplication.Presenter.View.PostView.PollPostView;
 using SocialMediaApplication.Presenter.View.PostView.TextPostView;
 using SocialMediaApplication.Util;
@@ -17,7 +17,7 @@ namespace SocialMediaApplication.Presenter.View
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HomePage : Page
+    public sealed partial class HomePage : Page,INotifyPropertyChanged
     {
         public HomePage()
         {
@@ -36,6 +36,8 @@ namespace SocialMediaApplication.Presenter.View
             PollPostUserControl.NavigateToSearchPage += UserControlOnNavigateToSearchPage;
             UserListPage.NavigateToUser += UserListPageOnNavigateToUser;
             ProfilePage.NavigateToPostCreationPage += ProfilePageOnNavigateToPostCreationPage;
+            NavigationViewItem itemContent = NavigationMenu.MenuItems.ElementAt(0) as NavigationViewItem;
+            NavigationMenu.SelectedItem = itemContent;
         }
 
         private void HomePage_Unloaded(object sender, RoutedEventArgs e)
@@ -65,12 +67,16 @@ namespace SocialMediaApplication.Presenter.View
         {
             if (theme == AppSettings.LightTheme)
             {
-
-                ThemeChanger.Glyph = "&#xE945;";
+                ThemeIcon = "";
+                ThemeChangerNavigationItem.Content = "Dark";
+                //ThemeChanger.Glyph = "&#xE945;";
             }
             else
             {
-                ThemeChanger.Glyph = "&#E793;";
+                //ThemeChanger.Glyph = "&#E793;";
+                ThemeIcon = "";
+                ThemeChangerNavigationItem.Content = "Light";
+
             }
         }
         private void NavigationMenu_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -134,18 +140,46 @@ namespace SocialMediaApplication.Presenter.View
         {
             FrameworkElement window = (FrameworkElement)Window.Current.Content;
 
-            if (ThemeChanger.Glyph.ToString() == "&#xE945;")
+            if (ThemeIcon == "")
             {
                 AppSettings.Theme = AppSettings.DarkTheme;
                 window.RequestedTheme = AppSettings.DarkTheme;
-                ThemeChanger.Glyph = "&#E793;";
+                ThemeChangerNavigationItem.Content = "Light";
+                //ThemeChanger.Glyph = "&#E793;";
+                ThemeIcon = "";
             }
             else
             {
                 AppSettings.Theme = AppSettings.LightTheme;
                 window.RequestedTheme = AppSettings.LightTheme;
-                ThemeChanger.Glyph = "&#xE945;";
+                //ThemeChanger.Glyph = "&#xE945;";
+                ThemeChangerNavigationItem.Content = "Dark";
+                ThemeIcon = "";
+
             }
+        }
+
+        private string _themeIcon;
+
+        public string ThemeIcon
+        {
+            get => _themeIcon;
+            set => SetField(ref _themeIcon, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }
