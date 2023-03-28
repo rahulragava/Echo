@@ -8,7 +8,7 @@ namespace SocialMediaApplication.DataManager.Contract
         Task AddReactionAsync(ReactionToPostRequestObj reactionToPostRequestObj,
             ReactionToPostUseCaseCallBack reactionToPostUseCaseCallBack);
 
-        Task GetUserReaction(GetUserReactionRequest getUserReactionRequest,
+        Task GetUserReactionAsync(GetUserReactionRequest getUserReactionRequest,
             GetUserReactionUseCaseCallBack getUserReactionUseCallBack);
 
     }

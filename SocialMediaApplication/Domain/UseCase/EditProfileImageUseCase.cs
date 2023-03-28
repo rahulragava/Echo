@@ -23,7 +23,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-                _editProfileImageManager.EditProfileImage(EditProfileImageRequest,
+            _editProfileImageManager.EditProfileImageAsync(EditProfileImageRequest,
                 new EditProfileImageUseCaseCallBack(this));
         }
     }

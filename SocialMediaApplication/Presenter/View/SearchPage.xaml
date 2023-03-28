@@ -14,10 +14,9 @@
         </Grid.RowDefinitions>
 
         <AutoSuggestBox QueryIcon="find"
-                        PlaceholderText="Search . . ."
+                        x:Uid="Search"
                         TextChanged="AutoSuggestBox_TextChanged"
                         QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                        SuggestionChosen="AutoSuggestBox_SuggestionChosen"
                         ItemsSource="{x:Bind SearchViewModel.FilteredUserNames,Mode=OneWay}"
                         Width="500"
                         CornerRadius="7"
@@ -31,15 +30,8 @@
                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
                   FontSize="100"
                   Glyph="&#xE945;" />
-
-
-<Frame x:Name="UserProfileFrame"
+        <Frame x:Name="UserProfileFrame"
                Grid.Row="1">
-
         </Frame>
-        <!--<local:ProfilePage 
-                           ProfileUserId="{x:Bind SearchViewModel.UserId,Mode=OneWay}"
-                           Grid.Row="1"
-                           Margin="0 -10 0 0"/>-->
     </Grid>
 </Page>

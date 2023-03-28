@@ -52,7 +52,7 @@ namespace SocialMediaApplication.DataManager
         private readonly IUserPollChoiceSelectionDbHandler _userPollChoiceSelectionDbHandler = UserPollChoiceSelectionDbHandler.GetInstance;
         private static Dictionary<string,string> _userNames = new Dictionary<string,string>();
 
-        public async void FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack)
+        public async Task FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack)
         {
             try
             {

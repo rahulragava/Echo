@@ -87,11 +87,6 @@ namespace SocialMediaApplication.Presenter.View
                 }
             }
         }
-
-        public void SetImageSource()
-        {
-
-        }
     }
     
 }

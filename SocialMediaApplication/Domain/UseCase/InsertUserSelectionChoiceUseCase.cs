@@ -26,7 +26,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            _userSelectionPollChoiceManager.InsertPollChoiceSelection(InsertUserChoiceSelectionRequest, new InsertUserChoiceSelectionUseCaseCallBack(this));
+            _userSelectionPollChoiceManager.InsertPollChoiceSelectionAsync(InsertUserChoiceSelectionRequest, new InsertUserChoiceSelectionUseCaseCallBack(this));
 
         }
     }

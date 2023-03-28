@@ -5,7 +5,6 @@ using Windows.UI.Xaml.Controls;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.ViewModel;
-using System.Xml.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
@@ -17,7 +16,7 @@ using SocialMediaApplication.Models.Constant;
 
 namespace SocialMediaApplication.Presenter.View.CommentView
 {
-    public sealed partial class CommentUserControl : UserControl
+    public sealed partial class CommentUserControl : UserControl,ICommentUserControlView
     {
         public CommentViewModel CommentViewModel;
         public CommentUserControl()
@@ -28,20 +27,20 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             Unloaded -= OnUnloaded;
         }
 
-
-        private void CommentUserControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void CommentUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             UserManager.UserNameChanged += UserNameChanged; 
-            if (CommentDepthProperty != null)
-            {
-                CommentViewModel.SetStackPanelDepth(CommentDepth);
-            }
+            //if (CommentDepthProperty != null)
+            //{
+            //    //CommentViewModel.SetStackPanelDepth(CommentDepth);
+            //}
 
             CommentViewModel.CommentId = CommentId;
             CommentViewModel.Reactions = CommentReactions;
+            CommentViewModel.CommentedBy = CommentedBy;
+            CommentViewModel.CommentUserControlView = this;
+            CommentViewModel.GetUser();
             CommentViewModel.GetCommentReaction();
-            CommentViewModel.CommentInserted = InsertComment;
-            CommentViewModel.CommentRemoved = RemoveComments;
             if (CommentViewModel.Reaction == null) 
             {
                 ReactionOnComment.Visibility = Visibility.Collapsed;
@@ -72,9 +71,8 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             );
         }
 
-        //public event Action CommentsChanged;
         public event Action<CommentBObj, int> CommentInserted;
-
+        public event Action<List<Reaction>> CommentReactionIconClicked;
         public event Action<List<string>> CommentsRemoved;
 
         //public Thickness Thickness
@@ -202,11 +200,6 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                 Reactions = CommentReactions
             };
             CommentViewModel.RemoveSelectedComment(comment);
-            //CommentsRemoved?.Invoke(CommentViewModel.RemovedCommentIds);
-                //CommentViewModel(CommentsRemoved)
-            //CommentsChanged?.Invoke();
-
-
         }
 
         private void ReactionButton_OnPointerEntered(object sender, PointerRoutedEventArgs e)
@@ -220,12 +213,13 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             }
         }
 
-        private void InsertComment(CommentBObj comment, int index)
+        public void InsertComment(CommentBObj comment, int index)
         {
+            CommentContent.Text = string.Empty;
             CommentInserted?.Invoke(comment, index);
         }
 
-        private void RemoveComments(List<string> commentIds)
+        public void RemoveComments(List<string> commentIds)
         {
             CommentsRemoved?.Invoke(commentIds);
         }
@@ -245,8 +239,6 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             
             CommentViewModel.SendCommentButtonClicked(content, CommentId, PostId, CommentDepth);
             ReplyPanel.Visibility = Visibility.Collapsed;
-            //CommentsChanged?.Invoke();
-
         }
 
         private void SetReaction(Reaction reaction)
@@ -283,11 +275,7 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             ReactionOnComment.Visibility = Visibility.Visible;
             ReactionIcon.Visibility = Visibility.Visible;
         }
-
-        //private void UserTextBlock_OnTapped(object sender, TappedRoutedEventArgs e)
-        //{
-        //}
-
+        
         private void NavigateToSearchPageTextBlock_OnTapped(object sender, TappedRoutedEventArgs e)
         {
             if (CommentedBy == AppSettings.UserId)
@@ -296,5 +284,29 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             }
             NavigateToSearchPage?.Invoke(CommentedBy);
         }
+
+        private void CommentContent_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(CommentContent.Text) || string.IsNullOrEmpty(CommentContent.Text))
+            {
+                PostCommentButton.IsEnabled = false;
+            }
+            else
+            {
+                PostCommentButton.IsEnabled = true;
+            }
+        }
+
+        private void ReactionIcon_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            //CommentReactionIconClicked?.Invoke(CommentViewModel.Reactions);
+            CommentReactionIconClicked?.Invoke(CommentReactions);
+        }
+    }
+
+    public interface ICommentUserControlView
+    {
+        void InsertComment(CommentBObj comment, int index);
+        void RemoveComments(List<string> commentIds);
     }
 }

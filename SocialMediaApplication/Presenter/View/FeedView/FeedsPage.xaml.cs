@@ -2,6 +2,8 @@
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 
@@ -30,8 +32,7 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             {
                 FeedPageViewModel.GetFeeds();
             }
-            //_profilePageViewModel.GetUser();
-            //Bindings.Update();
+            
         }
 
         public void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -50,41 +51,39 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             }
         }
 
-        //private void PostControl_OnNavigateToSearchPage(string userId)
-        //{
-
-        //    Frame.Navigate(typeof(SearchPage), userId);
-        //}
         private void PostControl_OnPostRemoved(string postId)
         {
-            FeedPageViewModel.TextPosts.Remove(FeedPageViewModel.TextPosts.SingleOrDefault(p => p.Id == postId));
+            FeedPageViewModel.PostBObjList.Remove(FeedPageViewModel.PostBObjList.SingleOrDefault(p => p.Id == postId));
         }
 
         private void TextPostClicked_OnClick(object sender, RoutedEventArgs e)
         {
-            TextPostClicked.IsChecked = true;
-            PollPostClicked.IsChecked = false;
             TextPostListView.Visibility = Visibility.Visible;
             ListScroll.ScrollToVerticalOffset(0);
-            PollPostListView.Visibility = Visibility.Collapsed;
         }
 
         private void PollPostClicked_OnClick(object sender, RoutedEventArgs e)
         {
-            TextPostClicked.IsChecked = false;
-            PollPostClicked.IsChecked = true;
-            PollPostListView.Visibility = Visibility.Visible;
             ListScroll.ScrollToVerticalOffset(0);
             TextPostListView.Visibility = Visibility.Collapsed;
-
         }
 
         private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
         {
+            if (ReactionsPopup.Visibility == Visibility.Visible)
+            {
+                ReactionsPopup.Visibility = Visibility.Collapsed;
+            }
+
+            if (CommentReactionsPopup.Visibility == Visibility.Visible)
+            {
+                CommentReactionsPopup.Visibility = Visibility.Collapsed;
+            }
             ReactionsPopup.Visibility = Visibility.Visible;
-            //ReactionsPopup.IsOpen = true;
             FeedPageViewModel.SetReactions(reactions);
         }
+
+
 
         private void HideReaction_OnClick(object sender, RoutedEventArgs e)
         {
@@ -98,6 +97,30 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             FeedPageViewModel.ChangeInReactions(reactions);
         }
 
-       
+        private void MiniTextPostCreation_OnOnTextPostCreationSuccess(TextPostBObj textPost)
+        {
+            ExampleVsCodeInAppNotification.Show("Post  is Successfully Created!", 2000);
+            FeedPageViewModel.PostBObjList.Insert(0, textPost);
+        }
+
+        private void PostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> reactions)
+        {
+            if (ReactionsPopup.Visibility == Visibility.Visible)
+            {
+                ReactionsPopup.Visibility = Visibility.Collapsed;
+            }
+
+            if (CommentReactionsPopup.Visibility == Visibility.Visible)
+            {
+                CommentReactionsPopup.Visibility = Visibility.Collapsed;
+            }
+            FeedPageViewModel.SetCommentReactions(reactions);
+            CommentReactionsPopup.Visibility = Visibility.Visible;
+        }
+
+        private void HideCommentReaction_OnClick(object sender, RoutedEventArgs e)
+        {
+            CommentReactionsPopup.Visibility = Visibility.Collapsed;
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            _removePostManager.RemovePost(RemovePostRequest, new RemovePostUseCaseCallBack(this));
+            _removePostManager.RemovePostAsync(RemovePostRequest, new RemovePostUseCaseCallBack(this));
             //_addCommentManager.InsertCommentAsync(InsertCommentRequest, new InsertCommentUseCaseCallBack(this));
             //_userManager.LoginUserAsync(LoginRequest, new LogInUseCaseCallBack(this));
 

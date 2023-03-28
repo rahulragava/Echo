@@ -1,13 +1,14 @@
-﻿using SocialMediaApplication.Domain.UseCase;
+﻿using System.Threading.Tasks;
+using SocialMediaApplication.Domain.UseCase;
 
 namespace SocialMediaApplication.DataManager.Contract
 {
     public interface ICreatePostManager
     {
-        void CreateTextPostAsync(TextPostCreationRequest textPostCreationRequest,
+        Task CreateTextPostAsync(TextPostCreationRequest textPostCreationRequest,
             TextPostCreationUseCaseCallBack textPostCreationUseCaseCallBack);
 
-        void CreatePollPostAsync(PollPostCreationRequest pollPostCreationRequest,
+        Task CreatePollPostAsync(PollPostCreationRequest pollPostCreationRequest,
             PollPostCreationUseCaseCallBack pollPostCreationUseCaseCallBack);
     }
 }

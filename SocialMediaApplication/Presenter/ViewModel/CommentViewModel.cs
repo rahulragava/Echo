@@ -4,19 +4,15 @@ using SocialMediaApplication.Models.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.UI.Core;
 using SocialMediaApplication.Models.BusinessModels;
 using System.Collections.ObjectModel;
-using Windows.Globalization.NumberFormatting;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Microsoft.VisualStudio.PlatformUI;
 using SocialMediaApplication.Util;
-using System.ComponentModel.Design;
 using SocialMediaApplication.Presenter.View.CommentView;
-using static SocialMediaApplication.Presenter.ViewModel.PostControlViewModel;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -25,28 +21,22 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public ObservableCollection<CommentBObj> PostComments = new ObservableCollection<CommentBObj>();
         public List<CommentBObj> CommentsList;
         public List<Reaction> Reactions;
-        //public ObservableCollection<string> UserFollowerList;
-        //public ObservableCollection<string> UserFollowingList;
-        //public User User { get; set; }
+        public ICommentsViewUserControlView CommentViewUserControlView { get; set; }
+        public ICommentUserControlView CommentUserControlView { get; set; }
 
         private Reaction _reaction;
-
         public Reaction Reaction
         {
             get => _reaction;
             set => SetProperty(ref _reaction, value);
         }
-        public EventHandler CheckAnyComments;
-        public EventHandler ParentCommentInserted;
-        public Action<CommentBObj,int> CommentInserted;
-        public Action<List<String>> CommentRemoved;
+        //public Action<CommentBObj,int> CommentInserted;
+        //public Action<List<String>> CommentRemoved;
 
         public CommentViewModel()
         {
             CommentsList = new List<CommentBObj>();
             Reactions = new List<Reaction>();
-            //UserFollowerList = new ObservableCollection<string>();
-            //UserFollowingList = new ObservableCollection<string>();
         }
 
         private string _reactionIcon;
@@ -57,6 +47,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _reactionIcon, value);
         }
 
+        private string _commentedBy;
+
+        public string CommentedBy
+        {
+            get => _commentedBy;
+            set => SetProperty(ref _commentedBy, value);
+        }
 
         public void SendCommentButtonClicked(string content, string parentId, string commentOnPostId,int depth)
         {
@@ -73,13 +70,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
             removeCommentUseCase.Execute();
         }
 
-        //public Action GetUserMiniDetailSuccess;
-        //public void GetMiniProfileDetails(string commentByUser)
-        //{
-        //    var userMiniDetailRequest = new UserMiniDetailRequest(commentByUser, new UserMiniDetailPresenterCallBack(this));
-        //    var userMiniDetailUseCase = new UserMiniDetailUseCase(userMiniDetailRequest);
-        //    userMiniDetailUseCase.Execute();
-        //}
+        public void GetUser()
+        {
+            var getUserRequest = new GetUserRequestObj(new List<string>() { CommentedBy },
+                new GetUserDetailViewModelPresenterCallBack(this));
+            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            getUserUseCase.Execute();
+        }
 
         public string PostId;
         public string CommentId;
@@ -130,12 +127,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
         }
 
-        public void GetComments()
+        private BitmapImage _profileIcon;
+
+        public BitmapImage ProfileIcon
         {
-            var getCommentRequest = new GetCommentRequest(PostId, new GetCommentsPresenterCallBack(this));
-            var getCommentUseCase = new GetCommentUseCase(getCommentRequest);
-            getCommentUseCase.Execute();
+            get => _profileIcon;
+            set => SetProperty(ref _profileIcon, value);
         }
+
 
         public void ClearAndUpdate()
         {
@@ -146,18 +145,25 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
         }
 
-        public void SetStackPanelDepth(int depth)
+        public async Task SetProfileIconAsync(string imagePath)
         {
-            StackDepth = depth+45;
+            var imageConversion = new StringToImageUtil();
+            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
+            ProfileIcon = profileIcon;
         }
 
-        private int _stackDepth;
+        //public void SetStackPanelDepth(int depth)
+        //{
+        //    StackDepth = 45;
+        //}
 
-        public int StackDepth
-        {
-            get => _stackDepth;
-            set => SetProperty(ref _stackDepth, value);
-        }
+        //private int _stackDepth;
+
+        //public int StackDepth
+        //{
+        //    get => _stackDepth;
+        //    set => SetProperty(ref _stackDepth, value);
+        //}
         private Visibility _removeButtonVisibility;
 
         public Visibility RemoveButtonVisibility
@@ -166,9 +172,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _removeButtonVisibility, value);
         }
 
+
         public void SuccessfullyCommented(CommentBObj commentBObj, int insertedIndex)
         {
-            if (CheckAnyComments != null)
+            if (CommentViewUserControlView != null)
             {
                 if (CommentsList.Count == 0)
                 {
@@ -180,95 +187,29 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     CommentsList.Insert(insertedIndex, commentBObj);
                     PostComments.Insert(insertedIndex, commentBObj);
                 }
-                ParentCommentInserted?.Invoke(this, EventArgs.Empty);
+                CommentViewUserControlView.ParentCommentInserted();
+                CommentViewUserControlView.CommentExist();
             }
-            CommentInserted?.Invoke(commentBObj,insertedIndex);
-            CheckAnyComments?.Invoke(this, EventArgs.Empty);
 
+            if (CommentUserControlView != null)
+            {
+
+                CommentUserControlView.InsertComment(commentBObj, insertedIndex);
+            }
+            
         }
       
-        public void SuccessfullyRemovedComments(List<string> removedCommentIds)
-        {
-
-            CommentRemoved?.Invoke(removedCommentIds);
-        }
-        public void GetCommentSuccess(List<CommentBObj> comments)
-        {
-            CommentsList = comments;
-            PostComments.Clear();
-            foreach (var comment in comments)
-            {
-                PostComments.Add(comment);
-            }
-            CheckAnyComments?.Invoke(this, EventArgs.Empty);
-
-        }
-
-        //public class UserMiniDetailPresenterCallBack : IPresenterCallBack<UserMiniDetailResponse>
+        //public void GetCommentSuccess(List<CommentBObj> comments)
         //{
-        //    private readonly CommentViewModel _commentViewModel;
-        //    public UserMiniDetailPresenterCallBack(CommentViewModel commentViewModel)
+        //    CommentsList = comments;
+        //    PostComments.Clear();
+        //    foreach (var comment in comments)
         //    {
-        //        _commentViewModel = commentViewModel;
+        //        PostComments.Add(comment);
         //    }
-
-        //    public void OnSuccess(UserMiniDetailResponse response)
+        //    if (CommentViewUserControlView != null)
         //    {
-        //        Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //            () =>
-        //            {
-        //                _commentViewModel.User = response.User;
-        //                _commentViewModel.UserFollowerList.Clear();
-        //                _commentViewModel.UserFollowingList.Clear();
-        //                foreach (var responseFollowerUserId in response.FollowerUserIds)
-        //                {
-        //                    _commentViewModel.UserFollowerList.Add(responseFollowerUserId);
-        //                }
-
-        //                foreach (var responseFollowingUserId in response.FollowingUserIds)
-        //                {
-        //                    _commentViewModel.UserFollowingList.Add(responseFollowingUserId);
-        //                }
-
-        //                _commentViewModel.GetUserMiniDetailSuccess?.Invoke();
-        //            }
-        //        );
-        //    }
-
-        //    public void OnError(Exception ex)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
-
-        //public class FollowUnFollowPresenterCallBack : IPresenterCallBack<FollowUnFollowSearchedUserResponse>
-        //{
-        //    private readonly CommentViewModel _commentViewModel;
-
-        //    public FollowUnFollowPresenterCallBack(CommentViewModel commentViewModel)
-        //    {
-        //        _commentViewModel = commentViewModel;
-        //    }
-        //    public void OnSuccess(FollowUnFollowSearchedUserResponse followUnFollowSearchedUserResponse)
-        //    {
-        //        Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //            () =>
-        //            {
-        //                if (followUnFollowSearchedUserResponse.FollowingSuccess)
-        //                {
-        //                    _commentViewModel.UserFollowingList.Add(AppSettings.UserId);
-        //                }
-        //                else
-        //                {
-        //                    _commentViewModel.UserFollowingList.Remove(AppSettings.UserId);
-        //                }
-        //            }
-        //        );
-        //    }
-
-        //    public void OnError(Exception ex)
-        //    {
-        //        throw new NotImplementedException();
+        //        CommentViewUserControlView.CommentExist();
         //    }
         //}
 
@@ -311,8 +252,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        //_commentViewModel.CheckAnyComments?.Invoke(this,EventArgs.Empty);
-                        _commentViewModel.SuccessfullyRemovedComments(removeCommentResponse.RemovedCommentIds);
+                        _commentViewModel.CommentUserControlView.RemoveComments(removeCommentResponse.RemovedCommentIds);
                     }
                 );
             }
@@ -324,30 +264,56 @@ namespace SocialMediaApplication.Presenter.ViewModel
         }
 
 
-
-        public class GetCommentsPresenterCallBack : IPresenterCallBack<GetCommentResponse>
+        public class GetUserDetailViewModelPresenterCallBack : IPresenterCallBack<GetUserResponseObj>
         {
             private readonly CommentViewModel _commentViewModel;
 
-            public GetCommentsPresenterCallBack(CommentViewModel commentViewModel)
+            public GetUserDetailViewModelPresenterCallBack(CommentViewModel commentViewModel)
             {
                 _commentViewModel = commentViewModel;
             }
 
-            public void OnSuccess(GetCommentResponse getCommentResponse)
+
+            public void OnSuccess(GetUserResponseObj getUserResponseObj)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _commentViewModel.GetCommentSuccess(getCommentResponse.Comments);
+                        _commentViewModel?.SetProfileIconAsync(getUserResponseObj.Users[0].ProfileIcon);
                     }
                 );
             }
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
+
+        //public class GetCommentsPresenterCallBack : IPresenterCallBack<GetCommentResponse>
+        //{
+        //    private readonly CommentViewModel _commentViewModel;
+
+        //    public GetCommentsPresenterCallBack(CommentViewModel commentViewModel)
+        //    {
+        //        _commentViewModel = commentViewModel;
+        //    }
+
+        //    public void OnSuccess(GetCommentResponse getCommentResponse)
+        //    {
+        //        Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+        //            () =>
+        //            {
+        //                _commentViewModel.GetCommentSuccess(getCommentResponse.Comments);
+        //            }
+        //        );
+        //    }
+
+        //    public void OnError(Exception ex)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SocialMediaApplication.Domain.UseCase;
 using Windows.UI.Core;
 using Microsoft.VisualStudio.PlatformUI;
+using SocialMediaApplication.Presenter.View;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -15,6 +14,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public List<string> UserNames;
         public List<string> UserIds;
         public ObservableCollection<string> UserNameList;
+        public ISearchView SearchView { get; set; }
 
         private string _userId;
 
@@ -23,8 +23,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _userId;
             set => SetProperty(ref _userId, value);
         }
-
-
 
         public ObservableCollection<string> FilteredUserNames;
 
@@ -72,13 +70,9 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
             var index = UserNames.IndexOf(userName);
             UserId = UserIds[index];
-            NavigateToProfilePage?.Invoke(this, EventArgs.Empty);
-
-            //NavigateToProfilePage?.Invoke(this, EventArgs(UserId));
-
+            SearchView.NavigateToProfilePage();
         }
 
-        public EventHandler NavigateToProfilePage;
         public void SearchSuccess(GetUserNamesResponseObj getUserNamesResponseObj)
         {
             UserNames = getUserNamesResponseObj.UserNames;
@@ -109,7 +103,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 );
 
             }
-
             public void OnError(Exception ex)
             {
             }

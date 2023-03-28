@@ -38,81 +38,26 @@ namespace SocialMediaApplication.DataManager
 
         public async Task<List<PollChoiceBObj>> GetPollChoicesBObjAsync()
         {
-            var pollChoiceBobjs = new List<PollChoiceBObj>();
+            var pollChoiceBObjList = new List<PollChoiceBObj>();
             var pollChoices = (await _pollChoiceDbHandler.GetAllPollChoiceAsync()).ToList();
             var userPollChoiceSelections = (await _userPollChoiceSelectionDbHandler.GetAllUserPollChoiceSelectionAsync()).ToList();
 
             foreach (var pollChoice in pollChoices)
             {
-                var pollChoiceBobj = new PollChoiceBObj();
+                var pollChoiceBObj = new PollChoiceBObj();
                 var pollChoiceSelectedUsers = userPollChoiceSelections
                     .Where(userPollChoiceSelection => userPollChoiceSelection.ChoiceId == pollChoice.Id).ToList();
 
-                pollChoiceBobj.Id = pollChoice.Id;
-                pollChoiceBobj.Choice = pollChoice.Choice;
-                pollChoiceBobj.PostId = pollChoice.PostId;
-                pollChoiceBobj.PostFontStyle = pollChoice.PostFontStyle;
-                pollChoiceBobj.ChoiceSelectedUsers = pollChoiceSelectedUsers;
+                pollChoiceBObj.Id = pollChoice.Id;
+                pollChoiceBObj.Choice = pollChoice.Choice;
+                pollChoiceBObj.PostId = pollChoice.PostId;
+                pollChoiceBObj.PostFontStyle = pollChoice.PostFontStyle;
+                pollChoiceBObj.ChoiceSelectedUsers = pollChoiceSelectedUsers;
 
-                pollChoiceBobjs.Add(pollChoiceBobj);
+                pollChoiceBObjList.Add(pollChoiceBObj);
             }
 
-            return pollChoiceBobjs;
+            return pollChoiceBObjList;
         }
-
-        public async Task AddPollChoiceAsync(PollChoiceBObj pollChoice)
-        {
-            var pollChoiceEntityModel = ConvertPollChoiceBObjToEntityModel(pollChoice);
-            await Task.Run(() => _pollChoiceDbHandler.InsertPollChoiceAsync(pollChoiceEntityModel));
-        }
-
-        public PollChoice ConvertPollChoiceBObjToEntityModel(PollChoiceBObj pollChoiceBobj)
-        {
-            PollChoice pollChoice = new PollChoice();
-            pollChoice.Id = pollChoiceBobj.Id;
-            pollChoice.Choice = pollChoiceBobj.Choice;
-            pollChoice.PostId = pollChoiceBobj.PostId;
-            pollChoice.PostFontStyle = pollChoiceBobj.PostFontStyle;
-
-            return pollChoice;
-        }
-
-        public async Task RemovePollChoiceAsync(PollChoice pollChoice)
-        {
-            await Task.Run(() => _pollChoiceDbHandler.RemovePollChoiceAsync(pollChoice.Id));
-        }
-
-        public async Task AddPollChoicesAsync(List<PollChoiceBObj> pollChoiceBobjList)
-        {
-            foreach (var pollChoice in pollChoiceBobjList)
-            {
-                if (pollChoice.ChoiceSelectedUsers != null && pollChoice.ChoiceSelectedUsers.Any())
-                {
-                    await Task.Run(() => _userPollChoiceSelectionDbHandler.InsertUserPollChoiceSelectionsAsync(pollChoice.ChoiceSelectedUsers)).ConfigureAwait(false);
-                }
-                await AddPollChoiceAsync(pollChoice);
-            }
-        }
-
-        public async Task RemovePollChoicesAsync(List<PollChoiceBObj> choices)
-        {
-            foreach (var pollChoice in choices)
-            {
-                if (pollChoice.ChoiceSelectedUsers != null && pollChoice.ChoiceSelectedUsers.Count > 0)
-                    await Task.Run(() => _userPollChoiceSelectionDbHandler.RemoveUserPollChoiceSelectionsAsync(pollChoice.ChoiceSelectedUsers));
-                await RemovePollChoiceAsync(ConvertPollChoiceBObjToEntityModel(pollChoice));
-            }
-        }
-
-        public async Task AddChoiceSelectedUser(UserPollChoiceSelection userSelectionPollChoice)
-        {
-            if (userSelectionPollChoice != null)
-            {
-                await Task.Run(() => _userPollChoiceSelectionDbHandler.InsertUserPollChoiceSelectionAsync(userSelectionPollChoice)).ConfigureAwait(false);
-            }
-        }
-
-        public async Task<List<PollChoice>> GetPollChoiceAsync() => (await Task.Run(() => _pollChoiceDbHandler.GetAllPollChoiceAsync()).ConfigureAwait(false)).ToList();
-        
     }
 }

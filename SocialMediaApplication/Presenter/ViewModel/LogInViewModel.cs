@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Windows.UI.Xaml;
 using SocialMediaApplication.Domain.UseCase;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 using Windows.UI.Core;
-using Microsoft.VisualStudio.PlatformUI;
+using SocialMediaApplication.Presenter.View;
+using SocialMediaApplication.Presenter.View.LogInView;
 using SocialMediaApplication.Util;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
 
@@ -19,6 +14,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public ILogInView LogInView { get; set; }
 
         private bool _isPasswordReveal =true;
         public bool IsPasswordReveal
@@ -67,7 +63,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         private static readonly CancellationTokenSource Cts = new CancellationTokenSource();
 
-        public EventHandler GoToHomePageEventHandler;
 
         public void LoginButtonOnClick()
         {
@@ -117,43 +112,36 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Email = string.Empty;
             Password = string.Empty;
         }
-
-        public void SuccessfullyLoggedIn()
+        
+        public class LogInViewModelPresenterCallBack : IPresenterCallBack<LoginResponse>
         {
-            GoToHomePageEventHandler?.Invoke(this,EventArgs.Empty);
+            private readonly LogInViewModel _loginViewModel;
+            public LogInViewModelPresenterCallBack(LogInViewModel loginViewModel)
+            {
+                _loginViewModel = loginViewModel;
+            }
+
+            public void OnSuccess(LoginResponse logInResponse)
+            {
+                AppSettings.LocalSettings.Values["user"] = logInResponse.User.Id;
+                AppSettings.UserId = AppSettings.LocalSettings.Values["user"]?.ToString();
+
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _loginViewModel.LogInView.GoToHomePage();
+                    }
+                );
+            }
+            public void OnError(Exception ex)
+            {
+                //throw new NotImplementedException();
+            }
         }
     }
 
 
-    public class LogInViewModelPresenterCallBack : IPresenterCallBack<LoginResponse>
-    {
-        private LogInViewModel _loginViewModel;
-        public LogInViewModelPresenterCallBack(LogInViewModel loginViewModel)
-        {
-            _loginViewModel = loginViewModel;
-        }
-
-        public void OnSuccess(LoginResponse logInResponse)
-        {
-            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            //localSettings.Values["user"] = logInResponse.User.Id;
-            AppSettings.LocalSettings.Values["user"] = logInResponse.User.Id;
-            AppSettings.UserId = AppSettings.LocalSettings.Values["user"]?.ToString();
-
-            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    // Your UI update code goes here!
-                    _loginViewModel.SuccessfullyLoggedIn();
-                }
-            );
-        }
-
-        public void OnError(Exception ex)
-        {
-            //throw new NotImplementedException();
-        }
-    }
+ 
 
 
 }

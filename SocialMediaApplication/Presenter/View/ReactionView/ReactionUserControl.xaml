@@ -61,7 +61,7 @@
                       />
 
             <FontIcon FontFamily="Segoe UI Emoji"
-                      Glyph="&#x1F621;" x:Name="MadReaction"
+                  Glyph="&#x1F620;" x:Name="MadReaction"
                       Tapped="MadReaction_OnTapped"
             />
     </StackPanel>

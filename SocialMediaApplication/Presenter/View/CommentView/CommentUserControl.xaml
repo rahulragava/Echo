@@ -2,18 +2,16 @@
     x:Class="SocialMediaApplication.Presenter.View.CommentView.CommentUserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SocialMediaApplication.Presenter.View.PostView"
-    xmlns:util="using:SocialMediaApplication.Util"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
     xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
+    xmlns:valueConverter1="using:SocialMediaApplication.Util.ValueConverter"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <valueConverter:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter:RelativeDateTimeConvertor>
-        <valueConverter:MarginConverter x:Key="MarginConverter"></valueConverter:MarginConverter>
+        <valueConverter1:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter1:RelativeDateTimeConvertor>
+        <valueConverter1:MarginConverter x:Key="MarginConverter"></valueConverter1:MarginConverter>
         <Style x:Key="ButtonStyle1" TargetType="Button">
             <Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
             <Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
@@ -90,25 +88,12 @@
         </Style>
     </UserControl.Resources>
 
-    <!--<StackPanel Spacing="10" Margin="{x:Bind CommentDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
-       <StackPanel Orientation="Horizontal" Spacing="15">
-           <PersonPicture Width="30"/>
-            <TextBlock Text="{x:Bind CommentedByUserName,Mode=OneWay}" FontSize="15" VerticalAlignment="Center"/>
-            <TextBlock Text="{x:Bind CommentedAt, Mode=OneWay}" FontSize="13" VerticalAlignment="Center"></TextBlock>
-       </StackPanel>
-        <TextBlock Text="{x:Bind CommentContent,Mode=OneWay}" Margin="42 0 0 0" FontSize="16"/>
-       <StackPanel Orientation="Horizontal">
-
-       </StackPanel>
-    </StackPanel>-->
-
-
     <StackPanel Margin="{x:Bind CommentDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}" 
                 Spacing="15">
         <StackPanel Orientation="Horizontal">
             <PersonPicture Margin="10 6 0 0" 
                            x:Name="NavigateToSearchPageTextBlock"
-
+                           ProfilePicture="{x:Bind CommentViewModel.ProfileIcon, Mode=OneWay}"
                            Tapped="NavigateToSearchPageTextBlock_OnTapped"
                            Width="35"/>
             <RelativePanel>
@@ -132,106 +117,24 @@
                 <Border RelativePanel.AlignBottomWith="CommentPanel"
                         x:Name="ReactionOnComment"
                         Margin="-10 -9"
-                        CornerRadius="50"
+                        Height="30"
+                        Width="30"
+                        CornerRadius="15"
                         BorderThickness="1"
                         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                         RelativePanel.AlignRightWith="CommentPanel">
 
                     <FontIcon x:Name="ReactionIcon"
+                              Tapped="ReactionIcon_OnTapped"
                               Glyph="{x:Bind CommentViewModel.ReactionIcon,Mode=OneWay}" FontFamily="Segoe UI Emoji" 
                               />
                 </Border>
             </RelativePanel>
-            <!--<Popup Grid.Row="0" VerticalOffset="60" 
-               Visibility="Collapsed"
-               HorizontalOffset="20" 
-               x:Name="ProfileMiniPopUp">
-                <StackPanel Background="{ThemeResource BackgroundColor}" 
-                        CornerRadius="10"
-                        Width="300"
-                        Height="150">
-                    <Grid RowSpacing="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <PersonPicture Width="40"
-                                   Grid.Row="0"
-                                   Grid.RowSpan="2"
-                                   Grid.Column="0"/>
-                        <TextBlock Grid.Row="0"
-                               Grid.Column="1"
-                               TextDecorations="Underline"
-                               x:Name="UserTextBlock"
-                               Tapped="UserTextBlock_OnTapped"
-                               Grid.ColumnSpan="2"
-                               Margin="0 8 3 0"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Text="{x:Bind CommentedByUserName,Mode=OneWay}"></TextBlock>
-                        <TextBlock Grid.Row="1" Grid.Column="1">Followers</TextBlock>
-                        <TextBlock Grid.Row="2"
-                               Grid.Column="1"
-                               HorizontalAlignment="Center"
-                               Text="{x:Bind CommentViewModel.UserFollowerList.Count,Mode=OneWay}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2">Followings</TextBlock>
-                        <TextBlock Grid.Row="2"
-                               HorizontalAlignment="Center"
-                               Grid.Column="2"
-                               Text="{x:Bind CommentViewModel.UserFollowingList.Count,Mode=OneWay}"/>
-                        <Button 
-                            Grid.Row="0"
-                            Content="X"
-                            CornerRadius="17.5"
-                            Height="35"
-                            Width="35"
-                            Margin=" 0 5 5 0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            x:Name="ExitButton"
-                            Click="ExitButton_OnClick"
-                            Grid.Column="3"/>
-                        <Button Grid.Row="3"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="4"
-                            Margin="10 0"
-                            HorizontalAlignment="Stretch" 
-                            x:Name="FollowButton" 
-                            Visibility="Collapsed" 
-                            Click="FollowButton_OnClick"
-                            Content="Follow"/>
-                        <Button Grid.Row="3"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="4"
-                            Margin="10 0"
-                            HorizontalAlignment="Stretch" 
-                            x:Name="UnFollowButton" 
-                            Visibility="Collapsed" 
-                            Click="UnFollowButton_OnClick"
-                            Content="UnFollow"/>
-
-                    </Grid>
-                    <StackPanel Orientation="Horizontal">
-
-                    </StackPanel>
-
-
-                </StackPanel>
-            </Popup>-->
 
         </StackPanel>
         <StackPanel Orientation="Horizontal"
-                    Margin="{x:Bind CommentViewModel.StackDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}">
+                    Margin="50 -10 0 0">
             <Button x:Name="ReactionButton" 
-                    Style="{StaticResource ButtonStyle1}"
                     BorderThickness="0"
                     Content="React" 
                     PointerEntered="ReactionButton_OnPointerEntered">
@@ -246,19 +149,14 @@
             </Button>
 
             <HyperlinkButton x:Name="ReplyButton"
-                             Margin="2 0 0 0"
+                             x:Uid="Reply"
+                             Margin="4 0 4 0"
+                             FontSize="15"
                              Click="ReplyButton_OnClick"
                              BorderThickness="0"
-                             
                              HorizontalAlignment="Left">
-                <HyperlinkButton.Content>
-                    <TextBlock  FontSize="15">Reply</TextBlock>
-                </HyperlinkButton.Content>
+            
             </HyperlinkButton>
-
-
-
-
             <TextBlock Text="{x:Bind CommentDateTime, Mode=OneWay,Converter={StaticResource DateTimeConvertor}}"  
                        Margin="0 0 0 0"
                        FontSize="13" 
@@ -275,7 +173,7 @@
             </FontIcon>
         </StackPanel>
         <Grid x:Name="ReplyPanel"
-              Margin="{x:Bind CommentViewModel.StackDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}"
+              Margin="50 -10 0 0"
               Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -284,12 +182,14 @@
             <TextBox x:Name="CommentContent"
                      HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" 
-                     PlaceholderText="type your reply here ..." 
+                     x:Uid="ReplyEnter"
+                     TextChanged="CommentContent_OnTextChanged"
                      Margin="10">
             </TextBox>
 
             <Button Grid.Column="1" HorizontalAlignment="Stretch"
                     Margin="0 0 4 0" 
+                    IsEnabled="False"
                     x:Name="PostCommentButton"
                     Style="{StaticResource ButtonStyle1}"
                     Click="PostCommentButton_OnClick">
@@ -298,27 +198,5 @@
                 </Button.Content>
             </Button>
         </Grid>
-        <!--<StackPanel Orientation="Horizontal"
-                    x:Name="ReplyPanel"
-                    Margin="{x:Bind CommentViewModel.StackDepth,Mode=OneWay, Converter={StaticResource MarginConverter}}"
-                    Visibility="Visible">
-            <TextBox x:Name="CommentContent"
-                     HorizontalAlignment="Stretch" 
-                     
-                     VerticalAlignment="Center" 
-                     PlaceholderText="type your reply here ..." 
-                     Margin="10">
-            </TextBox>
-
-            <Button HorizontalAlignment="Stretch"
-                    Margin="0 0 4 0" 
-                    x:Name="PostCommentButton"
-                    Style="{StaticResource ButtonStyle1}"
-                    Click="PostCommentButton_OnClick">
-                <Button.Content>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>
-                </Button.Content>
-            </Button>
-        </StackPanel>-->
     </StackPanel>
 </UserControl>

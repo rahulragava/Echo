@@ -57,7 +57,6 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
             await Db.CreateTableAsync<Reaction>();
             await Db.CreateTableAsync<Comment>();
             await Db.CreateTableAsync<PollChoice>();
-            await Db.CreateTableAsync<Label>();
             await Db.CreateTableAsync<Follower>();
         }
     }

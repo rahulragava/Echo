@@ -9,8 +9,13 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using SocialMediaApplication.Domain.UseCase;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using SocialMediaApplication.Models.EntityModels;
+using SocialMediaApplication.Util;
+using static SocialMediaApplication.Presenter.ViewModel.GetUsersDetailViewModel;
+using SocialMediaApplication.Models.Constant;
+using SocialMediaApplication.Presenter.View.PostView.TextPostView;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -18,16 +23,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
     {
         public ObservableCollection<TextPostBObj> TextPosts;
         public ObservableCollection<PollPostBObj> PollPosts;
-        public ObservableCollection<PostBObj> PostBObjs;
+        public ObservableCollection<PostBObj> PostBObjList;
         public ObservableCollection<Reaction> Reactions;
+        public ObservableCollection<Reaction> CommentReactions;
         public bool Success = true;
+        public User User;
+        public IMiniTextPostCreationView MiniTextPostCreationView;
 
         public FeedPageViewModel()
         {
             TextPosts = new ObservableCollection<TextPostBObj>();
             PollPosts = new ObservableCollection<PollPostBObj>();
             Reactions = new ObservableCollection<Reaction>();
-            PostBObjs = new ObservableCollection<PostBObj>();
+            CommentReactions = new ObservableCollection<Reaction>();
+            PostBObjList = new ObservableCollection<PostBObj>();
+            PostFontStyles = Enum.GetValues(typeof(PostFontStyle)).Cast<PostFontStyle>().ToList();
         }
         private double _scrollPosition;
 
@@ -37,6 +47,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _scrollPosition,value);
         }
 
+        private BitmapImage _profileImage;
+
+        public BitmapImage ProfileImage
+        {
+            get => _profileImage;
+            set => SetProperty(ref _profileImage, value);
+        }
+
+        private string _userThought;
+
+        public string UserThought
+        {
+            get => _userThought;
+            set => SetProperty(ref _userThought, value);
+        }
         public void SetReactions(List<Reaction> reactions)
         {
             Reactions.Clear();
@@ -44,6 +69,33 @@ namespace SocialMediaApplication.Presenter.ViewModel
             {
                 Reactions.Add(reaction);
             }
+        }
+
+        public void SetCommentReactions(List<Reaction> reactions)
+        {
+            CommentReactions.Clear();
+            foreach (var reaction in reactions)
+            {
+                CommentReactions.Add(reaction);
+            }
+        }
+
+        public async void SetProfileIcon(string imagePath)
+        {
+            var imageConversion = new StringToImageUtil();
+            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
+            ProfileImage = profileIcon;
+        }
+
+        public List<PostFontStyle> PostFontStyles;
+
+        private PostFontStyle _fontStyle = PostFontStyle.Simple;
+
+        public PostFontStyle FontStyle
+        {
+            get => _fontStyle;
+
+            set => SetProperty(ref _fontStyle, value);
         }
 
         private Reaction _reaction;
@@ -80,17 +132,62 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void GetFeeds()
         {
-
-            //int pollPostAmountToBeFetched ;
-            //int pollPostAmountToBeSkipped = 0;
-
-            //int textPostAmountToBeFetched = 0;
-            //int textPostAmountToBeSkipped = 0;
             Success = false;
             var fetchFeedRequest = new FetchFeedRequest(PollAmountToBeFetched, PollAmountToBeSkipped, TextAmountToBeFetched, TextAmountToBeSkipped, new FeedPageViewModelPresenterCallBack(this));
             var fetchFeedUseCase = new FetchFeedUseCase(fetchFeedRequest);
             fetchFeedUseCase.Execute();
 
+        }
+
+        public void GetUser()
+        {
+            var getUserRequest = new GetUserRequestObj(new List<string>(){AppSettings.UserId}, new GetUserDetailViewModelPresenterCallBack(this));
+            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            getUserUseCase.Execute();
+        }
+
+        public TextPost TextPost;
+        public void CreateTextPost(TextPost textPost)
+        {
+            TextPost = textPost;
+            var textPostCreationRequest =
+                new TextPostCreationRequest(textPost, new TextPostCreationPresenterCallBack(this));
+            var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest);
+            textPostCreationUseCase.Execute();
+        }
+
+        public class GetUserDetailViewModelPresenterCallBack : IPresenterCallBack<GetUserResponseObj>
+        {
+            private readonly FeedPageViewModel _feedPageViewModel;
+
+            public GetUserDetailViewModelPresenterCallBack(FeedPageViewModel feedPageViewModel)
+            {
+                _feedPageViewModel  = feedPageViewModel;
+            }
+
+            public void OnSuccess(GetUserResponseObj getUserResponseObj)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _feedPageViewModel.User = getUserResponseObj.Users[0];
+                        if (string.IsNullOrEmpty(getUserResponseObj.Users[0].FirstName))
+                        {
+                            _feedPageViewModel.UserThought = "Whats on your mind, " + getUserResponseObj.Users[0].UserName + " ?";
+                        }
+                        else
+                        {
+                            _feedPageViewModel.UserThought = "Whats on your mind, " + getUserResponseObj.Users[0].FirstName +" ?";
+                        }
+                        _feedPageViewModel.SetProfileIcon(getUserResponseObj.Users[0].ProfileIcon);
+                    }
+                );
+            }
+
+            public void OnError(Exception ex)
+            {
+                //throw new NotImplementedException();
+            }
         }
 
         public class FeedPageViewModelPresenterCallBack : IPresenterCallBack<FetchFeedResponse>
@@ -110,23 +207,18 @@ namespace SocialMediaApplication.Presenter.ViewModel
                         {
                             return;
                         }
-                        else
+
+                        foreach (var postBObj in fetchFeedResponse.TextPosts.OrderByDescending(p => p.CreatedAt))
                         {
-                            foreach (var textPost in fetchFeedResponse.TextPosts)
-                            {
-                                _feedPageViewModel.TextPosts.Add(textPost);
-                                _feedPageViewModel.PostBObjs.Add(textPost);
-                            }
-                            foreach (var pollPost in fetchFeedResponse.PollPosts)
-                            {
-                                _feedPageViewModel.PollPosts.Add(pollPost);
-                                _feedPageViewModel.PostBObjs.Add(pollPost);
-
-                            }
-
-                            _feedPageViewModel.PollAmountToBeSkipped += 5;
-                            _feedPageViewModel.TextAmountToBeSkipped += 5;
+                            _feedPageViewModel.PostBObjList.Add(postBObj);
                         }
+
+                        foreach (var postBObj in fetchFeedResponse.PollPosts.OrderByDescending(p => p.CreatedAt))
+                        {
+                            _feedPageViewModel.PostBObjList.Add(postBObj);
+                        }
+                        _feedPageViewModel.PollAmountToBeSkipped += 5;
+                        _feedPageViewModel.TextAmountToBeSkipped += 5;
 
                         _feedPageViewModel.Success = true;
                     }
@@ -135,6 +227,32 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnError(Exception ex)
             {
+            }
+        }
+
+        public class TextPostCreationPresenterCallBack : IPresenterCallBack<TextPostCreationResponse>
+        {
+            private readonly FeedPageViewModel _feedPageViewModel;
+            public TextPostCreationPresenterCallBack(FeedPageViewModel feedPageViewModel)
+            {
+                _feedPageViewModel = feedPageViewModel;
+            }
+
+
+            public void OnSuccess(TextPostCreationResponse textPostCreationResponse)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        //Notify
+                        _feedPageViewModel.MiniTextPostCreationView.PostedSuccess();
+                    }
+                );
+            }
+
+            public void OnError(Exception ex)
+            {
+                throw new NotImplementedException();
             }
         }
     }

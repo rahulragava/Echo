@@ -21,7 +21,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            ReactionManager.GetUserReaction(GetUserReactionRequest, new GetUserReactionUseCaseCallBack(this));
+            ReactionManager.GetUserReactionAsync(GetUserReactionRequest, new GetUserReactionUseCaseCallBack(this));
         }
     }
 

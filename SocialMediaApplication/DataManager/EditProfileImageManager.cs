@@ -37,7 +37,7 @@ namespace SocialMediaApplication.DataManager
 
         private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
         
-        public async Task EditProfileImage(EditProfileImageRequest request, EditProfileImageUseCaseCallBack editProfileImageUseCaseCallBack)
+        public async Task EditProfileImageAsync(EditProfileImageRequest request, EditProfileImageUseCaseCallBack editProfileImageUseCaseCallBack)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task EditHomeImage(EditHomeImageRequest request, EditHomeImageUseCaseCallBack editHomeImageUseCaseCallBack)
+        public async Task EditHomeImageAsync(EditHomeImageRequest request, EditHomeImageUseCaseCallBack editHomeImageUseCaseCallBack)
         {
             try
             {

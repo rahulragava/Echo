@@ -9,6 +9,6 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IGetCommentManager
     {
-        Task GetPostComments(GetCommentRequest getCommentRequest, GetCommentUseCaseCallBack getCommentUseCaseCallBack);
+        Task GetPostCommentsAsync(GetCommentRequest getCommentRequest, GetCommentUseCaseCallBack getCommentUseCaseCallBack);
     }
 }

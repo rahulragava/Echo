@@ -21,7 +21,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            _editProfileImageManager.EditHomeImage(EditHomeImageRequest,
+            _editProfileImageManager.EditHomeImageAsync(EditHomeImageRequest,
                 new EditHomeImageUseCaseCallBack(this));
         }
     }

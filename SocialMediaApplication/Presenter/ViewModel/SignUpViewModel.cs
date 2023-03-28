@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.View;
+using SocialMediaApplication.Presenter.View.SignUp;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
 
 
@@ -21,6 +22,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public bool IsPasswordVisible { get; set; } = true;
         public string RetypedPassword { get; set; }
         public bool IsRetypePasswordVisible { get; set; } = true;
+        public ISignUpView SignUpView { get; set; }
 
         private string _userNameErrorMessage;
         public string UserNameErrorMessage
@@ -154,10 +156,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 UserNameErrorMessage = "userName cannot be empty";
                 return;
             }
-            else
-            {
-                _isUserNameErrorVisible = false;
-            }
+
+            _isUserNameErrorVisible = false;
 
             var signUpRequestObj = new SignUpRequestObj(UserName, Email, Password, RetypedPassword, new SignUpViewModelPresenterCallBack(this));
             var signUpUseCase= new SignUpUseCase(signUpRequestObj);
@@ -168,46 +168,34 @@ namespace SocialMediaApplication.Presenter.ViewModel
             RetypedPassword = string.Empty;
         }
 
-        public EventHandler NavigateToLogInPage;
-        public Action<string> ErrorMessageNotification;
-        public void SignInSuccess()
+        public class SignUpViewModelPresenterCallBack : IPresenterCallBack<SignUpResponse>
         {
-            NavigateToLogInPage?.Invoke(this,EventArgs.Empty);
-        }
-        public void SignUpFailed(string errorMessage)
-        {
-            ErrorMessageNotification?.Invoke(errorMessage);
-        }
-    }
+            private readonly SignUpViewModel _signUpViewModel;
+            public SignUpViewModelPresenterCallBack(SignUpViewModel signUpViewModel)
+            {
+                _signUpViewModel = signUpViewModel;
+            }
+            //public event GoToLogInPageAfterCreateAccountEvent  
+            public void OnSuccess(SignUpResponse logInResponse)
+            {
+                //get to login page once sign in gets successful
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _signUpViewModel.SignUpView.GoToLogInPage();
+                    }
+                );
+            }
 
-    public class SignUpViewModelPresenterCallBack : IPresenterCallBack<SignUpResponse>
-    {
-        private readonly SignUpViewModel _signUpViewModel;
-        public SignUpViewModelPresenterCallBack(SignUpViewModel signUpViewModel)
-        {
-            _signUpViewModel = signUpViewModel;
-        }
-        //public event GoToLogInPageAfterCreateAccountEvent  
-        public void OnSuccess(SignUpResponse logInResponse)
-        {
-            //get to login page once sign in gets successful
-            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                  _signUpViewModel.SignInSuccess();
-                }
-            );
-        }
-
-        public void OnError(Exception ex)
-        {
-            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    _signUpViewModel.SignUpFailed(ex.Message);
-                }
-            );
+            public void OnError(Exception ex)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _signUpViewModel.SignUpView.ErrorMessageNotification(ex.Message);
+                    }
+                );
+            }
         }
     }
 }

@@ -9,6 +9,6 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IUserPollChoiceSelectionManager
     {
-        void InsertPollChoiceSelection(InsertUserChoiceSelectionRequest insertUserChoiceSelectionRequest, InsertUserChoiceSelectionUseCaseCallBack insertUserSelectionChoiceUseCase);
+        Task InsertPollChoiceSelectionAsync(InsertUserChoiceSelectionRequest insertUserChoiceSelectionRequest, InsertUserChoiceSelectionUseCaseCallBack insertUserSelectionChoiceUseCase);
     }
 }

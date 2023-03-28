@@ -41,11 +41,10 @@ namespace SocialMediaApplication.DataManager
         private readonly ITextPostDbHandler _textPostDbHandler = TextPostDbHandler.GetInstance;
         private readonly IPollPostDbHandler _pollPostDbHandler= PollPostDbHandler.GetInstance;
         private readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
-        //private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
         private readonly IPollChoiceDbHandler _pollChoiceDbHandler = PollChoiceDbHandler.GetInstance;
         private readonly IUserPollChoiceSelectionDbHandler _userPollChoiceSelectionDbHandler = UserPollChoiceSelectionDbHandler.GetInstance;
 
-        public async Task RemovePost(RemovePostRequest removePostRequest, RemovePostUseCaseCallBack removePostUseCaseCallBack)
+        public async Task RemovePostAsync(RemovePostRequest removePostRequest, RemovePostUseCaseCallBack removePostUseCaseCallBack)
         {
             try
             {

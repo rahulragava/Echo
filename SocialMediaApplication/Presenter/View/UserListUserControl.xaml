@@ -6,16 +6,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:dataType="using:SocialMediaApplication.Models.EntityModels"
+    xmlns:viewModel="using:SocialMediaApplication.Presenter.ViewModel"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <Grid>
-        <ListView x:Name="userList" ItemsSource="{x:Bind GetUserDetailViewModel.UserList,Mode=OneWay}">
+        <ListView x:Name="UserList" SelectionChanged="UserList_OnSelectionChanged" ItemsSource="{x:Bind GetUserDetailViewModel.UserList,Mode=OneWay}">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="dataType:User">
+                <DataTemplate x:DataType="viewModel:UserVObj">
                     <StackPanel Orientation="Horizontal">
-                        <PersonPicture Width="30"></PersonPicture>
+                        <PersonPicture Width="30" ProfilePicture="{x:Bind ProfileImage,Mode=OneWay}"></PersonPicture>
                         <TextBlock Text="{x:Bind UserName,Mode=OneWay}" Margin="10 0"/>
                     </StackPanel>
                 </DataTemplate>

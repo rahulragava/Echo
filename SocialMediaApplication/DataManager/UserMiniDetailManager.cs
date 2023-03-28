@@ -39,7 +39,7 @@ namespace SocialMediaApplication.DataManager
         private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
         private readonly IFollowerDbHandler _followerDbHandler= FollowerDbHandler.GetInstance;
 
-        public async Task GetUserMiniDetails(UserMiniDetailRequest userMiniDetailRequest,
+        public async Task GetUserMiniDetailsAsync(UserMiniDetailRequest userMiniDetailRequest,
             UserMiniDetailUseCaseCallBack userMiniDetailUseCaseCallBack)
         {
             try

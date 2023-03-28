@@ -6,13 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
-    xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
     xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
+    xmlns:valueConverter1="using:SocialMediaApplication.Util.ValueConverter"
     mc:Ignorable="d"
     >
     <UserControl.Resources>
-        <valueConverter:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter:RelativeDateTimeConvertor>
-        <valueConverter:MarginConverter x:Key="MarginConverter"></valueConverter:MarginConverter>
+        <valueConverter1:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter1:RelativeDateTimeConvertor>
+        <valueConverter1:MarginConverter x:Key="MarginConverter"></valueConverter1:MarginConverter>
         <Style x:Key="ButtonStyle1" TargetType="Button">
             <Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
             <Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
@@ -184,6 +184,7 @@
                                               CommentId="{x:Bind Id,Mode=OneWay}"
                                               CommentInserted="InsertingCommentInList"
                                               CommentsRemoved="RemoveCommentsInList"
+                                              CommentReactionIconClicked="CommentUserControl_OnCommentReactionIconClicked"
                                               PostId ="{x:Bind PostId,Mode=OneWay}"/>
 
                     
@@ -271,10 +272,10 @@
         </ListView>
 
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <!--<TextBlock Grid.Row="0" Grid.Column="0" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Visibility="Collapsed"
                    x:Name="NoCommentsMessage"
-                   Text="No Comments Yet"/>
+                   Text="No Comments Yet"/>-->
         <FontIcon Grid.Row="0"
                   Grid.Column="0" 
                   HorizontalAlignment="Center" 
@@ -287,10 +288,11 @@
         <TextBox Grid.Column="0"
                  x:Name="CommentContent"
                  Grid.Row="1"
+                 x:Uid="CommentEnter"
+                 TextChanged="CommentContent_OnTextChanged"
                  Grid.ColumnSpan="1"
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Center" 
-                 PlaceholderText="type your comment here ..." 
                  Margin="10">
         </TextBox>
 
@@ -300,6 +302,7 @@
                 HorizontalAlignment="Stretch"
                 Margin="0 0 4 0" 
                 x:Name="PostCommentButton"
+                IsEnabled="False"
                 Click="PostCommentButton_OnClick">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;"/>

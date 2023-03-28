@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
 namespace SocialMediaApplication.Util
@@ -17,11 +18,13 @@ namespace SocialMediaApplication.Util
         //static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
         public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
         public static string UserId = LocalSettings.Values["user"]?.ToString();
-        
+        public static ApplicationViewTitleBar TitleBar;
+       
 
         static AppSettings()
         {
             LocalSettings = ApplicationData.Current.LocalSettings;
+            TitleBar = ApplicationView.GetForCurrentView().TitleBar;
             UserId = LocalSettings.Values["user"]?.ToString();
         }
 
@@ -41,25 +44,38 @@ namespace SocialMediaApplication.Util
                 }
                 // Previously set to default theme
                 else if ((int)LocalSettings.Values[KeyTheme] == (int)LightTheme)
+                {
                     return LightTheme;
+                }
                 // Previously set to non-default theme
                 else
+                {
                     return DarkTheme;
+                }
             }
             set
             {
                 // Error check
                 if (value == ElementTheme.Default)
+                {
                     throw new System.Exception("Only set the theme to light or dark mode!");
+                }
                 // Never set
                 else if (LocalSettings.Values[KeyTheme] == null)
+                {
                     LocalSettings.Values[KeyTheme] = (int)value;
+
+                }
                 // No change
                 else if ((int)value == (int)LocalSettings.Values[KeyTheme])
+                {
                     return;
+                }
                 // Change
                 else
+                {
                     LocalSettings.Values[KeyTheme] = (int)value;
+                }
             }
         }
     }

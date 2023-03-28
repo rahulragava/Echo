@@ -9,7 +9,7 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IUserMiniDetailManager
     {
-        Task GetUserMiniDetails(UserMiniDetailRequest userMiniDetailRequest,
+        Task GetUserMiniDetailsAsync(UserMiniDetailRequest userMiniDetailRequest,
             UserMiniDetailUseCaseCallBack userMiniDetailUseCaseCallBack);
     }
 }

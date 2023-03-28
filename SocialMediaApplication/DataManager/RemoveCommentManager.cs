@@ -53,7 +53,7 @@ namespace SocialMediaApplication.DataManager
                 var comments = (await _commentDbHandler.GetPostCommentsAsync(removeCommentRequest.Comment.PostId)).ToList();
 
                 var (childComments,removedCommentIdList) = RemovableCommentList(comments, removeCommentRequest.Comment.Id);
-                var commentBObjList =  await AddCommentManager.GetInstance.GetSortedCommentBObjList(comments);
+                var commentBObjList =  await AddCommentManager.GetInstance.GetSortedCommentBObjListAsync(comments);
 
                 foreach (var comment in childComments)
                 {
@@ -74,15 +74,9 @@ namespace SocialMediaApplication.DataManager
                 {
                     await _reactionDbHandler.RemoveReactionAsync(reaction.Id);
                 }
-
-                
                 var commentBusinessObj = commentBObjList.First(c => c.Id == removeCommentRequest.Comment.Id);
                 commentBObjList.Remove(commentBusinessObj);
                 removedCommentIdList.Add(commentBusinessObj.Id);
-
-                    
-
-                //CommentRemoved?.Invoke();
 
                 removeCommentUseCaseCallBack?.OnSuccess(new RemoveCommentResponse(removedCommentIdList));
             }
@@ -111,22 +105,9 @@ namespace SocialMediaApplication.DataManager
                         commentIdList.AddRange(removedCommentListId);
                     }
                 }
-
             }
             return Tuple.Create(commentList,commentIdList);
         }
 
-        public Comment ConvertCommentBObjToEntity(CommentBObj commentBobj)
-        {
-            Comment comment = new Comment();
-            comment.Id = commentBobj.Id;
-            comment.ParentCommentId = commentBobj.ParentCommentId;
-            comment.CommentedBy = commentBobj.CommentedBy;
-            comment.CommentedAt = commentBobj.CommentedAt;
-            comment.Content = commentBobj.Content;
-            comment.PostId = commentBobj.PostId;
-
-            return comment;
-        }
     }
 }

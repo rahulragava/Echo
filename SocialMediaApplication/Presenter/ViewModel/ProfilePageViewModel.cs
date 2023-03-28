@@ -13,22 +13,22 @@ using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Util;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using SocialMediaApplication.Presenter.View.ProfileView;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
     public class ProfilePageViewModel : ObservableObject
     {
-        public UserBObj user;
-
+        public UserBObj User;
         public ObservableCollection<TextPostBObj> TextPosts;
         public ObservableCollection<PollPostBObj> PollPosts;
+        public ObservableCollection<PostBObj> PostList;
+
         public ObservableCollection<string> Followers;
         public ObservableCollection<string> Followings;
         public List<MaritalStatus> MaritalStatuses;
         public List<Gender> Genders;
-
-        public event Action UserNameAlreadyExist;
-
+        public IProfileView ProfileView { get; set; }
 
         private int _userPostCount;
         public int UserPostCount
@@ -127,6 +127,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _profileImage, value);
         }
 
+        public Reaction PostReaction { get; set; }
+
         private string _homePageImage = "";
         public string HomePageImage
         {
@@ -134,16 +136,31 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _homePageImage, value);
         }
 
-        public bool ProfilePageIconUpdation { get; set; }
-
-        public Action ProfilePictureUpdated;
-        public Action HomePictureUpdated;
+        public void ChangeInReactions(List<Reaction> reactions)
+        {
+            var flag = false;
+            foreach (var reaction in reactions)
+            {
+                if (reaction.ReactedBy == PostReaction.ReactedBy)
+                {
+                    PostReactions.Remove(reaction);
+                    PostReactions.Add(PostReaction);
+                    flag = true;
+                }
+            }
+            if (!flag)
+            {
+                PostReactions.Add(PostReaction);
+            }
+            flag = false;
+        }
 
         public ProfilePageViewModel()
         {
-            user = new UserBObj();
+            User = new UserBObj();
             TextPosts = new ObservableCollection<TextPostBObj>();
             PollPosts = new ObservableCollection<PollPostBObj>();
+            PostList = new ObservableCollection<PostBObj>();
             Followers = new ObservableCollection<string>();
             Followings = new ObservableCollection<string>();
             Genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
@@ -166,28 +183,36 @@ namespace SocialMediaApplication.Presenter.ViewModel
             editHomeIconUseCase.Execute();
         }
 
-        public ObservableCollection<Reaction> Reactions = new ObservableCollection<Reaction>();
+        public ObservableCollection<Reaction> PostReactions = new ObservableCollection<Reaction>();
 
-        public void SetReactions(List<Reaction> reactions)
+        public void SetPostReactions(List<Reaction> reactions)
         {
-            Reactions.Clear();
-            foreach (var reaction in reactions)
+            if (PostReactions != null)
             {
-                Reactions.Add(reaction);
+                PostReactions.Clear();
+                foreach (var reaction in reactions)
+                {
+                    PostReactions.Add(reaction);
+                }
+            }
+        }
+
+        public ObservableCollection<Reaction> CommentReactions = new ObservableCollection<Reaction>();
+
+        public void SetCommentReactions(List<Reaction> reactions)
+        {
+            if (CommentReactions != null)
+            {
+                CommentReactions.Clear();
+                foreach (var reaction in reactions)
+                {
+                    CommentReactions.Add(reaction);
+                }
             }
         }
 
         public void GetUser(string userId)
         {
-            //if (userId == null)
-            //{
-            //    userId = AppSettings.LocalSettings.Values["user"].ToString();
-            //}
-            //else if(string.Empty == userId)
-            //{
-            //    return;
-            //}  
-
             var getUserProfileRequestObj = new GetUserProfileRequestObj(userId,new GetUserProfilePresenterCallBack(this));
             var getUserProfileUseCase = new GetUserProfileUseCase(getUserProfileRequestObj);
             getUserProfileUseCase.Execute();
@@ -205,67 +230,81 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public void FollowUnFollowSearchedUser()
         {
 
-            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(user.Id,AppSettings.UserId,new FollowUnFollowPresenterCallBack(this));
+            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(User.Id,AppSettings.UserId,new FollowUnFollowPresenterCallBack(this));
             var followUnFollowSearchedUserUseCase =
                 new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest);
             followUnFollowSearchedUserUseCase.Execute();
         }
 
-        public Action GetUserSucceed;
         public void GetUserSuccess(UserBObj userBObj)
         {
-            this.user = userBObj;
+            this.User = userBObj;
 
-            UserPostCount = user.TextPosts.Count + user.PollPosts.Count;
-            UserFollowerCount = user.FollowersId.Count;
-            UserFollowingCount= user.FollowingsId.Count;
-            FirstName = user.FirstName;
-            LastName = user.LastName;
-            Place = user.Place;
-            Occupation = user.Occupation;
-            Education = user.Education;
-            Gender = user.Gender;   
-            MaritalStatus = user.MaritalStatus;
-            ProfileImage = user.ProfileIcon;
-            HomePageImage = user.HomePageIcon;
-            CreatedAt = user.CreatedAt;
-            FormattedCreatedTime = user.FormattedCreatedTime;
-            UserName = user.UserName;
-            TextPosts.Clear();
-            foreach (var textPost in user.TextPosts)
+            UserPostCount = User.TextPosts.Count + User.PollPosts.Count;
+            UserFollowerCount = User.FollowersId.Count;
+            UserFollowingCount= User.FollowingsId.Count;
+            FirstName = User.FirstName;
+            LastName = User.LastName;
+            Place = User.Place;
+            Occupation = User.Occupation;
+            Education = User.Education;
+            Gender = User.Gender;   
+            MaritalStatus = User.MaritalStatus;
+            ProfileImage = User.ProfileIcon;
+            HomePageImage = User.HomePageIcon;
+            CreatedAt = User.CreatedAt;
+            FormattedCreatedTime = User.FormattedCreatedTime;
+            UserName = User.UserName;
+
+            foreach (var textPost in User.TextPosts)
             {
-                TextPosts.Add(textPost);
+                TextPosts.Insert(0,textPost);
+                PostList.Insert(0,textPost);
             }
-            PollPosts.Clear();
-            foreach (var pollPost in user.PollPosts)
+            foreach (var pollPost in User.PollPosts)
             {
-                PollPosts.Add(pollPost);
+                PollPosts.Insert(0,pollPost);
+                PostList.Insert(0, pollPost);
             }
+          
             Followers.Clear();
-            foreach (var follower in user.FollowersId)
+            foreach (var follower in User.FollowersId)
             {
                 Followers.Add(follower);
-                
             }
             Followings.Clear();
-            foreach (var following in user.FollowingsId)
+            foreach (var following in User.FollowingsId)
             {
                 Followings.Add(following);
             }
-            GetUserSucceed?.Invoke();
+
+            OrderBy(PostList);
+            ProfileView.GetUserSucceed();
         }
+
+        public ObservableCollection<PostBObj> OrderBy(ObservableCollection<PostBObj> posts)
+        {
+            var temporaryCollection = new ObservableCollection<PostBObj>(posts.OrderByDescending(p => p.CreatedAt));
+            posts.Clear();
+            foreach (PostBObj post in temporaryCollection)
+            {
+                posts.Add(post);
+            }
+            return posts;
+        }
+
 
         public void EditUserSuccess(UserBObj userBObj)
         {
-            this.user = userBObj;
-            FirstName = user.FirstName;
-            LastName = user.LastName;
-            Place = user.Place;
-            Occupation = user.Occupation;
-            Education = user.Education;
-            Gender = user.Gender;
-            MaritalStatus = user.MaritalStatus;
-            UserName = user.UserName;
+            this.User = userBObj;
+            FirstName = User.FirstName;
+            LastName = User.LastName;
+            Place = User.Place;
+            Occupation = User.Occupation;
+            Education = User.Education;
+            Gender = User.Gender;
+            MaritalStatus = User.MaritalStatus;
+            UserName = User.UserName;
         }
 
         public class EditUserProfilePresenterCallBack : IPresenterCallBack<EditUserProfileResponseObj>
@@ -292,7 +331,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                         _profilePageViewModel.UserNameAlreadyExist?.Invoke();
+                         _profilePageViewModel.ProfileView.UserNameAlreadyExist();
                     }
                 );
             }
@@ -338,7 +377,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 () =>
                 {
 
-                    _profilePageViewModel.ProfilePictureUpdated?.Invoke();
+                    _profilePageViewModel.ProfileView.SetProfileImage();
                 }
             );
         }
@@ -362,7 +401,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 () =>
                 {
 
-                    _profilePageViewModel.HomePictureUpdated?.Invoke();
+                    _profilePageViewModel.ProfileView.SetHomeImage();
                 }
             );
         }
@@ -387,12 +426,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 {
                     if (followUnFollowSearchedUserResponse.FollowingSuccess)
                     {
-                        _profilePageViewModel.Followers.Add(AppSettings.UserId);
+                        _profilePageViewModel.User.FollowingsId.Add(AppSettings.UserId);
+                        _profilePageViewModel.Followings.Add(AppSettings.UserId);
                         _profilePageViewModel.UserFollowingCount += 1;
                     }
                     else
                     {
-                        _profilePageViewModel.Followers.Remove(AppSettings.UserId);
+                        _profilePageViewModel.Followings.Remove(AppSettings.UserId);
+                        _profilePageViewModel.User.FollowingsId.Remove(AppSettings.UserId);
                         _profilePageViewModel.UserFollowingCount -= 1;
                     }
                 }

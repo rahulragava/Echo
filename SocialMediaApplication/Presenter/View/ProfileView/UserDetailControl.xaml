@@ -13,52 +13,32 @@
         <Style TargetType="TextBlock">
             <!--<Setter Property="HorizontalAlignment" Value="Left"/>-->
             <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
-            <Setter Property="CharacterSpacing" Value="20"></Setter>
-            <Setter Property="FontSize" Value="14"></Setter>
+            <Setter Property="CharacterSpacing" Value="10"></Setter>
+            <Setter Property="FontSize" Value="15"></Setter>
         </Style>
 
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel CornerRadius="10"
-            Padding="80 30"
             Spacing="25"
+            Padding="30 30"
             BorderThickness="1"
-            Margin="120 5 20 0"
             VerticalAlignment="Center"
             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
             HorizontalAlignment="Center">
 
-
-            <!--<StackPanel.Background>
-            -->
-            <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#5433FF" Offset="0"/>
-                <GradientStop Color="#20BDFF" Offset="1"/>
-            </LinearGradientBrush>-->
-            <!--
-            <media:AcrylicBrush BackgroundSource="Backdrop"
-                                TintColor="DarkSlateGray"
-                                TintOpacity="0.2"/>
-
-</StackPanel.Background>-->
             <StackPanel Orientation="Horizontal"
                         Margin="0 5 0 0"
                         Spacing="10">
                 <FontIcon Glyph="&#xE716;">
-                    <!--<FontIcon.Foreground>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#FF9F4A  " Offset="0"/>
-                            <GradientStop Color="#FF3C83" Offset="1"/>
-                        </LinearGradientBrush>
-                </FontIcon.Foreground>-->
+             
                 </FontIcon>
                 <TextBlock>
-                <Run Text="Call me"/>
+                <Run x:Uid="CallUser"/>
                 <Run Text="{x:Bind FirstName,Mode=OneWay}" 
-                     FontWeight="Medium" />
-                <Run Text="{x:Bind LastName,Mode=OneWay}" 
-                     FontWeight="Medium"
                      />
+                <Run Text="{x:Bind LastName,Mode=OneWay}"
+                />
                 </TextBlock>
             </StackPanel>
 
@@ -66,7 +46,7 @@
                     Spacing="10">
                 <FontIcon Glyph="&#xE7BE;"></FontIcon>
                 <TextBlock>
-                    <Run Text="Studied at"/>
+                    <Run x:Uid="Education"/>
                     <Run Text="{x:Bind Education,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
@@ -75,7 +55,7 @@
                     Spacing="10">
                 <FontIcon Glyph="&#xE10F;"></FontIcon>
                 <TextBlock >
-                <Run Text="Lives in "/>
+                <Run x:Uid="Place"/>
                 <Run Text="{x:Bind Place,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
@@ -84,8 +64,8 @@
                     Spacing="10">
 
                 <FontIcon Glyph="&#xE821;"></FontIcon>
-                <TextBlock>
-                <Run Text="Currently working as"/>
+                <TextBlock TextWrapping="Wrap">
+                <Run x:Uid="Work"/>
                 <Run Text="{x:Bind Occupation,Mode=OneWay}" FontWeight="Medium"/>
                 </TextBlock>
             </StackPanel>
@@ -102,7 +82,7 @@
                         ToolTipService.ToolTip="{x:Bind UserCreatedAt,Mode=OneWay}">
                 <FontIcon Glyph="&#xE121;"></FontIcon>
                 <TextBlock>
-                <Run Text="FC user since"/>
+                <Run x:Uid="Created"/>
                 <Run Text="{x:Bind UserCreatedAt,Mode=OneWay}" FontWeight="Medium"/>
 
                 </TextBlock>

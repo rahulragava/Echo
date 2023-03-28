@@ -9,8 +9,8 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IEditProfileImageManager
     {
-        Task EditProfileImage(EditProfileImageRequest request, EditProfileImageUseCaseCallBack editProfileImageUseCaseCallBack);
-        Task EditHomeImage(EditHomeImageRequest request, EditHomeImageUseCaseCallBack editHomeImageUseCaseCallBack);
+        Task EditProfileImageAsync(EditProfileImageRequest request, EditProfileImageUseCaseCallBack editProfileImageUseCaseCallBack);
+        Task EditHomeImageAsync(EditHomeImageRequest request, EditHomeImageUseCaseCallBack editHomeImageUseCaseCallBack);
     }
 
 }

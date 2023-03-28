@@ -9,6 +9,6 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IFeedManager
     {
-        void FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack);
+        Task FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack);
     }
 }

@@ -42,31 +42,31 @@ namespace SocialMediaApplication.DataManager
         private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
 
 
-        public async Task GetPostComments(GetCommentRequest getCommentRequest, GetCommentUseCaseCallBack getCommentUseCaseCallBack)
+        public async Task GetPostCommentsAsync(GetCommentRequest getCommentRequest, GetCommentUseCaseCallBack getCommentUseCaseCallBack)
         {
             try
             {
                 var comments = (await _commentDbHandler.GetPostCommentsAsync(getCommentRequest.PostId)).ToList();
                 List<CommentBObj> commentBObjs = new List<CommentBObj>();
-                for (int i = 0; i < comments.Count; i++)
+                foreach (var comment in comments)
                 {
                     //var commentReactions = reactions.Where((reaction) => reaction.ReactionOnId == CommentCacheList[i].Id).ToList();
-                    var commentReactions = (await _reactionDbHandler.GetReactionsAsync(comments[i].Id)).ToList();
-                    var userName = (await _userDbHandler.GetUserAsync(comments[i].CommentedBy)).UserName;
-                    var commentBobj = new CommentBObj
+                    var commentReactions = (await _reactionDbHandler.GetReactionsAsync(comment.Id)).ToList();
+                    var userName = (await _userDbHandler.GetUserAsync(comment.CommentedBy)).UserName;
+                    var commentBObj = new CommentBObj
                     {
-                        Id = comments[i].Id,
-                        PostId = comments[i].PostId,
-                        ParentCommentId = comments[i].ParentCommentId,
+                        Id = comment.Id,
+                        PostId = comment.PostId,
+                        ParentCommentId = comment.ParentCommentId,
                         CommentedUserName = userName,
-                        CommentedBy = comments[i].CommentedBy,
-                        CommentedAt = comments[i].CommentedAt,
-                        FormattedCommentDate = comments[i].CommentedAt.ToString("dddd, dd MMMM yyyy"),
-                        Content = comments[i].Content,
+                        CommentedBy = comment.CommentedBy,
+                        CommentedAt = comment.CommentedAt,
+                        FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
+                        Content = comment.Content,
                         Reactions = commentReactions
                     };
 
-                    commentBObjs.Add(commentBobj);
+                    commentBObjs.Add(commentBObj);
                 }
                 var commentList = FetchPostManager.GetSortedComments(commentBObjs);
                 getCommentUseCaseCallBack?.OnSuccess(new GetCommentResponse(commentList));

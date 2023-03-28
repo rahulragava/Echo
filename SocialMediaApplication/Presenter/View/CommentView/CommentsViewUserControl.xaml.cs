@@ -24,7 +24,7 @@ using Windows.UI.Core;
 
 namespace SocialMediaApplication.Presenter.View.CommentView
 {
-    public sealed partial class CommentsViewUserControl : UserControl
+    public sealed partial class CommentsViewUserControl : UserControl,ICommentsViewUserControlView
     {
         public CommentViewModel CommentViewModel;
 
@@ -33,39 +33,28 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentViewModel = new CommentViewModel();
             this.InitializeComponent();
             Loaded += Comment_Loaded;
-            Unloaded += Comment_UnLoaded;
             
         }
 
-        private void Comment_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void Comment_Loaded(object sender, RoutedEventArgs e)
         {
             if (Comments != null)
             {
                 CommentViewModel.CommentsList = Comments;
+                CommentViewModel.CommentViewUserControlView = this;
                 CommentViewModel.ClearAndUpdate();
-                CommentViewModel.CheckAnyComments += CommentExist;
-                CommentViewModel.ParentCommentInserted += ParentCommentInserted;
+       
                 if (!Comments.Any())
                 {
                     CommentList.Visibility = Visibility.Collapsed;
-                    NoCommentsMessage.Visibility = Visibility.Visible;
+                    //NoCommentsMessage.Visibility = Visibility.Visible;
                     NoCommentFont.Visibility = Visibility.Visible;
                 }
             }
-            //AddCommentManager.CommentInserted += CommentInserted;
-            
-            //RemoveCommentManager.CommentRemoved += CommentRemoved;
             CommentViewModel.PostId = PostId;
         }
-
-        private void Comment_UnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-            //AddCommentManager.CommentInserted -= CommentInserted;
-            //RemoveCommentManager.CommentRemoved -= CommentRemoved;
-            CommentViewModel.CheckAnyComments -= CommentExist;
-        }
-
         public event Action<int> CommentCountChanged;
+        public event Action<List<Reaction>> CommentReactionButtonClicked;
 
         public static readonly DependencyProperty CommentsProperty = DependencyProperty.Register(
             nameof(Comments), typeof(List<CommentBObj>), typeof(CommentsViewUserControl),
@@ -137,62 +126,60 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                 CommentViewModel.PostComments.Remove(CommentViewModel.PostComments.SingleOrDefault(c=>c.Id == commentId));
             }
 
-            CommentExist(this,EventArgs.Empty);
+            CommentExist();
             CommentCountChanged?.Invoke(CommentViewModel.CommentsList.Count);
         }
         
-        private void CommentExist(object sender, EventArgs e)
+        public void CommentExist()
         {
             if (CommentViewModel.CommentsList.Any())
             {
                 CommentList.Visibility = Visibility.Visible;
-                NoCommentsMessage.Visibility = Visibility.Collapsed;
+                //NoCommentsMessage.Visibility = Visibility.Collapsed;
                 NoCommentFont.Visibility = Visibility.Collapsed;
             }
             else
             {
                 CommentList.Visibility = Visibility.Collapsed;
-                NoCommentsMessage.Visibility = Visibility.Visible;
+                //NoCommentsMessage.Visibility = Visibility.Visible;
                 NoCommentFont.Visibility = Visibility.Visible;
             }
         }
 
-        private void ParentCommentInserted(object sender, EventArgs e)
+        public void ParentCommentInserted()
         {
             CommentCountChanged?.Invoke(CommentViewModel.CommentsList.Count);
-        }
-        //private void CommentInserted()
-        //{
-        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //        () =>
-        //        {
-        //            CommentViewModel.GetComments();
-        //        }
-        //    );
-
-        //}
-
-        //private void CommentRemoved()
-        //{
-        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //        () =>
-        //        {
-        //            CommentViewModel.GetComments();
-        //        }
-        //    );
-        //}
-
-
-        private void ReplyButton_OnClick(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void ReactionButton_OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            var btn = sender as Button;
-            btn.Flyout.ShowAt(btn, new FlyoutShowOptions());
+            if (sender is Button btn)
+            {
+                btn.Flyout?.ShowAt(btn, new FlyoutShowOptions());
+            }
         }
 
+        private void CommentContent_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(CommentContent.Text) || string.IsNullOrEmpty(CommentContent.Text))
+            {
+                PostCommentButton.IsEnabled = false;
+            }
+            else
+            {
+                PostCommentButton.IsEnabled = true;
+            }
+        }
+
+        private void CommentUserControl_OnCommentReactionIconClicked(List<Reaction> reactions)
+        {
+            CommentReactionButtonClicked?.Invoke(reactions);
+        }
+    }
+
+    public interface ICommentsViewUserControlView
+    {
+        void ParentCommentInserted();
+        void CommentExist();
     }
 }

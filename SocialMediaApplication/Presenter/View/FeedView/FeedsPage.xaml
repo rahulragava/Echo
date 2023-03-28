@@ -4,20 +4,110 @@
       xmlns:local="using:SocialMediaApplication.Presenter.View"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:postView="using:SocialMediaApplication.Presenter.View.PostView"
       xmlns:businessModels="using:SocialMediaApplication.Models.BusinessModels"
       xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
       xmlns:pollPostView="using:SocialMediaApplication.Presenter.View.PostView.PollPostView"
       xmlns:textPostView="using:SocialMediaApplication.Presenter.View.PostView.TextPostView"
       mc:Ignorable="d"
       xmlns:util="using:SocialMediaApplication.Util"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    
-    
-
-
 
     <Page.Resources>
+        <Style TargetType="controls:InAppNotification"
+               x:Key="MsEdgeNotificationTemplateNoDismissButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="State">
+                                    <VisualState x:Name="Collapsed">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="0" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            </DoubleAnimationUsingKeyFrames>
+
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="0" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            </DoubleAnimationUsingKeyFrames>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                                <DiscreteObjectKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Visible">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                      Value="0" />
+                                            </DoubleAnimationUsingKeyFrames>
+
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                      Value="0" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid x:Name="RootGrid"
+                                  RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
+                                  Margin="{TemplateBinding Margin}"
+                                  Padding="{TemplateBinding Padding}"
+                                  MaxWidth="{TemplateBinding MaxWidth}"
+                                  Visibility="{TemplateBinding Visibility}"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid.RenderTransform>
+                                    <CompositeTransform />
+                                </Grid.RenderTransform>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter x:Name="PART_Presenter"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  VerticalContentAlignment="Center"
+                                                  TextWrapping="WrapWholeWords" />
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <DataTemplate x:DataType="businessModels:TextPostBObj"
                       x:Key="TextPostDataTemplate">
@@ -31,14 +121,17 @@
                                               PostComments="{x:Bind Comments,Mode=OneWay}"
                                               PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
                                               PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
                                               PostRemoved="PostControl_OnPostRemoved"
                                               ReactionChanged="PostControl_OnReactionChanged"
                                               ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
                                               HorizontalAlignment="Stretch"
+                                              CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
                                               VerticalAlignment="Stretch" />
         </DataTemplate>
 
-        <DataTemplate x:DataType="businessModels:PollPostBObj" x:Key="PollPostDataTemplate">
+        <DataTemplate x:DataType="businessModels:PollPostBObj"
+                      x:Key="PollPostDataTemplate">
             <pollPostView:PollPostUserControl x:Name="PostControl"
                                               PostId="{x:Bind Id,Mode=OneWay}"
                                               PostedByUser="{x:Bind UserName,Mode=OneWay}"
@@ -48,12 +141,14 @@
                                               PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
                                               PostTitle="{x:Bind Title,Mode=OneWay}"
                                               PostComments="{x:Bind Comments,Mode=OneWay}"
+                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
                                               ReactionChanged="PostControl_OnReactionChanged"
                                               PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
                                               PostReaction="{x:Bind Reactions,Mode=OneWay}"
                                               PostRemoved="PostControl_OnPostRemoved"
                                               ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
                                               HorizontalAlignment="Stretch"
+                                              CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
                                               VerticalAlignment="Stretch" />
         </DataTemplate>
         <util:SelectTemplate x:Key="MyDataTemplateSelector"
@@ -62,11 +157,36 @@
         </util:SelectTemplate>
     </Page.Resources>
 
-    <Grid>
+    <Grid x:Name="FeedsGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainGrid.MaxWidth" Value="400"></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="650" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainGrid.MaxWidth"
+                                Value="700"></Setter>
+                        
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <Grid Grid.Column="1"
               Visibility="Collapsed"
               Width="300"
@@ -88,65 +208,57 @@
             </StackPanel>
         </Grid>
 
-        <!--</Popup>-->
+        <Grid Grid.Column="1"
+              Visibility="Collapsed"
+              Width="300"
+              VerticalAlignment="Top"
+              x:Name="CommentReactionsPopup">
+            <StackPanel>
+                <Button Margin="5"
+                        x:Name="HideCommentReaction"
+                        Click="HideCommentReaction_OnClick">
+                    <Button.Content>
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  Glyph="&#xE111;" />
+                    </Button.Content>
+                </Button>
+                <reactionView:UserSelectedReaction x:Name="UserSelectedCommentReactionControl"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   ReactionList="{x:Bind FeedPageViewModel.CommentReactions,Mode=OneWay}" />
+            </StackPanel>
+        </Grid>
 
-        <Grid  Grid.Column="0"
-               Background="{ThemeResource BackgroundColor}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Row="0"
+                      Grid.Column="0"
+                      x:Name="ListScroll"
+                      VerticalScrollBarVisibility="Hidden"
+                      VerticalScrollMode="Enabled"
+                      Background="{ThemeResource BackgroundColor}"
+                      ViewChanged="ScrollViewer_ViewChanged">
 
-            <!--<StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <PersonPicture Width="60"></PersonPicture>
-                    <TextBox HorizontalAlignment="Stretch"></TextBox>
-                </StackPanel>
+            <Grid Background="{ThemeResource BackgroundColor}"
+                  x:Name="MainGrid"
+                  MaxWidth="700">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            </StackPanel>-->
-            <ToggleButton Grid.Column="0"
-                          Margin="0 60 10 0"
-                          Height="60"
-                          x:Name="TextPostClicked"
-                          IsChecked="True"
-                          Click="TextPostClicked_OnClick"
-                          Width="300"
-                          FontSize="18"
-                          HorizontalAlignment="Right"
-                          Grid.Row="0">
-                TextPosts
-            </ToggleButton>
-            <ToggleButton Grid.Row="0"
-                          IsChecked="false"
-                          Margin="10 60 0 0"
-                          Height="60"
-                          Width="300"
-                          x:Name="PollPostClicked"
-                          FontSize="18"
-                          Click="PollPostClicked_OnClick"
-                          HorizontalAlignment="Left"
-                          Grid.Column="1">
-                PollPosts
-            </ToggleButton>
-            <ScrollViewer Grid.Row="1"
-                          Grid.ColumnSpan="2"
-                          Grid.Column="0"
-                          x:Name="ListScroll"
-                          VerticalScrollBarVisibility="Hidden"
-                          VerticalScrollMode="Enabled"
-                          Background="{ThemeResource BackgroundColor}"
-                          ViewChanged="ScrollViewer_ViewChanged">
-                <!--<ListView HorizontalAlignment="Center"
+                <textPostView:MiniTextPostCreation
+                    Margin="5 20 5 0"
+                    HorizontalAlignment="Stretch"
+                    OnTextPostCreationSuccess="MiniTextPostCreation_OnOnTextPostCreationSuccess"></textPostView:MiniTextPostCreation>
+
+                <ListView HorizontalAlignment="Stretch"
                           x:Name="TextPostListView"
-                          Margin="-10 10"
+                          Grid.Row="1"
+                          Grid.Column="0"
+                          Margin="5 10"
                           x:FieldModifier="public"
                           ScrollViewer.VerticalScrollMode="Disabled"
                           ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"
-                          ItemsSource="{x:Bind FeedPageViewModel.PostBObjs,Mode=OneWay}">
+                          ItemsSource="{x:Bind FeedPageViewModel.PostBObjList,Mode=OneWay}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Template">
@@ -159,121 +271,23 @@
                         </Style>
                     </ListView.ItemContainerStyle>
 
-                </ListView>-->
-                <Grid>
-                    <ListView HorizontalAlignment="Center"
-                              x:Name="TextPostListView"
-                              Margin="-10 10"
-                              x:FieldModifier="public"
-                              ScrollViewer.VerticalScrollMode="Disabled"
-                              ItemsSource="{x:Bind FeedPageViewModel.TextPosts,Mode=OneWay}">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <ContentPresenter />
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="businessModels:TextPostBObj">
-                                <textPostView:TextPostUserControl x:Name="PostControl"
-                                                              PostId="{x:Bind Id,Mode=OneWay}"
-                                                              PostedByUserName="{x:Bind UserName,Mode=OneWay}"
-                                                              PostContent="{x:Bind Content,Mode=OneWay}"
-                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
-                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
-                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                                              PostRemoved="PostControl_OnPostRemoved"
-                                                              ReactionChanged="PostControl_OnReactionChanged"
-                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                                              HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                </ListView>
+               
+                <controls:InAppNotification x:Name="ExampleVsCodeInAppNotification"
+                                            AnimationDuration="00:00:00.1000000"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            VerticalOffset="200"
+                                            HorizontalOffset="00"
+                                            Width="500"
+                                            Style="{StaticResource MsEdgeNotificationTemplateNoDismissButton}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="top"
+                                            StackMode="Replace">
+                </controls:InAppNotification>
 
-                    <ListView HorizontalAlignment="Stretch"
-                              x:Name="PollPostListView"
-                              Visibility="Collapsed"
-                              Margin="-10 10"
-                              MaxWidth="600"
-                              x:FieldModifier="public"
-                              ItemsSource="{x:Bind FeedPageViewModel.PollPosts,Mode=OneWay}">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <ContentPresenter />
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="businessModels:PollPostBObj">
-                                <pollPostView:PollPostUserControl x:Name="PostControl"
-                                                              PostId="{x:Bind Id,Mode=OneWay}"
-                                                              PostedByUser="{x:Bind UserName,Mode=OneWay}"
-                                                              PostQuestion="{x:Bind Question,Mode=OneWay}"
-                                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                                              PollChoiceList="{x:Bind Choices,Mode=OneWay}"
-                                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                                              PostTitle="{x:Bind Title,Mode=OneWay}"
-                                                              PostComments="{x:Bind Comments,Mode=OneWay}"
-                                                              ReactionChanged="PostControl_OnReactionChanged"
-                                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                                              PostRemoved="PostControl_OnPostRemoved"
-                                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                                              HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
+            </Grid>
+        </ScrollViewer>
 
-            </ScrollViewer>
-
-            <!--<ListView Grid.Column="1"
-                  Width="600"
-                  HorizontalAlignment="Center"
-                  x:Name="PollPostListView"
-                  Margin="-10 10"
-                  x:FieldModifier="public"
-                  ItemsSource="{x:Bind FeedPageViewModel.PollPosts,Mode=OneWay}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="businessModels:PollPostBObj">
-                    <postView:PollPostUserControl
-                        x:Name="PostControl"
-                        PostId ="{x:Bind Id,Mode=OneWay}"
-                        PostedByUser="{x:Bind UserName,Mode=OneWay}"
-                        PostQuestion="{x:Bind Question,Mode=OneWay}"
-                        CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                        PollChoiceList="{x:Bind Choices,Mode=OneWay}"
-                        PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                        PostTitle="{x:Bind Title,Mode=OneWay}"
-                        PostComments="{x:Bind Comments,Mode=OneWay}"
-                        PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                        PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                        PostRemoved="PostControl_OnPostRemoved"
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Stretch"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>-->
-
-
-            
-            <!--ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"-->
-
-        </Grid>
     </Grid>
 </Page>

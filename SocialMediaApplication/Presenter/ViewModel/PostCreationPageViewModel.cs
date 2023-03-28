@@ -11,6 +11,7 @@ using SocialMediaApplication.Domain.UseCase;
 using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Util;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -32,6 +33,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _content, value);
         }
 
+        private string _userName;
+
+        public string UserName
+        {
+            get => _userName;
+            set => SetProperty(ref _userName, value);
+        }
+
         public List<PostFontStyle> PostFontStyles;
 
         public PostCreationPageViewModel()
@@ -39,29 +48,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             //PostFontStyles.Add();
             PostFontStyles = Enum.GetValues(typeof(PostFontStyle)).Cast<PostFontStyle>().ToList();
         }
-        private Style _style;
-
-        public Style Style
-        {
-            get
-            {
-                //switch (FontStyle)
-                //{
-                //    case PostFontStyle.Simple:
-                //        _style = (Style)Application.Current.Resources[PostFontStyle.Simple.ToString()];
-                //        break;
-                //    case PostFontStyle.Casual:
-                //        _style = (Style)Application.Current.Resources[PostFontStyle.Casual.ToString()];
-                //        break;
-                //    case PostFontStyle.Fancy:
-                //        _style = (Style)Application.Current.Resources[PostFontStyle.Fancy.ToString()];
-                //        break;
-                //}
-                return _style;
-            }
-
-            set => SetProperty(ref _style, value);
-        }
+       
 
         private string _pollChoice1;
 
@@ -114,7 +101,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             FontStyle = PostFontStyle.Simple;
         }
 
-       
+        private BitmapImage _profileIcon;
+
+        public BitmapImage ProfileIcon
+        {
+            get => _profileIcon;
+            set => SetProperty(ref _profileIcon, value);
+        }
+
         public void CreatePollPost(int pollChoiceCount)
         {
             var pollPost = new PollPost()
@@ -179,8 +173,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     choices.Add(pollChoice4);
                     choices.Add(pollChoice3);
                     break;
-                default:
-                    break;
             }
 
             var pollPostCreationRequest =
@@ -205,6 +197,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 new TextPostCreationRequest(textPost , new TextPostCreationPresenterCallBack(this));
             var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest);
             textPostCreationUseCase.Execute();
+        }
+
+        public void GetUser()
+        {
+            var getUserRequest = new GetUserRequestObj(new List<string>() { AppSettings.UserId },
+                new GetUserDetailViewModelPresenterCallBack(this));
+            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            getUserUseCase.Execute();
+        }
+
+        public async Task SetProfileIconAsync(string imagePath)
+        {
+            var imageConversion = new StringToImageUtil();
+            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
+            ProfileIcon = profileIcon;
         }
 
         public void SuccessfullyPostCreated()
@@ -266,6 +273,33 @@ namespace SocialMediaApplication.Presenter.ViewModel
             public void OnError(Exception ex)
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        public class GetUserDetailViewModelPresenterCallBack : IPresenterCallBack<GetUserResponseObj>
+        {
+            private readonly PostCreationPageViewModel _postCreationPageViewModel;
+
+            public GetUserDetailViewModelPresenterCallBack(PostCreationPageViewModel postCreationPageViewModel)
+            {
+                _postCreationPageViewModel = postCreationPageViewModel;
+            }
+
+            public void OnSuccess(GetUserResponseObj getUserResponseObj)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _postCreationPageViewModel.UserName = getUserResponseObj.Users[0].UserName;
+                        _postCreationPageViewModel?.SetProfileIconAsync(getUserResponseObj.Users[0].ProfileIcon);
+                    }
+                );
+            }
+
+            public void OnError(Exception ex)
+            {
+                //throw new NotImplementedException();
             }
         }
     }

@@ -9,6 +9,6 @@ namespace SocialMediaApplication.DataManager.Contract
 {
     public interface IRemovePostManager
     {
-        Task RemovePost(RemovePostRequest removePostRequest, RemovePostUseCaseCallBack removePostUseCaseCallBack);
+        Task RemovePostAsync(RemovePostRequest removePostRequest, RemovePostUseCaseCallBack removePostUseCaseCallBack);
     }
 }

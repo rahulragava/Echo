@@ -1,17 +1,6 @@
 ﻿using SocialMediaApplication.Presenter.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Presenter.View.ProfileView;
 
@@ -22,7 +11,7 @@ namespace SocialMediaApplication.Presenter.View
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SearchPage : Page
+    public sealed partial class SearchPage : Page, ISearchView
     {
         public SearchViewModel SearchViewModel;
         public SearchPage()
@@ -31,14 +20,13 @@ namespace SocialMediaApplication.Presenter.View
             this.InitializeComponent();
             Loaded += SearchPage_Loaded;
         }
-        private void SearchPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void SearchPage_Loaded(object sender, RoutedEventArgs e)
         {
-            SearchViewModel.NavigateToProfilePage += NavigateToProfilePage;
+            SearchViewModel.SearchView = this;
             SearchViewModel.GetUserNames();
-            //Bindings.Update();
         }
 
-        private void NavigateToProfilePage(object sender, EventArgs e)
+        public void NavigateToProfilePage()
         {
             UserProfileFrame.Navigate(typeof(ProfilePage), SearchViewModel.UserId);
         }
@@ -53,7 +41,6 @@ namespace SocialMediaApplication.Presenter.View
             }
         }
 
-
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
@@ -66,13 +53,10 @@ namespace SocialMediaApplication.Presenter.View
         {
             SearchViewModel.PerformSearch(args.QueryText);
         }
+    }
 
-        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            //if (args.SelectedItem is string selectedUserName)
-            //{
-            //    SearchViewModel.PerformSearch(selectedUserName);
-            //}
-        }
+    public interface ISearchView
+    {
+        void NavigateToProfilePage();
     }
 }

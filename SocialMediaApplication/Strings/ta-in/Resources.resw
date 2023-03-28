@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="And.Text" xml:space="preserve">
+    <value>மற்றும்</value>
+  </data>
+  <data name="CallUser.Text" xml:space="preserve">
+    <value>நான்</value>
+  </data>
+  <data name="ChoiceEnter.PlaceholderText" xml:space="preserve">
+    <value>தேர்வுக்கான வாக்கியம்</value>
+  </data>
+  <data name="Choices.Header" xml:space="preserve">
+    <value>தேர்வுகள்</value>
+  </data>
+  <data name="Comment.Text" xml:space="preserve">
+    <value>கருத்துகள்</value>
+  </data>
+  <data name="CommentEnter.PlaceholderText" xml:space="preserve">
+    <value>உங்கள் கருத்தை இங்கே தட்டச்சு செய்யவும் ...</value>
+  </data>
+  <data name="Create.Content" xml:space="preserve">
+    <value>உருவாக்கு</value>
+  </data>
+  <data name="Created.Text" xml:space="preserve">
+    <value>முகநூல் பயனர்</value>
+  </data>
+  <data name="Discard.Content" xml:space="preserve">
+    <value>நிராகரிக்கவும்</value>
+  </data>
+  <data name="Education.Text" xml:space="preserve">
+    <value>பயின்ற இடம்</value>
+  </data>
+  <data name="Feed.Content" xml:space="preserve">
+    <value>feeds</value>
+  </data>
+  <data name="FirstName.Text" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="Follower.Text" xml:space="preserve">
+    <value>பின்பற்றுபவர்கள்</value>
+  </data>
+  <data name="Following.Text" xml:space="preserve">
+    <value>பின்பற்றுவது</value>
+  </data>
+  <data name="Font.Header" xml:space="preserve">
+    <value>எழுத்துரு</value>
+  </data>
+  <data name="Gender.Text" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="LastName.Text" xml:space="preserve">
+    <value>கடை பெயர்</value>
+  </data>
+  <data name="LogOut.Content" xml:space="preserve">
+    <value>வெளியேறு</value>
+  </data>
+  <data name="MaritalStatus.Text" xml:space="preserve">
+    <value>தாம்பத்தியம்</value>
+  </data>
+  <data name="Others.Text" xml:space="preserve">
+    <value>பிறர்</value>
+  </data>
+  <data name="Place.Text" xml:space="preserve">
+    <value>வாழ்விடம்</value>
+  </data>
+  <data name="PollPostCreation.Text" xml:space="preserve">
+    <value>வாக்கெடுப்பு இடுகையை உருவாக்கவும்</value>
+  </data>
+  <data name="Post.Content" xml:space="preserve">
+    <value>பதிவிடு</value>
+  </data>
+  <data name="Posts.Text" xml:space="preserve">
+    <value>பதிவுகள்</value>
+  </data>
+  <data name="PostTitle.PlaceholderText" xml:space="preserve">
+    <value>பதிவு தலைப்பு</value>
+  </data>
+  <data name="Profile.Content" xml:space="preserve">
+    <value>சுயவிவரம்</value>
+  </data>
+  <data name="Reply.Content" xml:space="preserve">
+    <value>பதிலளி</value>
+  </data>
+  <data name="ReplyEnter.PlaceholderText" xml:space="preserve">
+    <value>உங்கள் பதிலை இங்கே தட்டச்சு செய்யவும் ...</value>
+  </data>
+  <data name="Save.Content" xml:space="preserve">
+    <value>சேமி</value>
+  </data>
+  <data name="Schooling.Text" xml:space="preserve">
+    <value>கல்வி</value>
+  </data>
+  <data name="Search.PlaceholderText" xml:space="preserve">
+    <value>தேடு</value>
+  </data>
+  <data name="SearchContent.Content" xml:space="preserve">
+    <value>தேடு</value>
+  </data>
+  <data name="TextPostCreation.Text" xml:space="preserve">
+    <value>உரை இடுகையை உருவாக்கவும்</value>
+  </data>
+  <data name="Typing.PlaceholderText" xml:space="preserve">
+    <value>எழுதவும் ...</value>
+  </data>
+  <data name="UserName.Text" xml:space="preserve">
+    <value>பயனர் பெயர்</value>
+  </data>
+  <data name="UserThought.PlaceholderText" xml:space="preserve">
+    <value>உங்கள் மனதில் என்ன உள்ளது ?</value>
+  </data>
+  <data name="Votes.Text" xml:space="preserve">
+    <value>வாக்குகள்</value>
+  </data>
+  <data name="Work.Text" xml:space="preserve">
+    <value>செய்யும் தொழில்</value>
+  </data>
+  <data name="You.Text" xml:space="preserve">
+    <value>நீங்கள்</value>
+  </data>
+</root>

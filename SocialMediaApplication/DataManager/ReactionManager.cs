@@ -15,11 +15,10 @@ namespace SocialMediaApplication.DataManager
     public sealed class ReactionManager : IReactionManager
     {
         private static ReactionManager Instance { get; set; }
-        readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
+        private readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
         private static readonly object PadLock = new object();
 
-        ReactionManager() { }
-        //private  List<Reaction> reactions = new List<Reaction>();
+        private ReactionManager() { }
         
         public static ReactionManager GetInstance
         {
@@ -82,7 +81,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async Task GetUserReaction(GetUserReactionRequest getUserReactionRequest, GetUserReactionUseCaseCallBack getUserReactionUseCallBack)
+        public async Task GetUserReactionAsync(GetUserReactionRequest getUserReactionRequest, GetUserReactionUseCaseCallBack getUserReactionUseCallBack)
         {
             try
             {
@@ -96,38 +95,5 @@ namespace SocialMediaApplication.DataManager
                 getUserReactionUseCallBack?.OnError(e);
             }
         }
-        //public async Task AddReactionAsync(Reaction reaction)
-        //{
-        //    await _reactionDbHandler.InsertReactionAsync(reaction);
-        //}
-
-        //public async Task RemoveReactionAsync(string reactionId)
-        //{
-        //    try
-        //    {
-        //        await _reactionDbHandler.RemoveReactionAsync(reactionId);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new Exception(e.Message);
-        //    }
-        //}
-
-        //public async Task RemoveReactionsAsync(List<Reaction> reactions)
-        //{
-        //    if (reactions.Count <= 0 || !(reactions.Any())) return;
-
-        //    while (true)
-        //    {
-        //        for (int i = 0; i < reactions.Count; i++)
-        //        {
-        //            await RemoveReactionAsync(reactions[i].Id).ConfigureAwait(false);
-        //            break;
-        //        }
-        //        if (reactions.Count == 0) break;
-        //    }
-        //}
-
-        
     }
 }

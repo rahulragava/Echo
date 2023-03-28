@@ -13,13 +13,13 @@ using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using SocialMediaApplication.Util;
-using Windows.UI.Xaml.Documents;
+using static System.Collections.Specialized.BitVector32;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
 {
-    public sealed partial class TextPostUserControl : UserControl
+    public sealed partial class TextPostUserControl : UserControl, ITextPostUserControl
     {
         public PostControlViewModel PostControlViewModel;
 
@@ -29,25 +29,68 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
             this.InitializeComponent();
             Loaded += PostControl_Loaded;
             Unloaded += PostControl_Unloaded;
-
-            //ReactionUserControl.GetReactionList += PostControlViewModel.
         }
-
         public event Action<List<Reaction>> ReactionPopUpButtonClicked;
         public event Action<string> PostRemoved;
         public event Action<ObservableCollection<string>> FollowerListChanged;
         public event Action<Reaction> ReactionChanged;
         public static event Action<string> NavigateToSearchPage;
-        private void PostControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        public event Action<List<Reaction>> CommentReactionPopUpButtonClicked;
+
+
+        private void PostControl_Loaded(object sender, RoutedEventArgs e)
         {
+            PostControlViewModel.TextPostUserControl = this;
             PostControlViewModel.SetObservableCollection(PostReaction, PostComments,PostId);
             PostControlViewModel.PostId = PostId;
             UserManager.UserNameChanged += UserNameChanged;
+            
+            if (PostControlViewModel.Reaction == null)
+            {
+                if (PostControlViewModel.Reactions.Count > 0)
+                {
+                    ReactionCountBlock.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    PostControlViewModel.ReactionIcon = "👍";
+                    UserReaction.Visibility = Visibility.Visible;
+                }
+                YouTextBlock.Visibility = Visibility.Collapsed;
+                AndTextBlock.Visibility = Visibility.Collapsed;
+                OthersTextBlock.Visibility = Visibility.Collapsed;
+                PostControlViewModel.TotalReaction = PostControlViewModel.Reactions.Count;
+            }
+            else
+            {
+                if (PostControlViewModel.Reactions.Contains(PostControlViewModel.Reaction))
+                {
+                    PostControlViewModel.TotalReaction = PostControlViewModel.Reactions.Count - 1;
+                }
+                if (PostControlViewModel.TotalReaction > 0)
+                {
+                    YouTextBlock.Visibility = Visibility.Visible;
+                    if (PostControlViewModel.TotalReaction > 1)
+                    {
+                        AndTextBlock.Visibility = Visibility.Visible;
+                        OthersTextBlock.Visibility = Visibility.Visible;
+                        ReactionCountBlock.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        AndTextBlock.Visibility = Visibility.Collapsed;
+                        OthersTextBlock.Visibility = Visibility.Collapsed;
+                        ReactionCountBlock.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    YouTextBlock.Visibility = Visibility.Visible;
+                }
+            }
+            PostControlViewModel.PostedById = PostedByUserId;
             PostControlViewModel.PostFontStyle = PostContentFont;
-            PostControlViewModel.GetUserMiniDetailSuccess += GetUserMiniDetailSuccess;
-            PostControlViewModel.FollowUnFollowActionDone += FollowUnFollowActionDone;
-            PostControlViewModel.PostRemoved += RemovedPost;
-
+            PostControlViewModel.GetUser();
             if (PostedByUserId != AppSettings.UserId)
             {
                 RemovePost.Visibility = Visibility.Collapsed;
@@ -55,17 +98,33 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
             PostControlViewModel.RemoveButtonVisibility = AppSettings.UserId == PostedByUserId ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void RemovedPost(string postId)
+        public void RemovedPost(string postId)
         {
             PostRemoved?.Invoke(postId);
         }
 
-        private void FollowUnFollowActionDone()
+        public void SetReactionVisibility()
+        {
+            if (string.IsNullOrEmpty(PostControlViewModel.MaxReactionIcon))
+            {
+                MaxReaction.Visibility = Visibility.Collapsed;
+            }
+            else if (string.IsNullOrEmpty(PostControlViewModel.SecondMaxReactionIcon))
+            {
+                SecondMaxReaction.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                UserReaction.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public void FollowUnFollowActionDone()
         {
             FollowerListChanged?.Invoke(PostControlViewModel.UserFollowingList);
         }
 
-        private void GetUserMiniDetailSuccess()
+        public void GetUserMiniDetailSuccess()
         {
             if (PostControlViewModel.UserFollowingList.Contains(AppSettings.UserId))
             {
@@ -83,16 +142,15 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
         {
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
-                {
+                { 
                     PostedByUserName = userName;
                 }
             );
         }
 
-        private void PostControl_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void PostControl_Unloaded(object sender, RoutedEventArgs e)
         {
             UserManager.UserNameChanged -= UserNameChanged;
-            
         }
 
         //username
@@ -192,54 +250,28 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
             set => SetValue(PostIdProperty, value);
         }
 
+
         private void OpenCommentSection_OnClick(object sender, RoutedEventArgs e)
         {
-            //OpenCommentSection.Visibility = Visibility.Collapsed;
-            //OpenReactionSection.Visibility = Visibility.Collapsed;
-            if (CommentComponent.Visibility == Visibility.Collapsed)
-            {
-                CommentComponent.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CommentComponent.Visibility = Visibility.Collapsed;
-            }
+            CommentComponent.Visibility = CommentComponent.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
-
-
-        private void OpenReactionSection_OnClick(object sender, RoutedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        //private void UserReactions_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    UserReactionPopup.Visibility = Visibility.Visible;
-        //    UserReactions.Visibility = Visibility.Collapsed;
-        //}
-
+        
         private void OpenReactionSection_OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            if (OpenReactionSection.ContextFlyout != null)
-            {
-                OpenReactionSection.ContextFlyout.ShowAt(OpenReactionSection, new FlyoutShowOptions());
-
-            }
+            ReactionPopUp.IsOpen = true;
         }
+
+        public bool IsReactionSectionEntered = false;
 
         private void OpenReactionSection_OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-
-            //if (OpenReactionSection.ContextFlyout != null)
-            //{
-            //    OpenReactionSection.ContextFlyout.Hide();
-            //    //var a = OpenReactionSection.ContextFlyout.IsOpen;
-            //    //if (a)
-            //    //{
-
-            //    //}
-            //}
+            if (IsReactionSectionEntered)
+            {
+                ReactionPopUp.IsOpen = false;
+                IsReactionSectionEntered = false;
+            }
         }
+
 
         private void SetReaction(Reaction reaction)
         {
@@ -250,90 +282,116 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
             {
                 PostControlViewModel.Reactions[reactionIndex] = reaction;
             }
+            else
+            {
+                PostControlViewModel.Reactions.Add(reaction);
+            }
+            UserReaction.Visibility = Visibility.Visible;
+            YouTextBlock.Visibility = Visibility.Visible;
             switch (reaction.ReactionType)
             {
                 case ReactionType.Heart:
                     PostControlViewModel.ReactionIcon = "♥";
+                    PostControlViewModel.ReactionText = "Heart";
                     break;
                 case ReactionType.ThumbsDown:
-                    PostControlViewModel.ReactionIcon = "👎";
+                    PostControlViewModel.ReactionIcon = "👎";    
+                    PostControlViewModel.ReactionText = "Dislike";
+
                     break;
                 case ReactionType.ThumbsUp:
                     PostControlViewModel.ReactionIcon = "👍";
-
+                    PostControlViewModel.ReactionText = "Like";
                     break;
                 case ReactionType.Happy:
                     PostControlViewModel.ReactionIcon = "😁";
+                    PostControlViewModel.ReactionText = "Happy";
+
                     break;
                 case ReactionType.Mad:
-                    PostControlViewModel.ReactionIcon = "😡";
+                    PostControlViewModel.ReactionIcon = "😠";
+                    PostControlViewModel.ReactionText = "Mad";
                     break;
                 case ReactionType.HeartBreak:
                     PostControlViewModel.ReactionIcon = "💔";
+                    PostControlViewModel.ReactionText = "HeartBreak";
                     break;
                 case ReactionType.Sad:
                     PostControlViewModel.ReactionIcon = "😕";
+                    PostControlViewModel.ReactionText = "Sad";
                     break;
                 default:
                     PostControlViewModel.ReactionIcon = "👍";
+                    PostControlViewModel.ReactionText = "React";
                     break;
             }
 
+            if (!string.IsNullOrEmpty(PostControlViewModel.MaxReactionIcon))
+            {
+                MaxReaction.Visibility = PostControlViewModel.MaxReactionIcon == PostControlViewModel.ReactionIcon ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            if (!string.IsNullOrEmpty(PostControlViewModel.SecondMaxReactionIcon))
+            {
+                SecondMaxReaction.Visibility = PostControlViewModel.MaxReactionIcon == PostControlViewModel.ReactionIcon ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            if (PostControlViewModel.Reactions.Contains(reaction))
+            {
+                PostControlViewModel.TotalReaction = PostControlViewModel.Reactions.Count-1;
+            }
+            else
+            {
+                PostControlViewModel.TotalReaction = PostControlViewModel.Reactions.Count;
+            }
+
+            if (PostControlViewModel.Reaction == null)
+            {
+                if (PostControlViewModel.TotalReaction > 0)
+                {
+                    ReactionCountBlock.Visibility = Visibility.Visible;
+                }
+                YouTextBlock.Visibility = Visibility.Collapsed;
+                AndTextBlock.Visibility = Visibility.Collapsed;
+                OthersTextBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                if (PostControlViewModel.TotalReaction > 0)
+                {
+                    YouTextBlock.Visibility = Visibility.Visible;
+                    if (PostControlViewModel.TotalReaction > 1)
+                    {
+                        AndTextBlock.Visibility = Visibility.Visible;
+                        OthersTextBlock.Visibility = Visibility.Visible;
+                        ReactionCountBlock.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        AndTextBlock.Visibility = Visibility.Collapsed;
+                        OthersTextBlock.Visibility = Visibility.Collapsed;
+                        ReactionCountBlock.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    YouTextBlock.Visibility = Visibility.Visible;
+                }
+            }
+            
             ReactionChanged?.Invoke(reaction);
+       
+            ReactionPopUp.IsOpen = false;
+            IsReactionSectionEntered = false;
         }
-
-        //private void ChangeCommentList(List<CommentBObj> CommentCacheList)
-        //{
-        //    PostControlViewModel.Comments.Clear();
-        //    foreach (var comment in CommentCacheList)
-        //    {
-        //        PostControlViewModel.Comments.Add(comment);
-        //    }
-
-        //}
-
-        //private void CommentInserted()
-        //{
-        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //        () =>
-        //        {
-        //            PostControlViewModel.GetComments();
-
-        //        }
-        //    );
-        //}
-
-        //private void CommentRemoved()
-        //{
-        //    Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //        () =>
-        //        {
-        //            PostControlViewModel.GetComments();
-        //        }
-        //    );
-        //}
 
         private void UserReactions_OnClick(object sender, RoutedEventArgs e)
         {
             ReactionPopUpButtonClicked?.Invoke(PostControlViewModel.Reactions.ToList());
         }
-
-        //private void UserReactions_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    ReactionsPopup.Visibility = Visibility.Visible;
-        //    ReactionsPopup.IsOpen = true;
-        //}
-
-        //private void ReactionsPopup_OnLoaded(object sender, RoutedEventArgs e)
-        //{
-
-        //    ReactionsPopup.HorizontalOffset = (Window.Current.Bounds.Width - UserSelectedReactionControl.ActualWidth) / 2;
-        //    ReactionsPopup.VerticalOffset = (Window.Current.Bounds.Height - UserSelectedReactionControl.ActualHeight) / 2;
-
-        //}
-        private void CommentsViewUserControl_OnCommentCountChanged(int commentCount)
+        void CommentsViewUserControl_OnCommentCountChanged(int commentCount)
         {
-            PostControlViewModel.TotalComments = commentCount;
+            PostControlViewModel.TotalComments = commentCount > 0 ? commentCount.ToString() : string.Empty;
         }
 
         private void ProfilePanel_OnPointerEntered(object sender, PointerRoutedEventArgs e)
@@ -373,12 +431,15 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
 
         private async void RemovePost_OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.Title = "Post Deletion";
-            dialog.PrimaryButtonText = "Yes";
-            dialog.CloseButtonText = "No";
-            dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.Content = "The post about to be removed cannot be retrieved! \n Are you sure, you want to delete ?";
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Post Deletion",
+                PrimaryButtonText = "Yes",
+                //Background = ( AppSettings.Theme == ElementTheme.Dark) ? new SolidColorBrush(Color.FromArgb(127,20,20,20)) : new SolidColorBrush(Color.FromArgb(127, 255, 255, 255)), 
+                CloseButtonText = "No",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = "The post about to be removed cannot be retrieved! \n Are you sure, you want to delete ?"
+            };
 
             var result = await dialog.ShowAsync();
             switch (result)
@@ -396,6 +457,37 @@ namespace SocialMediaApplication.Presenter.View.PostView.TextPostView
                 Reactions = PostControlViewModel.Reactions.ToList(),
             };
             PostControlViewModel.RemovePost(postToBeRemoved);
+        }
+
+        private void CommentSection_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            CommentComponent.Visibility = CommentComponent.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+
+        private void ReactionPopUp_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            IsReactionSectionEntered = true;
+        }
+
+        private void ReactionPopUp_OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            IsReactionSectionEntered = false;
+          
+        }
+
+        private void TextPostGrid_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (ReactionPopUp.IsOpen)
+            {
+                ReactionPopUp.IsOpen = false;
+            }
+        }
+
+
+        private void CommentsViewUserControl_OnCommentReactionButtonClicked(List<Reaction> commentReactions)
+        {
+            CommentReactionPopUpButtonClicked?.Invoke(commentReactions);
         }
     }
 }

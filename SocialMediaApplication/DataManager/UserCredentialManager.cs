@@ -34,7 +34,7 @@ namespace SocialMediaApplication.DataManager
 
         private readonly IUserCredentialDbHandler _userCredentialDbHandler = UserCredentialDbHandler.GetInstance;
 
-        public async Task<List<UserCredential>> GetUserCredentialsAsync() => (await Task.Run(() => _userCredentialDbHandler.GetAllUserCredentialAsync()).ConfigureAwait(false)).ToList();
+        public async Task<List<UserCredential>> GetUserCredentialsAsync() => (await _userCredentialDbHandler.GetAllUserCredentialAsync()).ToList();
 
         public async Task AddUserCredentialAsync(UserCredential userCredential)
         {
@@ -42,18 +42,10 @@ namespace SocialMediaApplication.DataManager
             {
                 return;
             }
-            await Task.Run(() => _userCredentialDbHandler.InsertUserCredentialAsync(userCredential)).ConfigureAwait(false);
+            await _userCredentialDbHandler.InsertUserCredentialAsync(userCredential);
         }
 
-        public async Task RemoveUserCredential(UserCredential userCredential)
-        {
-            if(userCredential == null)
-            {
-                return;
-            }
-            await Task.Run(() => _userCredentialDbHandler.RemoveUserCredentialAsync(userCredential.UserId));
-        }
-
-        public async Task<UserCredential> GetUserCredentialAsync(string userId) => (await Task.Run(() => _userCredentialDbHandler.GetUserCredentialAsync(userId)).ConfigureAwait(false));
+        
+        public async Task<UserCredential> GetUserCredentialAsync(string userId) => (await _userCredentialDbHandler.GetUserCredentialAsync(userId));
     }
 }

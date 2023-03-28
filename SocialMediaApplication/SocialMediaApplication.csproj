@@ -168,7 +168,6 @@
     <Compile Include="Database\DatabaseHandler\CommentDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\Contract\ICommentDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\Contract\IFollowerDbHandler.cs" />
-    <Compile Include="Database\DatabaseHandler\Contract\ILabelDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\Contract\IPollChoiceDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\Contract\IPollPostDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\Contract\ITextPostDbHandler.cs" />
@@ -178,7 +177,6 @@
     <Compile Include="Database\DatabaseHandler\Contract\IReactionDbHandler.cs" />
     <Compile Include="Database\DatabaseAdapter\DatabaseInitializer.cs" />
     <Compile Include="Database\DatabaseHandler\FollowerDbHandler.cs" />
-    <Compile Include="Database\DatabaseHandler\LabelDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\PollChoiceDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\PollPostDbHandler.cs" />
     <Compile Include="Database\DatabaseHandler\ReactionDbHandler.cs" />
@@ -196,16 +194,19 @@
     <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ReactionViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SearchViewModel.cs" />
-    <Compile Include="Presenter\ViewModel\UserSelectionChoiceViewModel.cs" />
     <Compile Include="Presenter\ViewModel\UserSelectionReactionsViewModel.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\BoolToVisibilityConverter.cs.cs" />
+    <Compile Include="Presenter\View\SignUp\SignUpUserControl.xaml.cs">
+      <DependentUpon>SignUpUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Util\ObservableCollectionExtension.cs" />
+    <Compile Include="Util\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
+    <Compile Include="Util\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
     <Compile Include="Presenter\ViewModel\LogInViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\PostFontStyleConverter.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\RelativeDateTimeConverter.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\StringToImageConverter.cs" />
+    <Compile Include="Util\ValueConverter\PostFontStyleConverter.cs" />
+    <Compile Include="Util\ValueConverter\RelativeCountConverter.cs" />
+    <Compile Include="Util\ValueConverter\RelativeDateTimeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
     <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
       <DependentUpon>CommentsViewUserControl.xaml</DependentUpon>
@@ -216,7 +217,7 @@
     <Compile Include="Presenter\View\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\LogInPage.xaml.cs">
+    <Compile Include="Presenter\View\LogInView\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\MainPage.xaml.cs">
@@ -230,7 +231,6 @@
     <Compile Include="Models\BusinessModels\UserBObj.cs" />
     <Compile Include="Models\EntityModels\Comment.cs" />
     <Compile Include="Models\EntityModels\Follower.cs" />
-    <Compile Include="Models\EntityModels\Label.cs" />
     <Compile Include="Models\EntityModels\PollChoice.cs" />
     <Compile Include="Models\EntityModels\PollPost.cs" />
     <Compile Include="Models\EntityModels\Post.cs" />
@@ -239,26 +239,22 @@
     <Compile Include="Models\EntityModels\User.cs" />
     <Compile Include="Models\EntityModels\UserCredential.cs" />
     <Compile Include="Models\EntityModels\UserPollChoiceSelection.cs" />
-    <Compile Include="Presenter\View\PostView\PollPostView\PollChoiceSelectedUser.xaml.cs">
-      <DependentUpon>PollChoiceSelectedUser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Presenter\View\PostView\PollPostView\PollChoiceUserControl.xaml.cs">
-      <DependentUpon>PollChoiceUserControl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Presenter\View\PostView\PollPostView\IPollPostUserControl.cs" />
     <Compile Include="Presenter\View\CommentView\CommentUserControl.xaml.cs">
       <DependentUpon>CommentUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\PostView\PollPostView\PollPostUserControl.xaml.cs">
       <DependentUpon>PollPostUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\PostPage.xaml.cs">
+    <Compile Include="Presenter\View\PostView\PostPage.xaml.cs">
       <DependentUpon>PostPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\View\PostView\TextPostView\ITextPostUserControl.cs" />
+    <Compile Include="Presenter\View\PostView\TextPostView\MiniTextPostCreation.xaml.cs">
+      <DependentUpon>MiniTextPostCreation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\PostView\TextPostView\TextPostUserControl.xaml.cs">
       <DependentUpon>TextPostUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Presenter\View\ProfileView\FollowerUserControl.xaml.cs">
-      <DependentUpon>FollowerUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presenter\View\ProfileView\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -275,6 +271,7 @@
     <Compile Include="Presenter\View\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presenter\View\SignUp\ISignUpView.cs" />
     <Compile Include="Presenter\View\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
     </Compile>
@@ -289,19 +286,18 @@
     <Compile Include="DataManager\Contract\IReactionManager.cs" />
     <Compile Include="DataManager\Contract\IUserCredentialManager.cs" />
     <Compile Include="DataManager\Contract\IUserManager.cs" />
-    <Compile Include="DataManager\InitializeData.cs" />
-    <Compile Include="DataManager\LabelManager.cs" />
     <Compile Include="DataManager\PollChoiceManager.cs" />
     <Compile Include="DataManager\FetchPostManager.cs" />
     <Compile Include="DataManager\ReactionManager.cs" />
     <Compile Include="DataManager\UserCredentialManager.cs" />
     <Compile Include="DataManager\UserManager.cs" />
-    <Compile Include="Presenter\View\SignUpPage.xaml.cs">
+    <Compile Include="Presenter\View\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\AppSettings.cs" />
-    <Compile Include="Presenter\ViewModel\ValueConverter\MarginConverter.cs" />
+    <Compile Include="Util\ValueConverter\MarginConverter.cs" />
     <Compile Include="Util\SelectTemplate.cs" />
+    <Compile Include="Util\StringToImageUtil.cs" />
     <Compile Include="Util\Validation.cs" />
     <Compile Include="Util\UserManagerHelper.cs" />
   </ItemGroup>
@@ -313,7 +309,49 @@
   <ItemGroup>
     <Content Include="Assets\44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" />
     <Content Include="Assets\AddIcon.png" />
+    <Content Include="Assets\LargeTile.scale-100.png" />
+    <Content Include="Assets\LargeTile.scale-125.png" />
+    <Content Include="Assets\LargeTile.scale-150.png" />
+    <Content Include="Assets\LargeTile.scale-200.png" />
+    <Content Include="Assets\LargeTile.scale-400.png" />
     <Content Include="Assets\placeholder profile.jpg" />
+    <Content Include="Assets\SmallTile.scale-100.png" />
+    <Content Include="Assets\SmallTile.scale-125.png" />
+    <Content Include="Assets\SmallTile.scale-150.png" />
+    <Content Include="Assets\SmallTile.scale-200.png" />
+    <Content Include="Assets\SmallTile.scale-400.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\Square150x150Logo.scale-150.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\textIcon.png" />
     <Content Include="Assets\facebook_dark.png" />
     <Content Include="Assets\facebook_light.png" />
@@ -321,13 +359,16 @@
     <Content Include="Assets\signInBackground.jpg" />
     <Content Include="Assets\TextPostIcon.png" />
     <Content Include="Assets\wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-150.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="Assets\—Pngtree—facebook icon logo in modern_5221788.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
@@ -335,7 +376,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Presenter\Resource\DummyThemeResourceDictionary.xaml">
+    <Page Include="Presenter\Resource\ThemeResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\Resource\TextBoxResource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -351,25 +396,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\LogInPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Presenter\View\LoginResourceDictionary.xaml">
+    <Page Include="Presenter\View\LogInView\LogInPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Presenter\View\PostView\PollPostView\PollChoiceSelectedUser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Presenter\View\PostView\PollPostView\PollChoiceUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\CommentView\CommentUserControl.xaml">
       <SubType>Designer</SubType>
@@ -379,15 +412,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\PostPage.xaml">
+    <Page Include="Presenter\View\PostView\PostPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PostView\TextPostView\MiniTextPostCreation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\PostView\TextPostView\TextPostUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Presenter\View\ProfileView\FollowerUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -411,7 +444,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\SignUpPage.xaml">
+    <Page Include="Presenter\View\SignUp\SignUpPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\SignUp\SignUpUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -451,6 +488,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <PRIResource Include="Strings\en-Us\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Strings\ta-in\Resources.resw" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

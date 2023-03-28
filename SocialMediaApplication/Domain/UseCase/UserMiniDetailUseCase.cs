@@ -25,7 +25,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            _userManager.GetUserMiniDetails(UserMiniDetailRequest, new UserMiniDetailUseCaseCallBack(this));
+            _userManager.GetUserMiniDetailsAsync(UserMiniDetailRequest, new UserMiniDetailUseCaseCallBack(this));
         }
 
     }

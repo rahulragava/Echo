@@ -23,7 +23,7 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public override void Action()
         {
-            _getCommentManager.GetPostComments(GetCommentRequest, new GetCommentUseCaseCallBack(this));
+            _getCommentManager.GetPostCommentsAsync(GetCommentRequest, new GetCommentUseCaseCallBack(this));
 
         }
     }

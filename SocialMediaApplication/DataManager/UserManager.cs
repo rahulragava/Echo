@@ -49,7 +49,7 @@ namespace SocialMediaApplication.DataManager
         private readonly IFollowerDbHandler _followerDbHandler = FollowerDbHandler.GetInstance;
         private readonly FetchPostManager _fetchPostManager = FetchPostManager.GetInstance;
 
-        public async void LoginUserAsync(LoginRequest loginRequest,LogInUseCaseCallBack loginUseCaseCallBack)
+        public async Task LoginUserAsync(LoginRequest loginRequest,LogInUseCaseCallBack loginUseCaseCallBack)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async void SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack)
+        public async Task SignUpUserAsync(SignUpRequestObj signUpRequestObj, SignUpUseCaseCallBack signUpUseCaseCallBack)
         {
             try
             {
@@ -109,20 +109,8 @@ namespace SocialMediaApplication.DataManager
                 signUpUseCaseCallBack?.OnError(ex);
             }
         }
-
-        public async void RemoveUserAsync(UserBObj user)
-        {
-            try
-            {
-                await _userDbHandler.RemoveUserAsync(user.Id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async void GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequest, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack)
+        
+        public async Task GetUserBObjAsync(GetUserProfileRequestObj getUserProfileRequest, GetUserProfileUseCaseCallBack getUserProfileUseCaseCallBack)
         {
             try
             {
@@ -153,7 +141,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async void GetUserNamesAsync(GetUserNamesRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack)
+        public async Task GetUserNamesAsync(GetUserNamesRequestObj getUserNameRequestObj, GetUserNamesUseCaseCallBack getUserNamesUseCaseCallBack)
         {
             try
             {
@@ -172,7 +160,7 @@ namespace SocialMediaApplication.DataManager
         }
 
         public static event Action<string> UserNameChanged;
-        public async void EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj,
+        public async Task EditUserBObjAsync(EditUserProfileRequestObj editUserProfileRequestObj,
             EditUserProfileUseCaseCallBack editUserProfileUseCaseCallBack)
         {
             try
@@ -235,45 +223,6 @@ namespace SocialMediaApplication.DataManager
                 MaritalStatus = userBObj.MaritalStatus,
             };
         }
-
-        //public async Task<List<PostBObj>> GetUserPostBObjsAsync(string userId)
-        //{
-        //    var postBObjs = new List<PostBObj>();
-        //    if (_userBObj == null)
-        //    {
-        //        postBObjs = await _fetchPostManager.GetUserPostBObjsAsync(userId).ConfigureAwait(false);
-        //    }
-        //    else
-        //    {
-        //        postBObjs.AddRange(_userBObj.TextPosts);
-        //        postBObjs.AddRange(_userBObj.PollPosts);
-        //    }
-        //    return postBObjs;
-        //}
-
-        //public UserBObj ConvertModelToBObj(User user, List<TextPostBObj> textPosts, List<PollPostBObj> pollPosts, List<string> followersId, List<string> followingsId)
-        //{
-        //    var userBObj = new UserBObj
-        //    {
-        //        Id = user.Id,
-        //        UserName = user.UserName,
-        //        FirstName = user.FirstName,
-        //        LastName = user.LastName,
-        //        Gender = user.Gender,
-        //        CreatedAt = user.CreatedAt,
-        //        FormattedCreatedTime = user.CreatedAt.ToString("dddd, dd MMMM yyyy"),
-        //        MaritalStatus = user.MaritalStatus,
-        //        Occupation = user.Occupation,
-        //        Education = user.Education,
-        //        Place = user.Place,
-        //        TextPosts = textPosts,
-        //        PollPosts = pollPosts,
-        //        FollowersId = followersId,
-        //        FollowingsId = followingsId
-        //    };
-
-        //    return userBObj;
-        //}
 
     }
 }

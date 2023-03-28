@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:entityModels="using:SocialMediaApplication.Models.EntityModels"
+      xmlns:viewObject="using:SocialMediaApplication.Presenter.ViewModel"
       mc:Ignorable="d"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -13,13 +14,17 @@
                   IsItemClickEnabled="True"
                   SelectionChanged="UserList_OnSelectionChanged"
                   x:Name="UserList">
+            <!--<ListView.Resources>
+                <PersonPicture x:Name="PersonPicture" ProfilePicture="{x:Bind GetUserDetailViewModel.ProfileIcon,Mode=OneWay}"></PersonPicture>
+            </ListView.Resources>-->
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="entityModels:User">
+                <DataTemplate x:DataType="viewObject:UserVObj">
                     <StackPanel Orientation="Horizontal"
                                 Margin="5 15 0 0"
                                 Height="40"
                                 Padding="0 0 0 8">
                         <PersonPicture Width="38"
+                                       ProfilePicture="{x:Bind ProfileImage,Mode=OneWay}"
                                        x:Name="Profile"
                                        Margin="0 -5" />
                         <TextBlock Text="{x:Bind UserName,Mode=OneWay}"

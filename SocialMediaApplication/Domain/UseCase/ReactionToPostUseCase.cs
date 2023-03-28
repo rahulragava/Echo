@@ -28,6 +28,7 @@ namespace SocialMediaApplication.Domain.UseCase
         }
         
     }
+
     public class ReactionToPostUseCaseCallBack : IUseCaseCallBack<ReactionToPostResponse>
     {
         private readonly ReactionToPostUseCase _reactionToPostUseCase;
@@ -48,7 +49,6 @@ namespace SocialMediaApplication.Domain.UseCase
     }
 
     //Request obj
-    
     public class ReactionToPostRequestObj
     {
         public Reaction Reaction { get; }
@@ -63,7 +63,6 @@ namespace SocialMediaApplication.Domain.UseCase
     }
 
     //response object
- 
     public class ReactionToPostResponse
     {
         public bool ReactionSuccess;

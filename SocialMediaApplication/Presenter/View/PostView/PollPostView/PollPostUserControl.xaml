@@ -8,20 +8,141 @@
              xmlns:media="using:Microsoft.UI.Xaml.Media"
              xmlns:commentView="using:SocialMediaApplication.Presenter.View.CommentView"
              xmlns:reactionView="using:SocialMediaApplication.Presenter.View.ReactionView"
-             xmlns:valueConverter="using:SocialMediaApplication.Presenter.ViewModel.ValueConverter"
+             xmlns:valueConverter1="using:SocialMediaApplication.Util.ValueConverter"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <valueConverter:PostFontStyleConverter x:Key="FontStyleConverter"></valueConverter:PostFontStyleConverter>
-        <valueConverter:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter:RelativeDateTimeConvertor>
+        <valueConverter1:PostFontStyleConverter x:Key="FontStyleConverter"></valueConverter1:PostFontStyleConverter>
+        <valueConverter1:RelativeDateTimeConvertor x:Key="DateTimeConvertor"></valueConverter1:RelativeDateTimeConvertor>
+        <valueConverter1:RelativeCountConverter x:Key="CountConverter"></valueConverter1:RelativeCountConverter>
         <Style TargetType="TextBlock"></Style>
+        <Style x:Key="BorderAppearsHoverStyle"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+            <Setter Property="CornerRadius"
+                    Value="10"></Setter>
+            <Setter Property="BackgroundSizing"
+                    Value="OuterBorderEdge" />
+            <Setter Property="Foreground"
+                    Value="{ThemeResource ButtonForeground}" />
+            <Setter Property="BorderBrush"
+                    Value="{ThemeResource ButtonBorderBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="{ThemeResource ButtonBorderThemeThickness}" />
+            <Setter Property="Padding"
+                    Value="{StaticResource ButtonPadding}" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Left" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="FontFamily"
+                    Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontWeight"
+                    Value="Normal" />
+            <Setter Property="FontSize"
+                    Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="UseSystemFocusVisuals"
+                    Value="{StaticResource UseSystemFocusVisuals}" />
+            <Setter Property="FocusVisualMargin"
+                    Value="-3" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          AutomationProperties.AccessibilityView="Raw"
+                                          Background="{TemplateBinding Background}"
+                                          BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTransitions="{TemplateBinding ContentTransitions}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Padding="{TemplateBinding Padding}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBackgroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBorderBrushPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonForegroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBackgroundPressed}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBorderBrushPressed}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonForegroundPressed}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBackgroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonBorderBrushDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonForegroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-    <Grid Margin="0 7"
+    <Grid Margin="7 10 10 10"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          Tapped="PollPostGrid_OnTapped"
+          x:Name="PollPostGrid"
           CornerRadius="10">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -36,9 +157,11 @@
                     VerticalAlignment="Top">
             <PersonPicture PointerEntered="ProfilePanel_OnPointerEntered"
                            Width="40"
+                           ProfilePicture="{x:Bind PostControlViewModel.ProfileIcon,Mode=OneWay}"
                            Height="40"
                            VerticalAlignment="Top"
                            Margin="10 7" />
+
             <StackPanel Margin="4">
                 <TextBlock VerticalAlignment="Top"
                            Margin=" -3 3"
@@ -90,6 +213,7 @@
                     </Grid.ColumnDefinitions>
                     <PersonPicture Width="40"
                                    Grid.Row="0"
+                                   ProfilePicture="{x:Bind PostControlViewModel.ProfileIcon,Mode=OneWay}"
                                    Grid.RowSpan="2"
                                    Grid.Column="0" />
                     <TextBlock Grid.Row="0"
@@ -162,14 +286,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Center"
-                       Margin="0 0 0 0"
-                       FontSize="20"
-                       FontFamily="{x:Bind PostContentFont,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
-                       VerticalAlignment="Center"
-                       TextWrapping="WrapWholeWords"
-                       Text="{x:Bind PostTitle,Mode=OneWay}" />
-
             <TextBlock Grid.Row="1"
                        Margin="15 0 0 0"
                        HorizontalAlignment="Left"
@@ -179,7 +295,7 @@
                        Text="{x:Bind PostQuestion,Mode=OneWay}" />
             <ListView Grid.Row="2"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                      x:Name="pollChoiceList"
+                      x:Name="PollChoices"
                       IsItemClickEnabled="True"
                       SelectionChanged="PollChoiceList_OnSelectionChanged"
                       ItemsSource="{x:Bind PostControlViewModel.PollChoices,Mode=OneWay}">
@@ -196,13 +312,17 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="data:PollChoiceBObj">
-                        <!--<postView:PollChoiceUserControl HorizontalAlignment="Stretch"
-                                                        VerticalAlignment="Stretch"
-                                                        Choice ="{x:Bind Choice,Mode=OneWay}"
-                                                        ChoicePercentage="{x:Bind ChoiceSelectionPercent,Mode=OneWay}"
-                                                        Loaded="FrameworkElement_OnLoaded"
-                                                        ChoiceSelectedUserList="{x:Bind ChoiceSelectedUsers,Mode=OneWay}"/>-->
                         <Grid x:Name="ChoiceGrid">
+                            <ToolTipService.ToolTip>
+
+                                <TextBlock MaxWidth="40"
+                                           FontFamily="{x:Bind PostFontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
+                                           x:Name="ChoiceCountPercentage">
+                                        <Run Text="{x:Bind ChoiceSelectionPercent,Mode=OneWay}"></Run>
+                                        <Run>%</Run>
+                                </TextBlock>
+                            </ToolTipService.ToolTip>
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -210,6 +330,7 @@
                             </Grid.ColumnDefinitions>
                             <ProgressBar Height="40"
                                          Minimum="0"
+                                         Margin="10 0"
                                          Maximum="100"
                                          Value="{x:Bind ChoiceSelectionPercent,Mode=OneWay}"
                                          Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
@@ -217,32 +338,25 @@
                                          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
                             </ProgressBar>
-                            <TextBlock Grid.Column="1"
-                                       Margin="10 0"
-                                       VerticalAlignment="Center"
-                                       MaxWidth="40"
-                                       FontFamily="{x:Bind PostFontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
-                                       x:Name="ChoiceCountPercentage">
-                                <Run Text="{x:Bind ChoiceSelectionPercent,Mode=OneWay}"></Run>
-                                <Run>%</Run>
-                            </TextBlock>
+
                             <TextBlock Grid.Column="0"
                                        FontSize="16"
                                        x:Name="ChoiceTextBlock"
                                        Padding="10"
                                        FontFamily="{x:Bind PostFontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
-                                       Margin="5 5 5 5"
+                                       Margin="10 5 5 5"
                                        Text="{x:Bind Choice,Mode=OneWay}" />
-                            <PersonPicture Grid.Column="2" Height="30"
+                            <PersonPicture Grid.Column="2"
+                                           Height="30"
                                            x:Name="userSelectedChoice"
                                            PointerExited="UserSelectedChoice_OnPointerExited"
                                            PointerEntered="UserSelectedChoice_OnPointerEntered">
                                 <PersonPicture.ContextFlyout>
-                                    <Flyout Placement="Left"> 
+                                    <Flyout Placement="Left">
                                         <local:UserListUserControl UserPollChoiceSelectionList="{x:Bind ChoiceSelectedUsers,Mode=OneWay}"></local:UserListUserControl>
                                     </Flyout>
                                 </PersonPicture.ContextFlyout>
-                                
+
                             </PersonPicture>
                         </Grid>
                     </DataTemplate>
@@ -251,171 +365,128 @@
             </ListView>
         </Grid>
 
-        <!--<Grid
-            Grid.Row="2">
-            <TextBlock HorizontalAlignment="left" Margin="23 0 0 0">
-                -->
-        <!--<Run Text="{x:Bind PostControlViewModel.PollChoiceBObj.ChoiceSelectedUsers.Count}"/>-->
-        <!--
-                <Run Text="{x:Bind PostControlViewModel.TotalVotes,Mode=OneWay}"/>
-                <Run Text=" votes"/>
-            </TextBlock>
-        </Grid>-->
+        <NavigationViewItemSeparator Grid.Row="2"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="2"></NavigationViewItemSeparator>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
               Grid.Column="0"
+              PointerExited="OpenReactionSection_OnPointerExited"
+              Margin="0 0 0 10"
               Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <HyperlinkButton Grid.Row="0"
-                             Grid.Column="0"
-                             Margin="15 0 0 0"
-                             Foreground="{ThemeResource SubtleText}"
-                             Click="UserReactions_OnClick"
-                             x:Name="UserReactions"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Left">
-                <HyperlinkButton.Content>
+            <Button Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource BorderAppearsHoverStyle}"
+                    PointerEntered="OpenReactionSection_OnPointerEntered"
+                    Margin="15 0 0 0"
+                    Foreground="{ThemeResource SubtleText}"
+                    Click="UserReactions_OnClick"
+                    x:Name="OpenReactionSection"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left">
+                <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon FontFamily="Segoe UI Emoji"
-                                  Glyph="&#x1F44D;"
-                                  Margin="-5 4 0 0"
-                                  FontSize="20" />
+                                  Glyph="{x:Bind PostControlViewModel.MaxReactionIcon,Mode=OneWay}"
+                                  Margin="-5 0 0 0"
+                                  Foreground="White"
+                                  x:Name="MaxReaction"
+                                  FontSize="14" />
 
                         <FontIcon FontFamily="Segoe UI Emoji"
-                                  Glyph="&#x1F601;"
-                                  Margin="-5 4 0 0"
-                                  FontSize="20" />
+                                  Glyph="{x:Bind PostControlViewModel.SecondMaxReactionIcon,Mode=OneWay}"
+                                  Margin="-5 0 0 0"
+                                  Foreground="White"
+                                  x:Name="SecondMaxReaction"
+                                  FontSize="14" />
                         <FontIcon FontFamily="Segoe UI Emoji"
-                                  Glyph="&#x2665;"
-                                  Margin="-5 4 0 0"
-                                  FontSize="20" />
-
+                                  Glyph="{x:Bind PostControlViewModel.ReactionIcon,Mode=OneWay}"
+                                  Margin="-5 0 0 0"
+                                  x:Name="UserReaction"
+                                  Foreground="White"
+                                  FontSize="14" />
                         <!--<FontIcon FontFamily="Segoe UI Emoji"
-
-                                      FontSize="20"
-                                      Glyph="&#x1F601;"
-                            />-->
-
+                                  />-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Foreground="{ThemeResource SubtleText}"
+                                       x:Name="YouTextBlock"
+                                       Text=" you " />
+                            <TextBlock Foreground="{ThemeResource SubtleText}"
+                                       x:Name="AndTextBlock"
+                                       Text=" and" />
+                            <TextBlock Foreground="{ThemeResource SubtleText}"
+                                       x:Name="ReactionCountBlock"
+                                       Margin="5 0 0 0"
+                                       Text="{x:Bind PostControlViewModel.TotalReaction,Mode=OneWay,Converter={StaticResource CountConverter}}" />
+                            <TextBlock Foreground="{ThemeResource SubtleText}"
+                                       x:Name="OthersTextBlock"
+                                       Text=" others " />
+                        </StackPanel>
                     </StackPanel>
 
-                </HyperlinkButton.Content>
-            </HyperlinkButton>
-            <TextBlock Grid.Column="1"
+                </Button.Content>
+            </Button>
+
+            <Popup x:Name="ReactionPopUp"
+                   VerticalOffset="-40">
+                <Grid PointerEntered="ReactionPopUp_OnPointerEntered"
+                      PointerExited="ReactionPopUp_OnPointerExited"
+                      CornerRadius="10"
+                      Padding="8"
+                      Background="{ThemeResource AcrylicBrushBackground}">
+                    <reactionView:ReactionUserControl HorizontalAlignment="Stretch"
+                                                      ReactionOnId="{x:Bind PostId,Mode=OneWay}"
+                                                      GetReaction="SetReaction"
+                                                      VerticalAlignment="Stretch" />
+                </Grid>
+            </Popup>
+
+            <TextBlock  x:Name="UserVotes"
+                        Tapped="UserVotes_OnTapped"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Margin="0 0 0 0">
+                <!--<Run Text="{x:Bind PostControlViewModel.PollChoiceBObj.ChoiceSelectedUsers.Count}"/>-->
+                <Run Text="{x:Bind PostControlViewModel.TotalVotes,Mode=OneWay}" />
+                <Run x:Uid="Votes" />
+            </TextBlock>
+
+            <TextBlock Grid.Column="2"
                        VerticalAlignment="Center"
                        Foreground="{ThemeResource SubtleText}"
                        Grid.Row="0"
+                       x:Name="CommentSection"
+                       Tapped="CommentSection_OnTapped"
                        Margin="0 0 20 0"
                        FontSize="15"
                        HorizontalAlignment="Right">
                     <Run Text="{x:Bind PostControlViewModel.TotalComments,Mode=OneWay}" />
-                    <Run>Comments</Run>
+                    <Run x:Uid="Comment" />
             </TextBlock>
         </Grid>
 
-        <Grid Grid.Row="3"
-              Grid.Column="0"
-              Grid.ColumnSpan="2"
-              VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <StackPanel  Grid.Row="4"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="2"
+                     VerticalAlignment="Center"
+                     Padding="0"
+                     Visibility="Collapsed"
+                     x:Name="CommentComponent"
+                     HorizontalAlignment="Stretch">
 
-            <NavigationViewItemSeparator Grid.ColumnSpan="3"
-                                         Margin=" 0 -5" />
-
-            <NavigationViewItemSeparator Grid.ColumnSpan="3"
-                                         Grid.Column="0"
-                                         Grid.Row="2"
-                                         Margin=" 0 -15 0 0" />
-
-            <TextBlock  Grid.Row="1"
-                        x:Name="UserVotes"
-                        Tapped="UserVotes_OnTapped"
-                        Grid.Column="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Margin="0 -9 0 0">
-                <!--<Run Text="{x:Bind PostControlViewModel.PollChoiceBObj.ChoiceSelectedUsers.Count}"/>-->
-                <Run Text="{x:Bind PostControlViewModel.TotalVotes,Mode=OneWay}" />
-                <Run Text=" votes" />
-            </TextBlock>
-
-            <HyperlinkButton  Grid.Row="1"
-                              Grid.Column="1"
-                              Height="50"
-                              x:Name="OpenReactionSection"
-                              HorizontalAlignment="Stretch"
-                              Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-                              PointerEntered="OpenReactionSection_OnPointerEntered"
-                              PointerExited="OpenReactionSection_OnPointerExited"
-                              FontSize="15"
-                              Margin="10 0 10 10"
-                              Padding="11">
-                <HyperlinkButton.Content>
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="10">
-                        <FontIcon FontFamily="Segoe UI Emoji"
-                                  Margin="0 -5 0 0"
-                                  Glyph="{x:Bind PostControlViewModel.ReactionIcon,Mode=OneWay}"
-                                  FontSize="20" />
-                        <TextBlock>React</TextBlock>
-                    </StackPanel>
-                </HyperlinkButton.Content>
-                <HyperlinkButton.ContextFlyout>
-                    <Flyout>
-                        <reactionView:ReactionUserControl HorizontalAlignment="Stretch"
-                                                          ReactionOnId="{x:Bind PostId,Mode=OneWay}"
-                                                          GetReaction="SetReaction"
-                                                          VerticalAlignment="Stretch" />
-                    </Flyout>
-                </HyperlinkButton.ContextFlyout>
-            </HyperlinkButton>
-
-            <HyperlinkButton Grid.Row="1"
-                             Grid.Column="2"
-                             x:Name="OpenCommentSection"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch"
-                             Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-                             Click="OpenCommentSection_OnClick"
-                             FontSize="15"
-                             Margin="10 0 10 10"
-                             Padding="11">
-                <HyperlinkButton.Content>
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="10">
-                        <TextBlock>Comments</TextBlock>
-                    </StackPanel>
-                </HyperlinkButton.Content>
-            </HyperlinkButton>
-
-            <StackPanel Grid.Row="3"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Padding="0"
-                        Visibility="Collapsed"
-                        x:Name="CommentComponent"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
-
-                <commentView:CommentsViewUserControl Comments="{x:Bind PostComments,Mode=OneWay}"
-                                                     HorizontalAlignment="Stretch"
-                                                     VerticalAlignment="Stretch"
-                                                     CommentCountChanged="CommentsViewUserControl_OnCommentCountChanged"
-                                                     PostId="{x:Bind PostId,Mode=OneWay}" />
-            </StackPanel>
-        </Grid>
+            <commentView:CommentsViewUserControl Comments="{x:Bind PostComments,Mode=OneWay}"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 CommentReactionButtonClicked="CommentsViewUserControl_OnCommentReactionButtonClicked"
+                                                 CommentCountChanged="CommentsViewUserControl_OnCommentCountChanged"
+                                                 PostId="{x:Bind PostId,Mode=OneWay}" />
+        </StackPanel>
     </Grid>
 </UserControl>

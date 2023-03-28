@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using SocialMediaApplication.Util;
-using Windows.System;
 using Windows.UI.Xaml.Input;
-using Microsoft.Toolkit.Parsers.Markdown.Inlines;
 using User = SocialMediaApplication.Models.EntityModels.User;
 using Windows.Storage.Streams;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using SocialMediaApplication.Models.BusinessModels;
+using static System.Collections.Specialized.BitVector32;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,37 +24,32 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class ProfilePage : Page
+    public sealed partial class ProfilePage : Page, IProfileView
     {
-        
+
         private readonly ProfilePageViewModel _profilePageViewModel;
-        
+
         public ProfilePage()
         {
-            _profilePageViewModel= new ProfilePageViewModel();
+            _profilePageViewModel = new ProfilePageViewModel
+            {
+                ProfileView = this
+            };
             this.InitializeComponent();
-            Loaded += ProfilePage_Loaded;
         }
 
-        private void ProfilePage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        public void GetUserSucceed()
         {
-            _profilePageViewModel.GetUserSucceed += GetUserSucceed;
-            _profilePageViewModel.UserNameAlreadyExist += UserNameAlreadyExist;
-            _profilePageViewModel.ProfilePictureUpdated += SetProfileImage;
-            _profilePageViewModel.HomePictureUpdated += SetHomeImage;
-        }
-
-
-
-        private void GetUserSucceed()
-        {
-            if (_profilePageViewModel.user.Id == AppSettings.UserId)
+            if (_profilePageViewModel.User.Id == AppSettings.UserId)
             {
                 FollowButton.Visibility = Visibility.Collapsed;
                 EditButton.Visibility = Visibility.Visible;
                 CreatePostButton.Visibility = Visibility.Visible;
                 EditPhoto.Visibility = Visibility.Visible;
+                UserThoughtPost.Visibility = Visibility.Visible;
                 HomeIconEditButton.Visibility = Visibility.Visible;
+                PostGrid.SetValue(Grid.RowProperty, 4);
+                PostGrid.SetValue(Grid.RowSpanProperty, 2);
             }
             else
             {
@@ -73,10 +67,14 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
                 EditPhoto.Visibility = Visibility.Collapsed;
                 HomeIconEditButton.Visibility = Visibility.Collapsed;
                 CreatePostButton.Visibility = Visibility.Collapsed;
+                UserThoughtPost.Visibility = Visibility.Collapsed;
+                PostGrid.SetValue(Grid.RowProperty, 3);
+                PostGrid.SetValue(Grid.RowSpanProperty, 3);
             }
             SetProfileImage();
             SetHomeImage();
         }
+        public StorageFolder AppFolder = ApplicationData.Current.LocalFolder;
 
         public static event Action NavigateToPostCreationPage;
 
@@ -87,7 +85,6 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             if (userId != null)
             {
                 _profilePageViewModel.GetUser(userId);
-                
             }
         }
 
@@ -108,10 +105,8 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             {
                 EditPopUp.IsOpen = true;
             }
-
         }
 
-        //changes has to be done,
         private void ClosePopupClicked(object sender, RoutedEventArgs e)
         {
             // if the Popup is open, then close it 
@@ -124,13 +119,12 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
 
             var gender = GenderComboBox.SelectedIndex;
             var maritalStatus = MaritalStatusComboBox.SelectedIndex;
-            _profilePageViewModel.EditUserProfile(UserNameTextBox.Text,FirstNameTextBox.Text,LastNameTextBox.Text,gender,maritalStatus,EducationTextBox.Text,OccupationTextBox.Text,PlaceTextBox.Text);
+            _profilePageViewModel.EditUserProfile(UserNameTextBox.Text, FirstNameTextBox.Text, LastNameTextBox.Text, gender, maritalStatus, EducationTextBox.Text, OccupationTextBox.Text, PlaceTextBox.Text);
         }
 
-        private void UserNameAlreadyExist()
+        public void UserNameAlreadyExist()
         {
             ExampleVsCodeInAppNotification.Show("Already User with this UserName Exist! Try Something new", 5000);
-            return;
         }
 
         private void ShowFollowerPopup(object sender, RoutedEventArgs e)
@@ -152,7 +146,6 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             {
                 FilterPopup.IsOpen = true;
             }
-
         }
 
         private void CloseFilterPopupClicked(object sender, RoutedEventArgs e)
@@ -168,33 +161,42 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         {
             if (!(e.AddedItems[0] is ComboBoxItem comboBoxItem)) return;
             var content = comboBoxItem.Content as string;
-            if (content != null && content.Equals("TextPost"))
+
+            if (content != null && content.Equals("Text Post"))
             {
-                if ((PollPostListView is null) || (TextPostListView is null)) return;
-                PollPostListView.Visibility = Visibility.Collapsed;
-                TextPostListView.Visibility = Visibility.Visible;
+                PostListView.ItemsSource = _profilePageViewModel.TextPosts;
             }
-            else if (content != null && content.Equals("PollPost"))
+            else if (content != null && content.Equals("Poll Post"))
             {
-                if ((PollPostListView is null) || (TextPostListView is null)) return;
-                TextPostListView.Visibility = Visibility.Collapsed;
-                PollPostListView.Visibility = Visibility.Visible;
+                PostListView.ItemsSource = _profilePageViewModel.PollPosts;
+            }
+            else if (content != null && content.Equals("All"))
+            {
+                if (PostListView != null)
+                {
+                    PostListView.ItemsSource = _profilePageViewModel.PostList;
+                }
             }
         }
 
         private void PostTypeComboBox_OnDropDownClosed(object sender, object e)
         {
             FilterPopup.IsOpen = false;
-
         }
 
         private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
         {
-            ReactionsPopup.Visibility = Visibility.Visible;
-            ReactionsPopup.IsOpen = true;
-            _profilePageViewModel.SetReactions(reactions);
-            //_profilePageViewModel.Reactions = new ObservableCollection<Reaction>();
-            //_profilePageViewModel.Reactions = new ObservableCollection<Reaction>(reactions);
+            PostReactionsPopup.Visibility = Visibility.Visible;
+            PostReactionsPopup.IsOpen = true;
+            _profilePageViewModel.SetPostReactions(reactions);
+        }
+
+
+        private void PollPostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> commentReactions)
+        {
+            CommentReactionsPopup.Visibility = Visibility.Visible;
+            CommentReactionsPopup.IsOpen = true;
+            _profilePageViewModel.SetCommentReactions(commentReactions);
         }
 
         private void FollowerFollowing_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -203,15 +205,15 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
 
             if (selectedTag == "FollowerTag")
             {
-                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.user.FollowersId);
+                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.User.FollowersId);
             }
             else if (selectedTag == "FollowingTag")
             {
-                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.user.FollowingsId);
+                FollowerFollowingFrame.Navigate(typeof(UserListPage), _profilePageViewModel.User.FollowingsId);
             }
         }
 
-        private void ShowFolloweePopup(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void ShowFollowingsPopup(object sender, TappedRoutedEventArgs e)
         {
             FollowerPopUp.Visibility = Visibility.Visible;
             if (!FollowerPopUp.IsOpen) { FollowerPopUp.IsOpen = true; }
@@ -240,10 +242,14 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             if (_profilePageViewModel.Followings.Contains(AppSettings.UserId))
             {
                 _profilePageViewModel.UserFollowingCount += 1;
+                UnFollowButton.Visibility = Visibility.Visible;
+                FollowButton.Visibility = Visibility.Collapsed;
             }
             else
             {
                 _profilePageViewModel.UserFollowingCount -= 1;
+                FollowButton.Visibility = Visibility.Visible;
+                UnFollowButton.Visibility = Visibility.Collapsed;
             }
 
 
@@ -252,11 +258,13 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         private void PollPostControl_OnPostRemoved(string postId)
         {
             _profilePageViewModel.PollPosts.Remove(_profilePageViewModel.PollPosts.SingleOrDefault(p => p.Id == postId));
+            _profilePageViewModel.PostList.Remove(_profilePageViewModel.PostList.SingleOrDefault(p => p.Id == postId));
         }
 
         private void PostControl_OnPostRemoved(string postId)
         {
             _profilePageViewModel.TextPosts.Remove(_profilePageViewModel.TextPosts.SingleOrDefault(p => p.Id == postId));
+            _profilePageViewModel.PostList.Remove(_profilePageViewModel.PostList.SingleOrDefault(p => p.Id == postId));
         }
 
         private void CreatePostButton_OnTapped(object sender, TappedRoutedEventArgs e)
@@ -279,46 +287,48 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
-
-                _profilePageViewModel.ProfileImage = file.Path;
+                StorageFile newFile = await file.CopyAsync(AppFolder, file.Name, NameCollisionOption.ReplaceExisting);
+                _profilePageViewModel.ProfileImage = newFile.Path;
                 _profilePageViewModel.EditProfileImage();
-            }
-            else
-            {
-                //this.textBlock.Text = "Operation cancelled.";
             }
         }
 
-        private async void SetProfileImage()
+        //var picker = new FileOpenPicker();
+        //picker.ViewMode = PickerViewMode.Thumbnail;
+        //picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+        //picker.FileTypeFilter.Add(".jpg");
+        //picker.FileTypeFilter.Add(".jpeg");
+        //picker.FileTypeFilter.Add(".png");
+
+        //StorageFile file = await picker.PickSingleFileAsync();
+
+        //    // If a file was selected, save it in the app folder
+        //    if (file != null)
+        //{
+        //    StorageFolder appFolder = ApplicationData.Current.LocalFolder;
+        //    StorageFile newFile = await file.CopyAsync(appFolder, file.Name, NameCollisionOption.ReplaceExisting);
+
+        //    // Update the image source with the new file
+        //    var temp = new BitmapImage(new Uri(newFile.Path));
+        //    ProfilePath = temp.UriSource.LocalPath.ToString();
+
+        //    Initial.ProfilePicture = temp;
+
+
+
+
+        public async void SetProfileImage()
         {
             if (_profilePageViewModel.ProfileImage != null)
             {
-                BitmapImage image = new BitmapImage();
-                try
-                {
-                    var storageFile = await StorageFile.GetFileFromPathAsync(_profilePageViewModel.ProfileImage);
-                    using (IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        await image.SetSourceAsync(stream);
-                    }
-                    ProfileImage.Source = image;
-                }
-                catch (Exception e)
-                {
-                    //filenotfoundException
-                }
+
+                var imageConversion = new StringToImageUtil();
+                var profileIcon = await imageConversion.GetImageFromStringAsync(_profilePageViewModel.ProfileImage);
+                ProfileImage.Source = profileIcon;
             }
         }
 
-        private void ProfileImage1_OnPointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            //EditPhoto.Visibility = Visibility.Visible;
-        }
-
-        private void ProfileImage1_OnPointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            //EditPhoto.Visibility = Visibility.Collapsed;
-        }
+        private StorageFile HomePagePathFile { get; set; }
 
         private async void HomeIconEditButton_OnTapped(object sender, TappedRoutedEventArgs e)
         {
@@ -331,42 +341,80 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
 
-
             StorageFile file = await picker.PickSingleFileAsync();
+
             if (file != null)
             {
 
-                _profilePageViewModel.HomePageImage = file.Path;
-                _profilePageViewModel.EditHomeImage();
+                StorageFile newFile = await file.CopyAsync(AppFolder, file.Name, NameCollisionOption.ReplaceExisting);
+                await CroppedImage.LoadImageFromFile(newFile);
+                CroppedImage.CropShape = CropShape.Rectangular;
+                CroppedImage.AspectRatio = 16d / 9d;
+                HomePagePathFile = newFile;
             }
             else
             {
-
+                //this.textBlock.Text = "Operation cancelled.";
             }
+            ResizePopup.IsOpen = true;
         }
 
-        private async void SetHomeImage()
+        public async void SetHomeImage()
         {
             if (!string.IsNullOrEmpty(_profilePageViewModel.HomePageImage))
             {
-                BitmapImage image = new BitmapImage();
-
-                try
-                {
-                    var storageFile = await StorageFile.GetFileFromPathAsync(_profilePageViewModel.HomePageImage);
-                    using (IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        await image.SetSourceAsync(stream);
-                    }
-                    HomeImage.Source = image;
-                }
-                catch (Exception e)
-                {
-                    //ProfileImage.Source = new BitmapImage(new Uri(@"../../../Assets/signInBackground.jpg"));
-                }
-
+                var imageConversion = new StringToImageUtil();
+                var homeIcon = await imageConversion.GetImageFromStringAsync(_profilePageViewModel.HomePageImage);
+                HomeImage.Source = homeIcon;
             }
         }
+
+        private void Unset_OnClick(object sender, RoutedEventArgs e)
+        {
+            ResizePopup.IsOpen = false;
+        }
+
+        private async void Set_OnClick(object sender, RoutedEventArgs e)
+        {
+            using (var fileStream = await HomePagePathFile.OpenAsync(FileAccessMode.ReadWrite, StorageOpenOptions.None))
+            {
+                await CroppedImage.SaveAsync(fileStream, BitmapFileFormat.Png);
+            }
+
+
+            BitmapImage image = new BitmapImage();
+            using (IRandomAccessStream stream = await HomePagePathFile.OpenAsync(FileAccessMode.Read))
+            {
+                await image.SetSourceAsync(stream);
+            }
+            _profilePageViewModel.HomePageImage = HomePagePathFile.Path;
+            _profilePageViewModel.EditHomeImage();
+            HomeImage.Source = image;
+            ResizePopup.IsOpen = false;
+
+        }
+
+        private void MiniTextPostCreation_OnOnTextPostCreationSuccess(TextPostBObj textPost)
+        {
+            ExampleVsCodeInAppNotification.Show("Post  is Successfully Created!", 2000);
+            _profilePageViewModel.PostList.Insert(0, textPost);
+            _profilePageViewModel.TextPosts.Insert(0, textPost);
+        }
+
+        private void PostControl_OnReactionChanged(Reaction reaction)
+        {
+            _profilePageViewModel.PostReaction = reaction;
+            var reactions = _profilePageViewModel.PostReactions.ToList();
+            _profilePageViewModel.ChangeInReactions(reactions);
+        }
+
     }
 
+    public interface IProfileView
+    {
+        void SetProfileImage();
+        void UserNameAlreadyExist();
+        void GetUserSucceed();
+        void SetHomeImage();
+    }
 }

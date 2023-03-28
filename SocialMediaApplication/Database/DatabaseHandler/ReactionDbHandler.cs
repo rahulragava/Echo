@@ -42,7 +42,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
             await _dbAdapter.InsertInTableAsync(reaction);
         }
 
-        //remove a Reaction from db
+        //remove a PostReaction from db
         public async Task RemoveReactionAsync(string reactionId)
         {
             await _dbAdapter.RemoveObjectFromTableAsync<Reaction>(reactionId);

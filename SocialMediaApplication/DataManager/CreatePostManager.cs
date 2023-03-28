@@ -1,9 +1,6 @@
 ﻿using SocialMediaApplication.Database.DatabaseHandler.Contract;
 using SocialMediaApplication.Database.DatabaseHandler;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SocialMediaApplication.DataManager.Contract;
 using SocialMediaApplication.Domain.UseCase;
@@ -39,7 +36,7 @@ namespace SocialMediaApplication.DataManager
         private readonly IPollPostDbHandler _pollPostDbHandler = PollPostDbHandler.GetInstance;
         private readonly IPollChoiceDbHandler _pollChoiceDbHandler = PollChoiceDbHandler.GetInstance;
 
-        public async void CreateTextPostAsync(TextPostCreationRequest textPostCreationRequest, TextPostCreationUseCaseCallBack textPostCreationUseCaseCallBack)
+        public async Task CreateTextPostAsync(TextPostCreationRequest textPostCreationRequest, TextPostCreationUseCaseCallBack textPostCreationUseCaseCallBack)
         {
             try
             {
@@ -53,7 +50,7 @@ namespace SocialMediaApplication.DataManager
             }
         }
 
-        public async void CreatePollPostAsync(PollPostCreationRequest pollPostCreationRequest, PollPostCreationUseCaseCallBack pollPostCreationUseCaseCallBack)
+        public async Task CreatePollPostAsync(PollPostCreationRequest pollPostCreationRequest, PollPostCreationUseCaseCallBack pollPostCreationUseCaseCallBack)
         {
             try
             {

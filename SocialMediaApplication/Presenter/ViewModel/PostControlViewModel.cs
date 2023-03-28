@@ -2,24 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Microsoft.VisualStudio.PlatformUI;
 using SocialMediaApplication.Domain.UseCase;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Util;
-using SocialMediaApplication.Presenter.View;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
+using SocialMediaApplication.Presenter.View.PostView.PollPostView;
+using SocialMediaApplication.Presenter.View.PostView.TextPostView;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -28,9 +22,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public readonly ObservableCollection<Reaction> Reactions = new ObservableCollection<Reaction>();
         public List<CommentBObj> CommentsList;
         public readonly ObservableCollection<CommentBObj> Comments = new ObservableCollection<CommentBObj>();
-        public  ObservableCollection<PollChoiceBObj> PollChoices = new ObservableCollection<PollChoiceBObj>();
+        public ObservableCollection<PollChoiceBObj> PollChoices = new ObservableCollection<PollChoiceBObj>();
+        public ITextPostUserControl TextPostUserControl;
+        public IPollPostUserControl PollPostUserControl;
 
-        public Action<string> PostRemoved;
         private PollChoiceBObj _pollChoiceBObj;
 
         public PollChoiceBObj PollChoiceBObj
@@ -38,11 +33,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _pollChoiceBObj;
             set => SetProperty(ref _pollChoiceBObj, value);
         }
+
         public UserPollChoiceSelection UserPollChoiceSelection;
         private Reaction _reaction;
         public ObservableCollection<string> UserFollowerList;
         public ObservableCollection<string> UserFollowingList;
         public User User;
+
         public Reaction Reaction
         {
             get => _reaction;
@@ -56,6 +53,15 @@ namespace SocialMediaApplication.Presenter.ViewModel
             get => _removeButtonVisibility;
             set => SetProperty(ref _removeButtonVisibility, value);
         }
+
+        private string _postedById;
+
+        public string PostedById
+        {
+            get => _postedById;
+            set => SetProperty(ref _postedById, value);
+        }
+
         public string PostId { get; set; }
 
         public PostControlViewModel()
@@ -63,6 +69,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             UserFollowerList = new ObservableCollection<string>();
             UserFollowingList = new ObservableCollection<string>();
         }
+
         private int _totalVotes = 0;
 
         public int TotalVotes
@@ -80,72 +87,239 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _postFontStyle, value);
         }
 
+        private BitmapImage _profileIcon;
 
-        private int _totalComments;
-        public int TotalComments
+        public BitmapImage ProfileIcon
+        {
+            get => _profileIcon;
+            set => SetProperty(ref _profileIcon, value);
+        }
+
+        private string _totalComments;
+
+        public string TotalComments
         {
             get => _totalComments;
             set => SetProperty(ref _totalComments, value);
         }
 
+        private int _totalReaction;
+
+        public int TotalReaction
+        {
+            get => _totalReaction;
+            set => SetProperty(ref _totalReaction, value);
+        }
+
+        public async Task SetProfileIconAsync(string imagePath)
+        {
+            var imageConversion = new StringToImageUtil();
+            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
+            ProfileIcon = profileIcon;
+        }
+
         public void SetObservableCollection(List<Reaction> reactionList, List<CommentBObj> commentList, string postId)
         {
-            Reactions.Clear();
-            foreach (var reaction in reactionList)
+            if (reactionList != null)
             {
-                Reactions.Add(reaction);
+                Reactions.Clear();
+                foreach (var reaction in reactionList)
+                {
+                    Reactions.Add(reaction);
+                }
+            }
+            ReactionType maxReaction = ReactionType.None;
+            try
+            {
+                maxReaction = Reactions.Max(reaction => reaction.ReactionType);
+                SetReactionIcon(maxReaction, false, true);
+            }
+            catch
+            {
+                MaxReactionIcon = string.Empty;
+                maxReaction = ReactionType.None;
+            }
+            try
+            {
+                if (maxReaction == ReactionType.None)
+                {
+                    SecondMaxReactionIcon = string.Empty;
+                }
+                else
+                {
+                    var secondMax = Reactions.Where(r => r.ReactionType != maxReaction).Max(r => r.ReactionType);
+                    SetReactionIcon(secondMax, false, false);
+                }
+            }
+            catch
+            {
+                SecondMaxReactionIcon = string.Empty;
+                // there is no second max reaction
+            }
+            
+            if (commentList != null)
+            {
+                CommentsList = commentList;
+                Comments.Clear();
+                foreach (var comment in commentList)
+                {
+                    Comments.Add(comment);
+                }
             }
 
-            CommentsList = commentList;
-            Comments.Clear();
-            foreach (var comment in commentList)
+            var numberOfComments = Comments.Count;
+            if (numberOfComments > 0)
             {
-                Comments.Add(comment);
+                TotalComments = Comments.Count.ToString();
             }
-            TotalComments = Comments.Count;
+            else
+            {
+                TotalComments = string.Empty;
+            }
 
             var react = Reactions.SingleOrDefault(r => r.ReactionOnId == postId && r.ReactedBy == AppSettings.UserId);
             if (react != null)
             {
                 Reaction = react;
-                switch (Reaction.ReactionType)
-                {
-                    case ReactionType.Heart:
-                        ReactionIcon = "♥";
-                        break;
-                    case ReactionType.ThumbsDown:
-                        ReactionIcon = "👎";
-                        break;
-                    case ReactionType.ThumbsUp:
-                        ReactionIcon = "👍";
-                        break;
-                    case ReactionType.Happy:
-                        ReactionIcon = "😁";
-                        break;
-                    case ReactionType.Mad:
-                        ReactionIcon = "😡";
-                        break;
-                    case ReactionType.HeartBreak:
-                        ReactionIcon = "💔";
-                        break;
-                    case ReactionType.Sad:
-                        ReactionIcon = "😕";
-                        break;
-                }
+                SetReactionIcon(Reaction.ReactionType,true,false);
             }
             else
             {
                 Reaction = null;
-                ReactionIcon = "👍";
-
+                ReactionIcon = string.Empty;
             }
-
+            if (ReactionIcon == MaxReactionIcon)
+            {
+                MaxReactionIcon = string.Empty;
+            }
+            if (ReactionIcon == SecondMaxReactionIcon)
+            {
+                SecondMaxReactionIcon = string.Empty;
+            }
+            if (TextPostUserControl != null)
+            {
+                TextPostUserControl.SetReactionVisibility();
+            }
+            else
+            {
+                PollPostUserControl.SetReactionVisibility();
+            }
+            TotalReaction = Reactions.Count - 1;
+        }
+        
+        public void SetReactionIcon(ReactionType reactionType,bool isReactionIcon,bool isMaxReactionIcon)
+        {
+            switch (reactionType)
+            {
+                case ReactionType.Heart:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "♥";
+                        ReactionText = "Heart";
+                        break;
+                    }
+                    if(isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "♥";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "♥";
+                    break;
+                case ReactionType.ThumbsDown:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "👎";
+                        ReactionText = "Dislike";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "👎";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "👎";
+                    break;
+                case ReactionType.ThumbsUp:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "👍";
+                        ReactionText = "Like";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "👍";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "👍";
+                    break;
+                case ReactionType.Happy:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "😁";
+                        ReactionText = "Happy";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "😁";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "😁";
+                    break;
+                case ReactionType.Mad:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "😠";
+                        ReactionText = "Mad";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "😠";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "😠";
+                    break;
+                case ReactionType.HeartBreak:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "💔";
+                        ReactionText = "HeartBreak";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "💔";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "💔";
+                    break;
+                case ReactionType.Sad:
+                    if (isReactionIcon)
+                    {
+                        ReactionIcon = "😕";
+                        ReactionText = "Sad";
+                        break;
+                    }
+                    if (isMaxReactionIcon)
+                    {
+                        MaxReactionIcon = "😕";
+                        break;
+                    }
+                    SecondMaxReactionIcon = "😕";
+                    break;
+                default:
+                    ReactionIcon = null;
+                    ReactionText = "React";
+                    break;
+            }
         }
 
-        public Action GetUserMiniDetailSuccess;
         public void GetMiniProfileDetails(string postedByUser)
         {
-            var userMiniDetailRequest = new UserMiniDetailRequest(postedByUser,new UserMiniDetailPresenterCallBack(this)); 
+            var userMiniDetailRequest =
+                new UserMiniDetailRequest(postedByUser, new UserMiniDetailPresenterCallBack(this));
             var userMiniDetailUseCase = new UserMiniDetailUseCase(userMiniDetailRequest);
             userMiniDetailUseCase.Execute();
         }
@@ -165,8 +339,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     }
                 }
             }
-
-
             foreach (var choice in PollChoices)
             {
                 if (TotalVotes == 0)
@@ -175,12 +347,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 }
                 else
                 {
-                    choice.ChoiceSelectionPercent = choice.ChoiceSelectedUsers.Count*100/TotalVotes;
+                    choice.ChoiceSelectionPercent = choice.ChoiceSelectedUsers.Count * 100 / TotalVotes;
                 }
             }
         }
-
-       
 
         public void InsertUserSelectedChoice(string postId, UserPollChoiceSelection userPollChoiceSelection)
         {
@@ -195,23 +365,24 @@ namespace SocialMediaApplication.Presenter.ViewModel
             var insertUserSelectionChoiceRequest =
                 new InsertUserChoiceSelectionRequest(postId, userPollChoiceSelection,
                     new InsertUserSelectionPostChoicePresenterCallBack(this));
-            var insertUserSelectionChoiceUseCase = new InsertUserSelectionChoiceUseCase(insertUserSelectionChoiceRequest);
+            var insertUserSelectionChoiceUseCase =
+                new InsertUserSelectionChoiceUseCase(insertUserSelectionChoiceRequest);
             insertUserSelectionChoiceUseCase.Execute();
         }
 
-        public EventHandler UserSelectionChoiceInserted;
-        public void SuccessfullyUserChoiceSelectionInserted(InsertUserChoiceSelectionResponse insertUserChoiceSelectionResponse)
+        public void SuccessfullyUserChoiceSelectionInserted(
+            InsertUserChoiceSelectionResponse insertUserChoiceSelectionResponse)
         {
             TotalVotes = 0;
             foreach (var pollChoice in PollChoices)
             {
                 if (pollChoice.Id != PollChoiceBObj.Id)
                 {
-                    var choiceSelectedUser = pollChoice.ChoiceSelectedUsers.SingleOrDefault(c => c.SelectedBy == AppSettings.UserId);
+                    var choiceSelectedUser =
+                        pollChoice.ChoiceSelectedUsers.SingleOrDefault(c => c.SelectedBy == AppSettings.UserId);
                     if (choiceSelectedUser != null)
                     {
                         pollChoice.ChoiceSelectedUsers.Remove(choiceSelectedUser);
-                        //PollChoices[PollChoices.IndexOf(pollChoiceBObj)].ChoiceSelectedUsers.Remove(choiceSelectedUser);
                         PollChoiceBObj.ChoiceSelectedUsers.Remove(choiceSelectedUser);
                     }
                 }
@@ -225,47 +396,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             foreach (var pollChoiceBObj in PollChoices)
             {
-                pollChoiceBObj.ChoiceSelectionPercent = (int)pollChoiceBObj.ChoiceSelectedUsers.Count * 100 / TotalVotes;
+                pollChoiceBObj.ChoiceSelectionPercent =
+                    (int)pollChoiceBObj.ChoiceSelectedUsers.Count * 100 / TotalVotes;
             }
-
-            //UserSelectionChoiceInserted?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void ClearAndUpdate()
-        {
-            Comments.Clear();
-            foreach (var comment in CommentsList)
-            {
-                Comments.Add(comment);
-            }
-        }
-
-        
-        public int GetCount(int choiceSelectedUserListCount)
-        {
-            if (TotalVotes > 0)
-            {
-                return ((int)((choiceSelectedUserListCount * 100) / TotalVotes));
-
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-
-        public Action FollowUnFollowActionDone;
-        public void GetComments()
-        {
-            var getCommentRequest = new GetCommentRequest(PostId, new CommentsPresenterCallBack(this));
-            var getCommentUseCase = new GetCommentUseCase(getCommentRequest);
-            getCommentUseCase.Execute();
         }
 
         public void RemovePost(PostBObj postBObj)
         {
-            var removePostRequest = new RemovePostRequest(postBObj,new RemovePostPresenterCallBack(this));
+            var removePostRequest = new RemovePostRequest(postBObj, new RemovePostPresenterCallBack(this));
             var removePostUseCase = new RemovePostUseCase(removePostRequest);
             removePostUseCase.Execute();
         }
@@ -273,10 +411,19 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public void FollowUnFollowSearchedUser(string userId)
         {
 
-            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(userId, AppSettings.UserId, new FollowUnFollowPresenterCallBack(this));
+            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(userId, AppSettings.UserId,
+                new FollowUnFollowPresenterCallBack(this));
             var followUnFollowSearchedUserUseCase =
                 new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest);
             followUnFollowSearchedUserUseCase.Execute();
+        }
+
+        public void GetUser()
+        {
+            var getUserRequest = new GetUserRequestObj(new List<string>() { PostedById },
+                new GetUserDetailViewModelPresenterCallBack(this));
+            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            getUserUseCase.Execute();
         }
 
         private string _reactionIcon;
@@ -287,10 +434,28 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _reactionIcon, value);
         }
 
-        public void GetCommentSuccess(List<CommentBObj> commentBObjs)
+        private string _maxReactionIcon;
+
+        public string MaxReactionIcon
         {
-            CommentsList = commentBObjs;
-            ClearAndUpdate();
+            get => _maxReactionIcon;
+            set => SetProperty(ref _maxReactionIcon, value);
+        }
+
+        private string _secondMaxReactionIcon;
+
+        public string SecondMaxReactionIcon
+        {
+            get => _secondMaxReactionIcon;
+            set => SetProperty(ref _secondMaxReactionIcon, value);
+        }
+
+        private string _reactionText = "React";
+
+        public string ReactionText
+        {
+            get => _reactionText;
+            set => SetProperty(ref _reactionText, value);
         }
 
         public class InsertUserSelectionPostChoicePresenterCallBack : IPresenterCallBack<InsertUserChoiceSelectionResponse>
@@ -305,62 +470,18 @@ namespace SocialMediaApplication.Presenter.ViewModel
             public void OnSuccess(InsertUserChoiceSelectionResponse insertUserChoiceSelectionResponse)
             {
 
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _postControlViewModel.SuccessfullyUserChoiceSelectionInserted(insertUserChoiceSelectionResponse);
+                        _postControlViewModel.SuccessfullyUserChoiceSelectionInserted(
+                            insertUserChoiceSelectionResponse);
                     }
                 );
             }
 
             public void OnError(Exception ex)
             {
-            }
-        }
-
-        public class GetReactionPresenterCallBack : IPresenterCallBack<GetUserReactionResponse>
-        {
-            private readonly PostControlViewModel _postControlViewModel;
-
-            public GetReactionPresenterCallBack(PostControlViewModel postControlViewModel)
-            {
-                _postControlViewModel = postControlViewModel;
-            }
-
-            public void OnSuccess(GetUserReactionResponse getUserReactionResponse)
-            {
-                //_postControlViewModel.Reaction = getUserReactionResponse.Reaction;
-                //_postControlViewModel.SetGlyph();
-            }
-
-            public void OnError(Exception ex)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public class CommentsPresenterCallBack : IPresenterCallBack<GetCommentResponse>
-        {
-            private readonly PostControlViewModel _postControlViewModel;
-
-            public CommentsPresenterCallBack(PostControlViewModel postControlViewModel)
-            {
-                _postControlViewModel = postControlViewModel;
-            }
-
-            public void OnSuccess(GetCommentResponse getCommentResponse)
-            {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                    () =>
-                    {
-                        _postControlViewModel.GetCommentSuccess(getCommentResponse.Comments);
-                    }
-                );
-            }
-
-            public void OnError(Exception ex)
-            {
-                throw new NotImplementedException();
             }
         }
 
@@ -375,12 +496,20 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnSuccess(RemovePostResponse response)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                   () =>
-                   {
-                       _postControlViewModel.PostRemoved?.Invoke(response.PostId);
-                   }
-               );
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        if (_postControlViewModel.TextPostUserControl != null)
+                        {
+                            _postControlViewModel.TextPostUserControl.RemovedPost(response.PostId);
+                        }
+                        else
+                        {
+                            _postControlViewModel.PollPostUserControl.RemovedPost(response.PostId);
+                        }
+                    }
+                );
             }
 
             public void OnError(Exception ex)
@@ -400,7 +529,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnSuccess(UserMiniDetailResponse response)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
                     () =>
                     {
                         _postControlViewModel.User = response.User;
@@ -416,14 +546,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
                             _postControlViewModel.UserFollowingList.Add(responseFollowingUserId);
                         }
 
-                        _postControlViewModel.GetUserMiniDetailSuccess?.Invoke();
+                        if (_postControlViewModel.TextPostUserControl != null)
+                        {
+                            _postControlViewModel.TextPostUserControl.GetUserMiniDetailSuccess();
+                        }
+                        else
+                        {
+                            _postControlViewModel.PollPostUserControl.GetUserMiniDetailSuccess();
+                        }
                     }
                 );
             }
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
 
@@ -435,9 +572,11 @@ namespace SocialMediaApplication.Presenter.ViewModel
             {
                 _postControlViewModel = postControlViewModel;
             }
+
             public void OnSuccess(FollowUnFollowSearchedUserResponse followUnFollowSearchedUserResponse)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
                     () =>
                     {
                         if (followUnFollowSearchedUserResponse.FollowingSuccess)
@@ -448,14 +587,47 @@ namespace SocialMediaApplication.Presenter.ViewModel
                         {
                             _postControlViewModel.UserFollowingList.Remove(AppSettings.UserId);
                         }
-                        _postControlViewModel.FollowUnFollowActionDone?.Invoke();
+                        if (_postControlViewModel.TextPostUserControl != null)
+                        {
+                            _postControlViewModel.TextPostUserControl.FollowUnFollowActionDone();
+                        }
+                        else
+                        {
+                            _postControlViewModel.PollPostUserControl.FollowUnFollowActionDone();
+
+                        }
                     }
                 );
             }
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+            }
+        }
+
+        public class GetUserDetailViewModelPresenterCallBack : IPresenterCallBack<GetUserResponseObj>
+        {
+            private readonly PostControlViewModel _postControlViewModel;
+
+            public GetUserDetailViewModelPresenterCallBack(PostControlViewModel postControlViewModel)
+            {
+                _postControlViewModel = postControlViewModel;
+            }
+
+            public void OnSuccess(GetUserResponseObj getUserResponseObj)
+            {
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _postControlViewModel?.SetProfileIconAsync(getUserResponseObj.Users[0].ProfileIcon);
+                    }
+                );
+            }
+
+            public void OnError(Exception ex)
+            {
+                //throw new NotImplementedException();
             }
         }
     }

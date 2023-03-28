@@ -1,15 +1,13 @@
-﻿using Windows.UI.Xaml.Controls;
-using SocialMediaApplication.Models.BusinessModels;
+﻿using Windows.Foundation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using SocialMediaApplication.Presenter.View.SignUp;
 using SocialMediaApplication.Util;
-
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Navigation;
 
 namespace SocialMediaApplication.Presenter.View
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -18,28 +16,44 @@ namespace SocialMediaApplication.Presenter.View
             Loaded += MainPage_Loaded;
         }
 
-        private void MainPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             UserAlreadyLoggedIn();
         }
 
         public void UserAlreadyLoggedIn()
         {
-            //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            //this.Frame.Navigate(localSettings.Values["user"] == null ? typeof(SignUpPage) : typeof(HomePage));
-            this.Frame.Navigate(AppSettings.LocalSettings.Values["user"] is null ? typeof(SignUpPage) : typeof(HomePage));
+            if (AppSettings.LocalSettings.Values["user"] is null)
+            {
+                SignIn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LoginInPage_OnGoToHome();
+            }
         }
 
+        private void SignUpPage_OnGoToLogInControl()
+        {
+            SignUp.Visibility = Visibility.Collapsed;
+            SignIn.Visibility = Visibility.Visible;
+        }
 
-        //to signin/singnup/logout
-        //public void Dummy()
-        //{AppSettings.LocalSettings.Values["user"].ToString();
-        //    UserBObj userBObj = new UserBObj();
-        //    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-        //    localSettings.Values["user"] = userBObj;
+        private void LoginInPage_OnGoToHome()
+        {
+            this.Frame.Navigate(typeof(HomePage));
+        }
 
+        private void LoginInPage_OnGoToSignUpControl()
+        {
+            SignUp.Visibility = Visibility.Visible;
+            SignIn.Visibility = Visibility.Collapsed;
+        }
 
-        //    localSettings.Values.Remove("user");
-        //}
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            SignIn.Visibility = Visibility.Visible;
+        }
     }
 }

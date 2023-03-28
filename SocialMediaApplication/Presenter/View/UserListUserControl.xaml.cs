@@ -28,6 +28,7 @@ namespace SocialMediaApplication.Presenter.View
             this.InitializeComponent();
             Loaded += UserListControl_Loaded;
         }
+        public static event Action<string> NavigateToSearchPage;
 
         private void UserListControl_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
@@ -48,12 +49,12 @@ namespace SocialMediaApplication.Presenter.View
             if (GetUserDetailViewModel.UserIds.Count > 0)
             {
                 GetUserDetailViewModel.GetUsers();
-                userList.Visibility = Visibility.Visible;
+                UserList.Visibility = Visibility.Visible;
                 NoUserFont.Visibility = Visibility.Collapsed;
             }
             else
             {
-                userList.Visibility = Visibility.Collapsed;
+                UserList.Visibility = Visibility.Collapsed;
                 NoUserFont.Visibility = Visibility.Visible;
             }
         }
@@ -74,6 +75,14 @@ namespace SocialMediaApplication.Presenter.View
         {
             get => (List<UserPollChoiceSelection>)GetValue(UserPollChoiceSelectionListProperty);
             set => SetValue(UserPollChoiceSelectionListProperty, value);
+        }
+
+        private void UserList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListView listView && listView.SelectedItem is User selectedUser)
+            {
+                NavigateToSearchPage?.Invoke(selectedUser.Id);
+            }
         }
     }
 }

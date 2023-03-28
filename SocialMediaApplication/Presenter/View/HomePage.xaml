@@ -23,6 +23,23 @@
             <Setter Property="TextLineBounds"
                     Value="Full" />
         </Style>
+        <Style x:Key="BaseTextBlockStyle1"
+               TargetType="TextBlock">
+            <Setter Property="FontFamily"
+                    Value="XamlAutoFontFamily" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="TextTrimming"
+                    Value="None" />
+            <Setter Property="TextWrapping"
+                    Value="Wrap" />
+            <Setter Property="LineStackingStrategy"
+                    Value="MaxHeight" />
+            <Setter Property="TextLineBounds"
+                    Value="Full" />
+        </Style>
         <Style x:Key="NavigationBackButtonNormalStyle"
                TargetType="Button">
             <Setter Property="Background"
@@ -53,7 +70,7 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="PointerOver">
+                                    <!--<VisualState x:Name="PointerOver">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
                                                                            Storyboard.TargetProperty="Background">
@@ -66,7 +83,7 @@
                                                                         Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
-                                    </VisualState>
+                                    </VisualState>-->
                                     <VisualState x:Name="Pressed">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
@@ -151,14 +168,14 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="PointerOver">
+                                    <!--<VisualState x:Name="PointerOver">
                                         <VisualState.Setters>
                                             <Setter Target="LayoutRoot.Background"
                                                     Value="{ThemeResource ButtonBackgroundPointerOver}" />
                                             <Setter Target="ContentPresenter.Foreground"
                                                     Value="{ThemeResource ButtonForegroundPointerOver}" />
                                         </VisualState.Setters>
-                                    </VisualState>
+                                    </VisualState>-->
                                     <VisualState x:Name="Pressed">
                                         <VisualState.Setters>
                                             <Setter Target="LayoutRoot.Background"
@@ -530,7 +547,7 @@
             </Setter>
         </Style>
         <Style x:Key="NavigationViewItemHeaderTextStyle"
-               BasedOn="{StaticResource BaseTextBlockStyle}"
+               BasedOn="{StaticResource BaseTextBlockStyle1}"
                TargetType="TextBlock">
             <Setter Property="FontWeight"
                     Value="Bold" />
@@ -552,7 +569,7 @@
             <Setter Property="VerticalAlignment"
                     Value="Stretch" />
         </Style>
-        <Style x:Key="HomeNavigationStyle"
+        <Style x:Key="NavigationViewStyle"
                TargetType="NavigationView">
             <Setter Property="PaneToggleButtonStyle"
                     Value="{StaticResource PaneToggleButtonStyle}" />
@@ -718,8 +735,9 @@
                                     <Button x:Name="TogglePaneButton"
                                             AutomationProperties.LandmarkType="Navigation"
                                             Style="{TemplateBinding PaneToggleButtonStyle}"
-                                            VerticalAlignment="Top"
-                                            Visibility="{Binding TemplateSettings.PaneToggleButtonVisibility, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                                            VerticalAlignment="Stretch"
+                                            Visibility="{Binding TemplateSettings.PaneToggleButtonVisibility, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                            HorizontalAlignment="Center">
                                         <TextBlock x:Name="PaneTitleTextBlock"
                                                    Grid.Column="0"
                                                    HorizontalAlignment="Left"
@@ -958,52 +976,62 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </Page.Resources>
 
     <Grid>
-
-        <NavigationView Style="{StaticResource HomeNavigationStyle}"
+        <NavigationView Style="{StaticResource NavigationViewStyle}"
                         x:Name="NavigationMenu"
+                        Background="{ThemeResource BackgroundColor}"
                         IsBackButtonVisible="Collapsed"
                         PaneDisplayMode="Auto"
                         IsSettingsVisible="False"
-                        OpenPaneLength="200"
-                        IsPaneOpen="False"
+                        ExpandedModeThresholdWidth="1100"
+                        OpenPaneLength="250"
+                        IsPaneOpen="True"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        ScrollViewer.IsVerticalScrollChainingEnabled="False"
                         SelectionChanged="NavigationMenu_OnSelectionChanged">
-            <!--<NavigationView.Resources>
-                -->
-            <!--<SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" 
-                                 Color="#354546"/>-->
-            <!--<SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="YellowGreen" />-->
-            <!--<SolidColorBrush x:Key="Navi" 
-                                 Color="#354546"/>-->
-            <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NavigationViewExpandedPaneBackground">
-                    -->
-            <!--<GradientStop Color="#DB0B5F" Offset="0"/>
-                    <GradientStop Color="#6F00ED" Offset="1"/>-->
-            <!--
-                    <GradientStop Color="#5433FF" Offset="0"/>
-                    <GradientStop Color="#20BDFF" Offset="1"/>
-                </LinearGradientBrush>-->
-            <!--<SolidColorBrush x:Key="ItemContentColor" Color="Red"/>-->
-            <!--</NavigationView.Resources>-->
+
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Home"
-                                    Content="Feeds"
-                                    Tag="HomePage" />
-                <NavigationViewItem Content="Search"
+                <NavigationViewItem Tag="HomePage"
+                                    x:Uid="Feed">
+                    <!--<NavigationViewItem.Content>
+                        <StackPanel Orientation="Horizontal" CornerRadius="10" Height="20" Width="20">
+                            <FontIcon />
+                            <TextBlock FontFamily="Segoe UI Emoji"
+                                       Text="&#x1F3E0;"
+                                       FontSize="10"></TextBlock>
+                            <TextBlock Text="Feeds" FontSize="20"></TextBlock>
+                        </StackPanel>
+                    </NavigationViewItem.Content>-->
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons"
+                                  Glyph="&#xE10F;" />
+                        <!--<FontIcon FontFamily="Segoe UI Emoji"
+                                  Glyph="&#x1F3E0;" />-->
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Uid="SearchContent"
                                     Tag="SearchPage">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets"
+                        <FontIcon FontFamily="Segoe Fluent Icons"
                                   Glyph="&#xE721;" />
+                        <!--<FontIcon FontFamily="Segoe UI Emoji"
+                                  Glyph="&#x1F50E;" />-->
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Icon="Add"
-                                    Content="Create"
-                                    Tag="CreatePage" />
+                <NavigationViewItem x:Uid="Create"
+                                    Tag="CreatePage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons"
+                                  Glyph="&#xE710;" />
 
-                <NavigationViewItem Content="Profile"
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Uid="Profile"
                                     Tag="ProfilePage">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets"
@@ -1011,47 +1039,21 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <!--<NavigationViewItem Content="Label"
-                                    Tag="LabelPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets"
-                                  Glyph="&#xE932;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>-->
-
             </NavigationView.MenuItems>
 
             <NavigationView.PaneFooter>
                 <StackPanel>
-                    <Grid>
-                        <NavigationViewItem x:Name="ThemeChangerNavigationItem"
-                                            Tapped="ThemeChanger_OnTapped">
+                    <NavigationViewItem x:Name="ThemeChangerNavigationItem"
+                                        Tapped="ThemeChanger_OnTapped">
+                        <NavigationViewItem.Icon>
+                            <FontIcon x:Name="ThemeChanger"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      Glyph="{x:Bind ThemeIcon,Mode=OneWay}" />
+                        </NavigationViewItem.Icon>
 
-                            <NavigationViewItem.Icon>
-                                <FontIcon x:Name="ThemeChanger"
-                                          FontFamily="Segoe MDL2 Assets"
-                                          Glyph="{x:Bind ThemeIcon,Mode=OneWay}" />
-                            </NavigationViewItem.Icon>
-
-                        </NavigationViewItem>
-                        <!--<NavigationViewItem x:Name="Dark"
-                                            Content="Theme change">
-
-                            <NavigationViewItem.Icon>
-                                <FontIcon FontFamily="Segoe UI Emoji"
-                                          Glyph="&#1F319;"></FontIcon>
-                            </NavigationViewItem.Icon>
-                            -->
-                        <!--<NavigationViewItem.Icon>
-                                <FontIcon FontFamily="Segoe MDL2 Assets"
-                                          Glyph="&#xE793;"></FontIcon>
-                            </NavigationViewItem.Icon>-->
-                        <!--
-                        </NavigationViewItem>-->
-
-                    </Grid>
+                    </NavigationViewItem>
                     <NavigationViewItem x:Name="UserLogOut"
-                                        Content="Log out"
+                                        x:Uid="LogOut"
                                         Tapped="UserLogOut_OnTapped">
                         <NavigationViewItem.Icon>
                             <FontIcon FontFamily="Segoe MDL2 Assets"
