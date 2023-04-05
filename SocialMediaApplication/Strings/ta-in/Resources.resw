@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountCreation.Text" xml:space="preserve">
+    <value>புதிய கணக்கை உருவாக்க</value>
+  </data>
+  <data name="All.Text" xml:space="preserve">
+    <value>அனைத்து</value>
+  </data>
   <data name="And.Text" xml:space="preserve">
-    <value>மற்றும்</value>
+    <value> மற்றும்</value>
   </data>
   <data name="CallUser.Text" xml:space="preserve">
     <value>நான்</value>
+  </data>
+  <data name="Casual" xml:space="preserve">
+    <value>சாதாரண</value>
+  </data>
+  <data name="ChoiceEmptyNotification" xml:space="preserve">
+    <value>தேர்வு புலம் காலியாக இருக்கக்கூடாது!</value>
   </data>
   <data name="ChoiceEnter.PlaceholderText" xml:space="preserve">
     <value>தேர்வுக்கான வாக்கியம்</value>
@@ -132,26 +144,57 @@
   <data name="Comment.Text" xml:space="preserve">
     <value>கருத்துகள்</value>
   </data>
+  <data name="CommentDeletion" xml:space="preserve">
+    <value>கருத்து நீக்கம்</value>
+  </data>
   <data name="CommentEnter.PlaceholderText" xml:space="preserve">
     <value>உங்கள் கருத்தை இங்கே தட்டச்சு செய்யவும் ...</value>
+  </data>
+  <data name="CommentRemovalWarning" xml:space="preserve">
+    <value>அகற்றப்படும் கருத்தை மீட்டெடுக்க முடியாது!
+இதை நீக்க வேண்டும் என்பதில் உறுதியாக இருக்கிறீர்களா ?</value>
   </data>
   <data name="Create.Content" xml:space="preserve">
     <value>உருவாக்கு</value>
   </data>
+  <data name="CreateAccount.Text" xml:space="preserve">
+    <value>உங்கள் கணக்கை துவங்குங்கள்</value>
+  </data>
   <data name="Created.Text" xml:space="preserve">
-    <value>முகநூல் பயனர்</value>
+    <value>எக்கோ பயனர்</value>
   </data>
   <data name="Discard.Content" xml:space="preserve">
     <value>நிராகரிக்கவும்</value>
   </data>
+  <data name="DoNotSpecify" xml:space="preserve">
+    <value>குறிப்பிட வேண்டாம்</value>
+  </data>
+  <data name="EditPost.Text" xml:space="preserve">
+    <value>பதிவை  திருத்து</value>
+  </data>
   <data name="Education.Text" xml:space="preserve">
     <value>பயின்ற இடம்</value>
   </data>
+  <data name="Email.Text" xml:space="preserve">
+    <value>மின்னஞ்சல்</value>
+  </data>
+  <data name="Every.Text" xml:space="preserve">
+    <value>அனைவர்</value>
+  </data>
+  <data name="Fancy" xml:space="preserve">
+    <value>ஆடம்பரமான</value>
+  </data>
   <data name="Feed.Content" xml:space="preserve">
-    <value>feeds</value>
+    <value>பதிவூட்டுகள்</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>பெண்</value>
   </data>
   <data name="FirstName.Text" xml:space="preserve">
     <value>முதல் பெயர்</value>
+  </data>
+  <data name="Follow.Content" xml:space="preserve">
+    <value>பின்பற்றவும்</value>
   </data>
   <data name="Follower.Text" xml:space="preserve">
     <value>பின்பற்றுபவர்கள்</value>
@@ -165,32 +208,105 @@
   <data name="Gender.Text" xml:space="preserve">
     <value>பாலினம்</value>
   </data>
+  <data name="HaveAccount.Text" xml:space="preserve">
+    <value>ஏற்கனவே கணக்கு உள்ளதா ?</value>
+  </data>
+  <data name="InvalidMail" xml:space="preserve">
+    <value>தவறான மின்னஞ்சல்</value>
+  </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>கடவுச்சொல்லில் குறைந்தது 8 எழுத்துகள் இருக்க வேண்டும்</value>
+  </data>
+  <data name="InvalidRetypePassword" xml:space="preserve">
+    <value>மீண்டும் எழுதிய கடவுச்சொல் கடவுச்சொல்லைப் போன்றது அல்ல</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>சற்றுமுன்னர்</value>
+  </data>
   <data name="LastName.Text" xml:space="preserve">
     <value>கடை பெயர்</value>
+  </data>
+  <data name="Loading.Text" xml:space="preserve">
+    <value>உங்களுக்கான எதிரொலிகளைப் பெறும் வரை காத்திருக்கவும் :)</value>
+  </data>
+  <data name="Login.Content" xml:space="preserve">
+    <value>உள்நுழை</value>
   </data>
   <data name="LogOut.Content" xml:space="preserve">
     <value>வெளியேறு</value>
   </data>
+  <data name="MailEmpty" xml:space="preserve">
+    <value>மின்னஞ்சல் காலியாக இருக்கக்கூடாது</value>
+  </data>
+  <data name="MailExistNotification" xml:space="preserve">
+    <value>ஏற்கனவே இருக்கும் மின்னஞ்சல். உள்நுழைய முயற்சிக்கவும்</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>ஆண்</value>
+  </data>
   <data name="MaritalStatus.Text" xml:space="preserve">
-    <value>தாம்பத்தியம்</value>
+    <value>திருமண நிலை</value>
+  </data>
+  <data name="Married" xml:space="preserve">
+    <value>திருமணமானவர்</value>
+  </data>
+  <data name="NewToOld.Text" xml:space="preserve">
+    <value>புதியது முதலில்</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>இல்லை</value>
+  </data>
+  <data name="OldToNew.Text" xml:space="preserve">
+    <value>பழையது முதலில்</value>
+  </data>
+  <data name="OneHourAgo" xml:space="preserve">
+    <value>ஒரு மணி நேரம் முன்</value>
   </data>
   <data name="Others.Text" xml:space="preserve">
-    <value>பிறர்</value>
+    <value> பிறர்</value>
+  </data>
+  <data name="Password.Text" xml:space="preserve">
+    <value>கடவுச்சொல்</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>கடவுச்சொல் காலியாக இருக்கக்கூடாது</value>
   </data>
   <data name="Place.Text" xml:space="preserve">
     <value>வாழ்விடம்</value>
   </data>
+  <data name="PollPost.Text" xml:space="preserve">
+    <value>கருத்து கணிப்பு பதிவு</value>
+  </data>
+  <data name="PollPostCreatedNotification" xml:space="preserve">
+    <value>வாக்கெடுப்பு பதிவு வெற்றிகரமாக உருவாக்கப்பட்டது!</value>
+  </data>
   <data name="PollPostCreation.Text" xml:space="preserve">
-    <value>வாக்கெடுப்பு இடுகையை உருவாக்கவும்</value>
+    <value>வாக்கெடுப்பு பதிவை உருவாக்கவும்</value>
   </data>
   <data name="Post.Content" xml:space="preserve">
     <value>பதிவிடு</value>
+  </data>
+  <data name="PostContentEmptyNotification" xml:space="preserve">
+    <value>பதிவின் உள்ளடக்கம் காலியாக இருக்கக்கூடாது!</value>
+  </data>
+  <data name="PostDeletion" xml:space="preserve">
+    <value>பதிவு நீக்கம்</value>
+  </data>
+  <data name="PostQuestionEmptyNotification" xml:space="preserve">
+    <value>வாக்கெடுப்பு கேள்வி காலியாக இருக்கக்கூடாது!</value>
+  </data>
+  <data name="PostRemovalWarning" xml:space="preserve">
+    <value>அகற்றப்படும் பதிவை மீட்டெடுக்க முடியாது!
+இதை நீக்க வேண்டும் என்பதில் உறுதியாக இருக்கிறீர்களா ?</value>
   </data>
   <data name="Posts.Text" xml:space="preserve">
     <value>பதிவுகள்</value>
   </data>
   <data name="PostTitle.PlaceholderText" xml:space="preserve">
     <value>பதிவு தலைப்பு</value>
+  </data>
+  <data name="PostTitleEmptyNotification" xml:space="preserve">
+    <value>இடுகையின் தலைப்பு காலியாக இருக்கக்கூடாது!</value>
   </data>
   <data name="Profile.Content" xml:space="preserve">
     <value>சுயவிவரம்</value>
@@ -201,7 +317,13 @@
   <data name="ReplyEnter.PlaceholderText" xml:space="preserve">
     <value>உங்கள் பதிலை இங்கே தட்டச்சு செய்யவும் ...</value>
   </data>
+  <data name="RetypePassword.Text" xml:space="preserve">
+    <value>கடவுச்சொல்லை மீண்டும் தட்டச்சு செய்க</value>
+  </data>
   <data name="Save.Content" xml:space="preserve">
+    <value>சேமி</value>
+  </data>
+  <data name="SaveChange.Content" xml:space="preserve">
     <value>சேமி</value>
   </data>
   <data name="Schooling.Text" xml:space="preserve">
@@ -213,25 +335,67 @@
   <data name="SearchContent.Content" xml:space="preserve">
     <value>தேடு</value>
   </data>
+  <data name="SignUp.Content" xml:space="preserve">
+    <value>பதிவு</value>
+  </data>
+  <data name="Simple" xml:space="preserve">
+    <value>எளிமையான</value>
+  </data>
+  <data name="SometimeAgo" xml:space="preserve">
+    <value>சில நேரங்களுக்கு முன்</value>
+  </data>
+  <data name="TextPost.Text" xml:space="preserve">
+    <value>உரை பதிவு</value>
+  </data>
+  <data name="TextPostCreatedNotification" xml:space="preserve">
+    <value>உரை  பதிவு  வெற்றிகரமாக  உருவாக்கப்பட்டது!</value>
+  </data>
   <data name="TextPostCreation.Text" xml:space="preserve">
-    <value>உரை இடுகையை உருவாக்கவும்</value>
+    <value>உரை பதிவை  உருவாக்கவும்</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>இன்று</value>
+  </data>
+  <data name="Type.Text" xml:space="preserve">
+    <value>வகை : </value>
   </data>
   <data name="Typing.PlaceholderText" xml:space="preserve">
     <value>எழுதவும் ...</value>
   </data>
+  <data name="UnFollow.Content" xml:space="preserve">
+    <value>பின்தொடர வேண்டாம்</value>
+  </data>
+  <data name="Unmarried" xml:space="preserve">
+    <value>திருமணமாகாதவர்</value>
+  </data>
   <data name="UserName.Text" xml:space="preserve">
     <value>பயனர் பெயர்</value>
   </data>
-  <data name="UserThought.PlaceholderText" xml:space="preserve">
-    <value>உங்கள் மனதில் என்ன உள்ளது ?</value>
+  <data name="UserNameExistNotification" xml:space="preserve">
+    <value>இந்த பயனர்பெயருடன் ஏற்கனவே பயனர் இருக்கிறார்! புதிதாக ஏதாவது முயற்சிக்கவும்</value>
+  </data>
+  <data name="UserNotExist" xml:space="preserve">
+    <value>அத்தகைய பயனர் இல்லை!</value>
+  </data>
+  <data name="UserThought" xml:space="preserve">
+    <value>உங்கள் மனதில் என்ன உள்ளது, </value>
   </data>
   <data name="Votes.Text" xml:space="preserve">
     <value>வாக்குகள்</value>
   </data>
+  <data name="Welcome.Text" xml:space="preserve">
+    <value>மீண்டும் வருக !</value>
+  </data>
   <data name="Work.Text" xml:space="preserve">
     <value>செய்யும் தொழில்</value>
   </data>
+  <data name="Yes" xml:space="preserve">
+    <value>ஆம்</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>நேற்று</value>
+  </data>
   <data name="You.Text" xml:space="preserve">
-    <value>நீங்கள்</value>
+    <value> நீங்கள்</value>
   </data>
 </root>

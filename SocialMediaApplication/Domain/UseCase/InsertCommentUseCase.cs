@@ -19,7 +19,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IAddCommentManager _addCommentManager = AddCommentManager.GetInstance;
         public readonly InsertCommentRequest InsertCommentRequest;
 
-        public InsertCommentUseCase(InsertCommentRequest insertCommentRequest)
+        public InsertCommentUseCase(InsertCommentRequest insertCommentRequest, IPresenterCallBack<InsertCommentResponse> insertCommentPresenterCallBack) : base(insertCommentPresenterCallBack) 
         {
             InsertCommentRequest = insertCommentRequest;
         }
@@ -27,7 +27,7 @@ namespace SocialMediaApplication.Domain.UseCase
         public override void Action()
         {
             _addCommentManager.InsertCommentAsync(InsertCommentRequest, new InsertCommentUseCaseCallBack(this));
-            //_userManager.LoginUserAsync(LoginRequest, new LogInUseCaseCallBack(this));
+            //_getUserManager.LoginUserAsync(LoginRequest, new LogInUseCaseCallBack(this));
 
         }
     }
@@ -44,32 +44,30 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(InsertCommentResponse responseObj)
         {
-            _insertCommentUseCase?.InsertCommentRequest.InsertCommentPresenterCallBack?.OnSuccess(responseObj);
+            _insertCommentUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _insertCommentUseCase?.InsertCommentRequest.InsertCommentPresenterCallBack?.OnError(ex);
+            _insertCommentUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
     //request object
     public class InsertCommentRequest
     {
-        public InsertCommentRequest(string content, string parentCommentId,string postId,int depth, IPresenterCallBack<InsertCommentResponse> insertCommentPresenterCallBack)
+        public InsertCommentRequest(string content, string parentCommentId,string postId,int depth)
         {
             ParentCommentId = parentCommentId;
             Content = content;
             CommentOnPostId = postId;
             Depth = depth;
-            InsertCommentPresenterCallBack = insertCommentPresenterCallBack;
         }
 
         public string Content { get; }
         public string ParentCommentId { get; }
         public string CommentOnPostId { get; }
         public int Depth { get; }
-        public IPresenterCallBack<InsertCommentResponse> InsertCommentPresenterCallBack { get; }
 
     }
 

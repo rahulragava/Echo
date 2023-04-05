@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Core;
 using Microsoft.VisualStudio.PlatformUI;
 using SocialMediaApplication.Domain.UseCase;
@@ -12,8 +10,8 @@ using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Util;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using SocialMediaApplication.Presenter.View.ProfileView;
+using Windows.UI.Xaml.Controls;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -26,8 +24,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public ObservableCollection<string> Followers;
         public ObservableCollection<string> Followings;
-        public List<MaritalStatus> MaritalStatuses;
-        public List<Gender> Genders;
+        public List<string> MaritalStatuses;
+        public List<string> Genders;
         public IProfileView ProfileView { get; set; }
 
         private int _userPostCount;
@@ -92,15 +90,15 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _place, value);
         }
 
-        private Gender _gender;
-        public Gender Gender
+        private string _gender;
+        public string Gender
         {
             get => _gender;
             set => SetProperty(ref _gender, value);
         }
 
-        private MaritalStatus _maritalStatus;
-        public MaritalStatus MaritalStatus
+        private string _maritalStatus;
+        public string MaritalStatus
         {
             get => _maritalStatus;
             set => SetProperty(ref _maritalStatus, value);
@@ -120,67 +118,12 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _userFollowingCount, value);
         }
 
-        private string _profileImage;
-        public string ProfileImage
-        {
-            get => _profileImage;
-            set => SetProperty(ref _profileImage, value);
-        }
+        private TextPostBObj _textPost;
 
-        public Reaction PostReaction { get; set; }
-
-        private string _homePageImage = "";
-        public string HomePageImage
+        public TextPostBObj TextPost
         {
-            get => _homePageImage;
-            set => SetProperty(ref _homePageImage, value);
-        }
-
-        public void ChangeInReactions(List<Reaction> reactions)
-        {
-            var flag = false;
-            foreach (var reaction in reactions)
-            {
-                if (reaction.ReactedBy == PostReaction.ReactedBy)
-                {
-                    PostReactions.Remove(reaction);
-                    PostReactions.Add(PostReaction);
-                    flag = true;
-                }
-            }
-            if (!flag)
-            {
-                PostReactions.Add(PostReaction);
-            }
-            flag = false;
-        }
-
-        public ProfilePageViewModel()
-        {
-            User = new UserBObj();
-            TextPosts = new ObservableCollection<TextPostBObj>();
-            PollPosts = new ObservableCollection<PollPostBObj>();
-            PostList = new ObservableCollection<PostBObj>();
-            Followers = new ObservableCollection<string>();
-            Followings = new ObservableCollection<string>();
-            Genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
-            MaritalStatuses = Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>().ToList();
-        }
-
-        public void EditProfileImage()
-        {
-            var editProfileImageRequest = 
-                new EditProfileImageRequest(AppSettings.UserId, ProfileImage, new EditProfileImagePresenterCallBack(this));
-            var editProfileImageUseCase = new EditProfileImageUseCase(editProfileImageRequest);
-            editProfileImageUseCase.Execute();
-        }
-
-        public void EditHomeImage()
-        {
-            var editHomeIconRequest =
-                new EditHomeImageRequest(AppSettings.UserId, HomePageImage, new EditHomeImagePresenterCallBack(this));
-            var editHomeIconUseCase = new EditHomeImageUseCase(editHomeIconRequest);
-            editHomeIconUseCase.Execute();
+            get => _textPost;
+            set => SetProperty(ref _textPost, value);
         }
 
         public ObservableCollection<Reaction> PostReactions = new ObservableCollection<Reaction>();
@@ -211,28 +154,123 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
         }
 
+        public Reaction PostReaction { get; set; }
+
+        public void ChangeInReactions(List<Reaction> reactions)
+        {
+            var flag = false;
+            foreach (var reaction in reactions)
+            {
+                if (reaction.ReactedBy == PostReaction.ReactedBy)
+                {
+                    PostReactions.Remove(reaction);
+                    PostReactions.Add(PostReaction);
+                    flag = true;
+                }
+            }
+            if (!flag)
+            {
+                PostReactions.Add(PostReaction);
+            }
+            flag = false;
+        }
+
+        public Reaction CommentReaction { get; set; }
+
+        public void ChangeInCommentReactions(List<Reaction> reactions)
+        {
+            var flag = false;
+            foreach (var reaction in reactions)
+            {
+                if (reaction.ReactedBy == CommentReaction.ReactedBy)
+                {
+                    CommentReactions.Remove(reaction);
+                    CommentReactions.Add(CommentReaction);
+                    flag = true;
+                }
+            }
+            if (!flag)
+            {
+                CommentReactions.Add(CommentReaction);
+            }
+            flag = false;
+        }
+
+        private string _profileImage;
+        public string ProfileImage
+        {
+            get => _profileImage;
+            set => SetProperty(ref _profileImage, value);
+        }
+
+        private string _homePageImage = "";
+        public string HomePageImage
+        {
+            get => _homePageImage;
+            set => SetProperty(ref _homePageImage, value);
+        }
+        public ResourceLoader ResourceLoader = ResourceLoader.GetForCurrentView();
+
+        public ProfilePageViewModel()
+        {
+            User = new UserBObj();
+            TextPosts = new ObservableCollection<TextPostBObj>();
+            PollPosts = new ObservableCollection<PollPostBObj>();
+            PostList = new ObservableCollection<PostBObj>();
+            Followers = new ObservableCollection<string>();
+            Followings = new ObservableCollection<string>();
+            Genders = new List<string>();
+            MaritalStatuses = new List<string>();
+            var genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
+            var maritalStatuses = Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>().ToList();
+
+            foreach (var gender in genders)
+            {
+                Genders?.Add(ResourceLoader.GetString(gender.ToString()));
+            }
+            foreach (var maritalStatus in maritalStatuses)
+            {
+                MaritalStatuses?.Add(ResourceLoader.GetString(maritalStatus.ToString()));
+            }
+        }
+            
+        public void EditProfileImage()
+        {
+            var editProfileImageRequest = 
+                new EditProfileImageRequest(AppSettings.UserId, ProfileImage);
+            var editProfileImageUseCase = new EditProfileImageUseCase(editProfileImageRequest, new EditProfileImagePresenterCallBack(this));
+            editProfileImageUseCase.Execute();
+        }
+
+        public void EditHomeImage()
+        {
+            var editHomeIconRequest =
+                new EditHomeImageRequest(AppSettings.UserId, HomePageImage);
+            var editHomeIconUseCase = new EditHomeImageUseCase(editHomeIconRequest, new EditHomeImagePresenterCallBack(this));
+            editHomeIconUseCase.Execute();
+        }
+
         public void GetUser(string userId)
         {
-            var getUserProfileRequestObj = new GetUserProfileRequestObj(userId,new GetUserProfilePresenterCallBack(this));
-            var getUserProfileUseCase = new GetUserProfileUseCase(getUserProfileRequestObj);
+            var getUserProfileRequestObj = new GetUserProfileRequestObj(userId);
+            var getUserProfileUseCase = new GetUserProfileUseCase(getUserProfileRequestObj, new GetUserProfilePresenterCallBack(this));
             getUserProfileUseCase.Execute();
         }
 
-        public void EditUserProfile(string userName,string firstName,string lastName,int genderInt,int maritalStatusInt,string education,string occupation,string place)
+        public void EditUserProfile(string userId,string userName,string firstName,string lastName,int genderInt,int maritalStatusInt,string education,string occupation,string place)
         {
             Gender gender = (Gender)Enum.Parse(typeof(Gender), genderInt.ToString());
             MaritalStatus maritalStatus= (MaritalStatus)Enum.Parse(typeof(MaritalStatus), maritalStatusInt.ToString());
-            var editUserProfileRequestObj = new EditUserProfileRequestObj(userName,firstName,lastName,gender,maritalStatus,education,occupation,place, new EditUserProfilePresenterCallBack(this));
-            var editUserProfileUseCase = new EditUserProfileUseCase(editUserProfileRequestObj);
+            var editUserProfileRequestObj = new EditUserProfileRequestObj(userId,userName,firstName,lastName,gender,maritalStatus,education,occupation,place);
+            var editUserProfileUseCase = new EditUserProfileUseCase(editUserProfileRequestObj, new EditUserProfilePresenterCallBack(this));
             editUserProfileUseCase.Execute();
         }
 
         public void FollowUnFollowSearchedUser()
         {
-
-            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(User.Id,AppSettings.UserId,new FollowUnFollowPresenterCallBack(this));
+            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(User.Id,AppSettings.UserId);
             var followUnFollowSearchedUserUseCase =
-                new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest);
+                new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest, new FollowUnFollowPresenterCallBack(this));
             followUnFollowSearchedUserUseCase.Execute();
         }
 
@@ -248,8 +286,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             Place = User.Place;
             Occupation = User.Occupation;
             Education = User.Education;
-            Gender = User.Gender;   
-            MaritalStatus = User.MaritalStatus;
+            Gender = ResourceLoader.GetString(User.Gender.ToString());   
+            MaritalStatus = ResourceLoader.GetString(User.MaritalStatus.ToString());   
             ProfileImage = User.ProfileIcon;
             HomePageImage = User.HomePageIcon;
             CreatedAt = User.CreatedAt;
@@ -278,15 +316,27 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Followings.Add(following);
             }
 
-            OrderBy(PostList);
+            OrderByDescending(PostList);
+
             ProfileView.GetUserSucceed();
         }
 
-        public ObservableCollection<PostBObj> OrderBy(ObservableCollection<PostBObj> posts)
+        public ObservableCollection<T> OrderByDescending<T>(ObservableCollection<T> posts) where T:PostBObj
         {
-            var temporaryCollection = new ObservableCollection<PostBObj>(posts.OrderByDescending(p => p.CreatedAt));
+            var temporaryCollection = new ObservableCollection<T>(posts.OrderByDescending(p => p.CreatedAt));
             posts.Clear();
-            foreach (PostBObj post in temporaryCollection)
+            foreach (T post in temporaryCollection)
+            {
+                posts.Add(post);
+            }
+            return posts;
+        }
+
+        public ObservableCollection<T> OrderByAscending<T>(ObservableCollection<T> posts) where T:PostBObj
+        {
+            var temporaryCollection = new ObservableCollection<T>(posts.OrderBy(p => p.CreatedAt));
+            posts.Clear();
+            foreach (T post in temporaryCollection)
             {
                 posts.Add(post);
             }
@@ -294,17 +344,25 @@ namespace SocialMediaApplication.Presenter.ViewModel
         }
 
 
-        public void EditUserSuccess(UserBObj userBObj)
+        public void EditUserSuccess(User user)
         {
-            this.User = userBObj;
-            FirstName = User.FirstName;
-            LastName = User.LastName;
-            Place = User.Place;
-            Occupation = User.Occupation;
-            Education = User.Education;
-            Gender = User.Gender;
-            MaritalStatus = User.MaritalStatus;
-            UserName = User.UserName;
+            this.User.FirstName = user.FirstName;
+            this.User.LastName = user.LastName;
+            this.User.Place = user.Place;
+            this.User.Occupation = user.Occupation;
+            this.User.Education= user.Education;
+            this.User.Gender = user.Gender;
+            this.User.MaritalStatus = user.MaritalStatus;
+            this.User.UserName = user.UserName;
+
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Place = user.Place;
+            Occupation = user.Occupation;
+            Education = user.Education;
+            Gender = ResourceLoader.GetString(user.Gender.ToString()) ;
+            MaritalStatus = ResourceLoader.GetString(user.MaritalStatus.ToString());
+            UserName = user.UserName;
         }
 
         public class EditUserProfilePresenterCallBack : IPresenterCallBack<EditUserProfileResponseObj>

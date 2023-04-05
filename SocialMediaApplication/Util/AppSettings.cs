@@ -14,8 +14,7 @@ namespace SocialMediaApplication.Util
         public const ElementTheme LightTheme = ElementTheme.Light;
         public const ElementTheme DarkTheme = ElementTheme.Dark;
 
-        const string KeyTheme = "appColourMode";
-        //static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
+        private const string KeyTheme = "appColourMode";
         public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
         public static string UserId = LocalSettings.Values["user"]?.ToString();
         public static ApplicationViewTitleBar TitleBar;

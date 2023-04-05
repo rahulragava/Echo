@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
+using SocialMediaApplication.Util;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -81,6 +72,10 @@ namespace SocialMediaApplication.Presenter.View
         {
             if (sender is ListView listView && listView.SelectedItem is User selectedUser)
             {
+                if (selectedUser.Id == AppSettings.UserId)
+                {
+                    return;
+                }
                 NavigateToSearchPage?.Invoke(selectedUser.Id);
             }
         }

@@ -14,32 +14,16 @@
                     <SolidColorBrush x:Key="TernaryColor" Color="Gold"></SolidColorBrush>
                     <SolidColorBrush x:Key="SubtleText" Color="Gray"></SolidColorBrush>
                     <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#ffffff"></SolidColorBrush>
-                    <!--<brushes:AcrylicBrush x:Key="AcrylicBrushBackground" BackgroundSource="Backdrop"
-                                        TintColor="LightSlateGray"
-                                        TintOpacity="0.2"/>-->
+                    <SolidColorBrush x:Key="NavigationBackgroundColor" Color="#ffffff"></SolidColorBrush>
                     <media:AcrylicBrush x:Key="AcrylicBrushBackground"
-                                          BackgroundSource="Backdrop"
-                                          TintColor="DarkCyan"
-                                          TintOpacity="0.2"/>
+                                        BackgroundSource="Backdrop"
+                                        TintColor="DarkCyan"
+                                        TintOpacity="0.2"/>
                     <SolidColorBrush x:Key="TitleContentColor" Color="red"></SolidColorBrush>
                     <SolidColorBrush x:Key="NavigationForegroundColor" Color="#0D64FF"></SolidColorBrush>
-                    <SolidColorBrush x:Key="PostBackground" Color="FloralWhite"></SolidColorBrush>
-                    <!--<Style TargetType="FontIcon" x:Key="ThemeChangingIcon">
-                        <Setter Property="Glyph" Value="&#xE793;"></Setter>
-                    </Style>-->
-                    <!--<FontIcon x:Key="ThemeChangingIcon" Glyph="&#xE793;"></FontIcon>-->
-                    <!--<LinearGradientBrush x:Key="ImportantTextBlockForegroundGradient" StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#FF9F4A  " Offset="0"/>
-                        <GradientStop Color="#FF3C83" Offset="1"/>
-                    </LinearGradientBrush>-->
+                    <SolidColorBrush x:Key="PostBackground" Color="WhiteSmoke"></SolidColorBrush>
+                
                     <SolidColorBrush x:Key="ImportantTextBlockForegroundGradient" Color="#0D64FF"></SolidColorBrush>
-
-                    <!--<LinearGradientBrush x:Key="ImportantTextBlockForegroundGradient" StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#0D64FF" Offset="0"/>
-                        <GradientStop Color="#6F32FF" Offset="1"/>
-                    </LinearGradientBrush>-->
-
-                    <!--<TextBlock x:Key="Simple" FontFamily=""></TextBlock>-->
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -54,18 +38,15 @@
                     <SolidColorBrush x:Key="TernaryColor" Color="Gold"></SolidColorBrush>
                     <SolidColorBrush x:Key="TitleContentColor" Color="#2E325C"></SolidColorBrush>
                     <SolidColorBrush x:Key="PostBackground" Color="#121212"></SolidColorBrush>
-                    <!--<FontIcon x:Key="ThemeChangingIcon" Glyph="&#xE945;"></FontIcon>-->
                     <SolidColorBrush x:Key="SubtleText" Color="LightGray"></SolidColorBrush>
-
-                    <!--<Style TargetType="FontIcon" x:Key="ThemeChangingIcon">
-                        <Setter Property="Glyph" Value="&#xE793;"></Setter>
-                    </Style>-->
+                    <SolidColorBrush x:Key="NavigationBackgroundColor"
+                                     Color="#18191a"></SolidColorBrush>
 
 
                     <media:AcrylicBrush BackgroundSource="Backdrop"
-                                          x:Key="AcrylicBrushBackground"
-                                          TintColor="DarkViolet"
-                                          TintOpacity="0.2"/>
+                                        x:Key="AcrylicBrushBackground"
+                                        TintColor="DarkViolet"
+                                        TintOpacity="0.2"/>
                     <LinearGradientBrush x:Key="ImportantTextBlockForegroundGradient" StartPoint="0,0" EndPoint="1,0">
                         <GradientStop Color="#FF9F4A  " Offset="0"/>
                         <GradientStop Color="#FF3C83" Offset="1"/>

@@ -15,17 +15,17 @@ namespace SocialMediaApplication.Domain.UseCase
     public class GetUserUseCase : UseCaseBase<GetUserResponseObj>
     {
         //profile page use case 
-        private readonly IGetUserManager _getUserManager = GetUserManager.GetInstance;
+        private readonly IGetUsersManager _getUsersManager = GetUsersManager.GetInstance;
         public readonly GetUserRequestObj GetUserRequest;
 
-        public GetUserUseCase(GetUserRequestObj getUserRequestObj)
+        public GetUserUseCase(GetUserRequestObj getUserRequestObj, IPresenterCallBack<GetUserResponseObj> profilePresenterCallBack) : base(profilePresenterCallBack)
         {
             GetUserRequest = getUserRequestObj;
         }
 
         public override void Action()
         {
-            _getUserManager.GetUserAsync(GetUserRequest, new GetUserUseCaseCallBack(this));
+            _getUsersManager.GetUserAsync(GetUserRequest, new GetUserUseCaseCallBack(this));
         }
     }
 
@@ -41,12 +41,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(GetUserResponseObj response)
         {
-            _getUserUseCase?.GetUserRequest.GetUserPresenterCallBack?.OnSuccess(response);
+            _getUserUseCase?.PresenterCallBack.OnSuccess(response);
         }
 
         public void OnError(Exception ex)
         {
-            _getUserUseCase?.GetUserRequest.GetUserPresenterCallBack?.OnError(ex);
+            _getUserUseCase?.PresenterCallBack.OnError(ex);
         }
     }
 
@@ -55,12 +55,10 @@ namespace SocialMediaApplication.Domain.UseCase
     public class GetUserRequestObj
     {
         public List<string> UserIds { get; }
-        public IPresenterCallBack<GetUserResponseObj> GetUserPresenterCallBack { get; }
 
-        public GetUserRequestObj(List<string> userIds, IPresenterCallBack<GetUserResponseObj> profilePresenterCallBack)
+        public GetUserRequestObj(List<string> userIds)
         {
             UserIds = userIds;
-            GetUserPresenterCallBack = profilePresenterCallBack;
         }
     }
 

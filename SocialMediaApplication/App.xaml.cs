@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Database.DatabaseAdapter;
 using SocialMediaApplication.Presenter.View;
+using SocialMediaApplication.Presenter.View.MainPageView;
 using SocialMediaApplication.Util;
 
 namespace SocialMediaApplication

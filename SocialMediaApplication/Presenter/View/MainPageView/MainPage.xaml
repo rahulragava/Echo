@@ -1,0 +1,46 @@
+﻿<Page x:Class="SocialMediaApplication.Presenter.View.MainPageView.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:SocialMediaApplication"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+      xmlns:signUp="using:SocialMediaApplication.Presenter.View.MainPageView.SignUp"
+      xmlns:logInView="using:SocialMediaApplication.Presenter.View.MainPageView.LogInView">
+    <Page.Background>
+        <ImageBrush Stretch="UniformToFill"
+                    ImageSource="/Assets/wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png"></ImageBrush>
+
+    </Page.Background>
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Presenter/View/../../Presenter/Resource/TextBoxResource.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Page.Resources>
+
+    <Grid>
+        <signUp:SignUpPage GoToLogInControl="SignUpPage_OnGoToLogInControl"
+                                Visibility="Collapsed" 
+                                x:Name="SignUp"></signUp:SignUpPage>
+        <logInView:LoginInPage GoToHome="LoginInPage_OnGoToHome"
+                           GoToSignUpControl="LoginInPage_OnGoToSignUpControl"
+                           Visibility="Visible"
+                           NotifyError="SignIn_OnNotifyError"
+                           x:Name="SignIn"></logInView:LoginInPage>
+        <controls:InAppNotification x:Name="ExampleVsCodeInAppNotification"
+                                    AnimationDuration="00:00:00.1000000"
+                                    VerticalOffset="200"
+                                    HorizontalOffset="00"
+                                    Width="500"
+                                    Style="{StaticResource MsEdgeNotificationTemplateNoDismissButton}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="top"
+                                    StackMode="Replace">
+        </controls:InAppNotification>
+    </Grid>
+</Page>

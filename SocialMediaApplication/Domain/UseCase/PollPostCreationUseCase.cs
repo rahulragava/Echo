@@ -4,9 +4,6 @@ using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMediaApplication.Domain.UseCase
 {
@@ -16,7 +13,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly ICreatePostManager _postManager = CreatePostManager.GetInstance;
         public readonly PollPostCreationRequest PollPostCreationRequest;
 
-        public PollPostCreationUseCase(PollPostCreationRequest pollPostCreationRequest)
+        public PollPostCreationUseCase(PollPostCreationRequest pollPostCreationRequest, IPresenterCallBack<PollPostCreationResponse> pollPostCreationPresenterCallBack) : base(pollPostCreationPresenterCallBack)
         {
             PollPostCreationRequest = pollPostCreationRequest;
         }
@@ -32,17 +29,13 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         public PollPost PollPost;
         public List<PollChoice> Choices;
-        public IPresenterCallBack<PollPostCreationResponse> PollPostCreationPresenterCallBack;
 
-        public PollPostCreationRequest(PollPost pollPost, List<PollChoice> choices, IPresenterCallBack<PollPostCreationResponse> pollPostCreationPresenterCallBack)
+        public PollPostCreationRequest(PollPost pollPost, List<PollChoice> choices)
         {
             PollPost = pollPost;
-            PollPostCreationPresenterCallBack = pollPostCreationPresenterCallBack;
             Choices = choices;
         }
     }
-
-
 
     public class PollPostCreationUseCaseCallBack : IUseCaseCallBack<PollPostCreationResponse>
     {
@@ -55,13 +48,13 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(PollPostCreationResponse responseObj)
         {
-            _pollPostCreationUseCase?.PollPostCreationRequest.PollPostCreationPresenterCallBack?.OnSuccess(responseObj);
+            _pollPostCreationUseCase?.PresenterCallBack?.OnSuccess(responseObj);
 
         }
 
         public void OnError(Exception ex)
         {
-            _pollPostCreationUseCase?.PollPostCreationRequest.PollPostCreationPresenterCallBack?.OnError(ex);
+            _pollPostCreationUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 

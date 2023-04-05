@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Contacts.DataProvider;
 using SocialMediaApplication.Database.DatabaseHandler.Contract;
 using SocialMediaApplication.Database.DatabaseHandler;
 using SocialMediaApplication.DataManager.Contract;
 using SocialMediaApplication.Domain.UseCase;
 using SocialMediaApplication.Models.BusinessModels;
-using SocialMediaApplication.Models.EntityModels;
-using SocialMediaApplication.Services.Contract;
 
 namespace SocialMediaApplication.DataManager
 {
@@ -50,7 +45,6 @@ namespace SocialMediaApplication.DataManager
         private readonly IReactionDbHandler _reactionDbHandler = ReactionDbHandler.GetInstance;
         private readonly IPollChoiceDbHandler _pollChoiceDbHandler = PollChoiceDbHandler.GetInstance;
         private readonly IUserPollChoiceSelectionDbHandler _userPollChoiceSelectionDbHandler = UserPollChoiceSelectionDbHandler.GetInstance;
-        private static Dictionary<string,string> _userNames = new Dictionary<string,string>();
 
         public async Task FetchFeedAsync(FetchFeedRequest fetchFeedRequest, FetchFeedUseCaseCallBack fetchFeedUseCaseCallBack)
         {
@@ -60,44 +54,46 @@ namespace SocialMediaApplication.DataManager
                     fetchFeedRequest.TextPostFeedsSkipped);
                 var pollPosts = await _pollPostDbHandler.GetSpecificPostAsync(fetchFeedRequest.PollPostFeedsFetched,
                     fetchFeedRequest.PollPostFeedsSkipped);
-                if (!_userNames.Any())
+                var userNames = new Dictionary<string,string>();
+                if (!userNames.Any())
                 {
                     var users = await _userDbHandler.GetAllUserAsync();
                     foreach (var user in users)
                     {
-                        _userNames.Add(user.Id,user.UserName);
+                        userNames.Add(user.Id,user.UserName);
                     }
                     //var userNames = users.Select(u => u.UserName).ToList();
                 }
-                var pollPostBObjs = new List<PollPostBObj>();
-                var textPostBObjs = new List<TextPostBObj>();
+                var pollPostBObjList = new List<PollPostBObj>();
+                var textPostBObjList = new List<TextPostBObj>();
                 foreach (var pollPost in pollPosts)
                 {
-                    var commentBObjs = new List<CommentBObj>();
+                    var commentBObjList = new List<CommentBObj>();
                     var comments = (await _commentDbHandler.GetPostCommentsAsync(pollPost.Id)).ToList();
                     var reactions = (await _reactionDbHandler.GetReactionsAsync(pollPost.Id)).ToList();
                     var choices = (await _pollChoiceDbHandler.GetPostPollChoicesAsync(pollPost.Id)).ToList();
-                    var choiceBObjs = new List<PollChoiceBObj>();
+                    var choiceBObjList = new List<PollChoiceBObj>();
                     foreach (var choice in choices)   
                     {
                         var userPollChoiceSelections = (await _userPollChoiceSelectionDbHandler.GetSelectiveUserPollChoicesSelectionAsync(choice.Id)).ToList();
-                        var pollChoiceBobj = new PollChoiceBObj();
-                        
-                        pollChoiceBobj.Id = choice.Id;
-                        pollChoiceBobj.Choice = choice.Choice;
-                        pollChoiceBobj.PostId = choice.PostId;
-                        pollChoiceBobj.ChoiceSelectedUsers = userPollChoiceSelections;
+                        var pollChoiceBObj = new PollChoiceBObj
+                        {
+                            Id = choice.Id,
+                            Choice = choice.Choice,
+                            PostId = choice.PostId,
+                            ChoiceSelectedUsers = userPollChoiceSelections
+                        };
 
-                        choiceBObjs.Add(pollChoiceBobj);
+                        choiceBObjList.Add(pollChoiceBObj);
                     }
                     foreach (var comment in comments)
                     {
                         var commentsReactions = (await _reactionDbHandler.GetReactionsAsync(comment.Id)).ToList();
-                        var commentBobj = new CommentBObj
+                        var commentBObj = new CommentBObj
                         {
                             Id = comment.Id,
                             PostId = comment.PostId,
-                            CommentedUserName = _userNames[comment.CommentedBy],
+                            CommentedUserName = userNames[comment.CommentedBy],
                             ParentCommentId = comment.ParentCommentId,
                             CommentedBy = comment.CommentedBy,
                             CommentedAt = comment.CommentedAt,
@@ -105,36 +101,35 @@ namespace SocialMediaApplication.DataManager
                             Content = comment.Content,
                             Reactions = commentsReactions,
                         };
-                        commentBObjs.Add(commentBobj);
+                        commentBObjList.Add(commentBObj);
                     }
-                    var sortedCommentBobjs = FetchPostManager.GetSortedComments(commentBObjs);
+                    var sortedCommentBObjList = FetchPostManager.GetSortedComments(commentBObjList);
                     
                     var pollPostBObj = new PollPostBObj()
                     {
                         Id = pollPost.Id,
-                        Title = pollPost.Title,
                         PostedBy = pollPost.PostedBy,
-                        UserName = _userNames[pollPost.PostedBy],
+                        UserName = userNames[pollPost.PostedBy],
                         CreatedAt = pollPost.CreatedAt,
                         LastModifiedAt = pollPost.LastModifiedAt,
                         FormattedCreatedTime = pollPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
-                        Comments = sortedCommentBobjs,
+                        Comments = sortedCommentBObjList,
                         Reactions = reactions,
                         Question = pollPost.Question,
-                        Choices = choiceBObjs,
+                        Choices = choiceBObjList,
                     };
-                    pollPostBObjs.Add(pollPostBObj);
+                    pollPostBObjList.Add(pollPostBObj);
                 }
                 foreach (var textPost in textPosts)
                 {
                     var comments = (await _commentDbHandler.GetPostCommentsAsync(textPost.Id)).ToList();
-                    var commentBObjs = new List<CommentBObj>();
+                    var commentBObjList = new List<CommentBObj>();
                     var reactions = (await _reactionDbHandler.GetReactionsAsync(textPost.Id)).ToList();
                     
                     foreach (var comment in comments)
                     {
                         var commentsReactions = (await _reactionDbHandler.GetReactionsAsync(comment.Id)).ToList();
-                        var commentBobj = new CommentBObj
+                        var commentBObj = new CommentBObj
                         {
                             Id = comment.Id,
                             PostId = comment.PostId,
@@ -143,30 +138,29 @@ namespace SocialMediaApplication.DataManager
                             CommentedAt = comment.CommentedAt,
                             FormattedCommentDate = comment.CommentedAt.ToString("dddd, dd MMMM yyyy"),
                             Content = comment.Content,
-                            CommentedUserName = _userNames[comment.CommentedBy],
+                            CommentedUserName = userNames[comment.CommentedBy],
                             Reactions = commentsReactions,
                         };
-                        commentBObjs.Add(commentBobj);
+                        commentBObjList.Add(commentBObj);
                     }
-                    var sortedCommentBobjs = FetchPostManager.GetSortedComments(commentBObjs);
+                    var sortedCommentBObjList = FetchPostManager.GetSortedComments(commentBObjList);
                     var textPostBObj = new TextPostBObj()
                     {
                         Id = textPost.Id,
-                        Title = textPost.Title,
                         PostedBy = textPost.PostedBy,
                         CreatedAt = textPost.CreatedAt,
-                        UserName = _userNames[textPost.PostedBy], 
+                        UserName = userNames[textPost.PostedBy], 
                         LastModifiedAt = textPost.LastModifiedAt,
                         FormattedCreatedTime = textPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
-                        Comments = sortedCommentBobjs,
+                        Comments = sortedCommentBObjList,
                         Reactions = reactions,
                         Content= textPost.Content,
                     };
-                    textPostBObjs.Add(textPostBObj);
+                    textPostBObjList.Add(textPostBObj);
                 }
 
 
-                fetchFeedUseCaseCallBack?.OnSuccess(new FetchFeedResponse(textPostBObjs, pollPostBObjs));
+                fetchFeedUseCaseCallBack?.OnSuccess(new FetchFeedResponse(textPostBObjList, pollPostBObjList));
             }
             catch (Exception e)
             {

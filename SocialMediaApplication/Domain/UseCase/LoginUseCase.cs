@@ -8,21 +8,19 @@ using SocialMediaApplication.Presenter.ViewModel;
 
 namespace SocialMediaApplication.Domain.UseCase
 {
-
     //use case
     public class LoginUseCase : UseCaseBase<LoginResponse>
     {
-        private readonly IUserManager _userManager = UserManager.GetInstance;
+        private readonly ILoginManager _loginManager = LogInManager.GetInstance;
         public readonly LoginRequest LoginRequest;
-        public LoginUseCase(LoginRequest loginRequest)
+        public LoginUseCase(LoginRequest loginRequest, IPresenterCallBack<LoginResponse> loginPresenterCallBack) : base(loginPresenterCallBack) 
         {
             LoginRequest = loginRequest;
         }
-
         
         public override void Action()
         {
-            _userManager.LoginUserAsync(LoginRequest,new LogInUseCaseCallBack(this));
+            _loginManager.LoginUserAsync(LoginRequest,new LogInUseCaseCallBack(this));
         }
     }
 
@@ -38,12 +36,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(LoginResponse response)
         {
-            _loginUseCase?.LoginRequest.LoginPresenterCallBack?.OnSuccess(response);
+            _loginUseCase?.PresenterCallBack?.OnSuccess(response);
         }
 
         public void OnError(Exception ex)
         {
-            _loginUseCase?.LoginRequest.LoginPresenterCallBack?.OnError(ex);
+            _loginUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
     
@@ -52,13 +50,11 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         public string Email { get; }
         public string Password { get; }
-        public IPresenterCallBack<LoginResponse> LoginPresenterCallBack { get; }
 
-        public LoginRequest(string email, string password, IPresenterCallBack<LoginResponse> loginPresenterCallBack)
+        public LoginRequest(string email, string password)
         {
             Email = email;
             Password = password;
-            LoginPresenterCallBack = loginPresenterCallBack;
         }
     }
 

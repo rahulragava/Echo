@@ -18,7 +18,7 @@ namespace SocialMediaApplication.Models.EntityModels
         public PostFontStyle FontStyle { get; set; }
         public string Title { get; set; }
 
-        public Post()
+        protected Post()
         {
             Id = Guid.NewGuid().ToString();
         }

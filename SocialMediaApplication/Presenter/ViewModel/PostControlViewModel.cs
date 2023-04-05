@@ -62,6 +62,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _postedById, value);
         }
 
+        private string _formattedTime;
+
+        public string FormattedTime
+        {
+            get => _formattedTime;
+            set => SetProperty(ref _formattedTime, value);
+        }
+
         public string PostId { get; set; }
 
         public PostControlViewModel()
@@ -131,7 +139,17 @@ namespace SocialMediaApplication.Presenter.ViewModel
             ReactionType maxReaction = ReactionType.None;
             try
             {
-                maxReaction = Reactions.Max(reaction => reaction.ReactionType);
+                maxReaction = Reactions[0].ReactionType;
+                for (int i = 1; i < Reactions.Count; i++)
+                {
+                    var reactionCount = Reactions.Count(r => r.ReactionType == Reactions[i].ReactionType);
+                    var maxReactionCount = Reactions.Count(r => r.ReactionType == maxReaction);
+
+                    if (reactionCount > maxReactionCount)
+                    {
+                        maxReaction = Reactions[i].ReactionType;
+                    }
+                }
                 SetReactionIcon(maxReaction, false, true);
             }
             catch
@@ -147,7 +165,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 }
                 else
                 {
-                    var secondMax = Reactions.Where(r => r.ReactionType != maxReaction).Max(r => r.ReactionType);
+                    ReactionType secondMax = ReactionType.None;
+                    for (int i = 0; i < Reactions.Count; i++)
+                    {
+                        if (Reactions[i].ReactionType != maxReaction)
+                        {
+                            var reactionCount = Reactions.Count(r => r.ReactionType == Reactions[i].ReactionType);
+                            var maxReactionCount = Reactions.Count(r => r.ReactionType == secondMax);
+
+                            if (reactionCount > maxReactionCount)
+                            {
+                                secondMax = Reactions[i].ReactionType;
+                            }
+                        }
+                    }
+
                     SetReactionIcon(secondMax, false, false);
                 }
             }
@@ -192,7 +224,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             {
                 MaxReactionIcon = string.Empty;
             }
-            if (ReactionIcon == SecondMaxReactionIcon)
+            else if (ReactionIcon == SecondMaxReactionIcon)
             {
                 SecondMaxReactionIcon = string.Empty;
             }
@@ -319,8 +351,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public void GetMiniProfileDetails(string postedByUser)
         {
             var userMiniDetailRequest =
-                new UserMiniDetailRequest(postedByUser, new UserMiniDetailPresenterCallBack(this));
-            var userMiniDetailUseCase = new UserMiniDetailUseCase(userMiniDetailRequest);
+                new UserMiniDetailRequest(postedByUser);
+            var userMiniDetailUseCase = new UserMiniDetailUseCase(userMiniDetailRequest, new UserMiniDetailPresenterCallBack(this));
             userMiniDetailUseCase.Execute();
         }
 
@@ -363,10 +395,9 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
             UserPollChoiceSelection = userPollChoiceSelection;
             var insertUserSelectionChoiceRequest =
-                new InsertUserChoiceSelectionRequest(postId, userPollChoiceSelection,
-                    new InsertUserSelectionPostChoicePresenterCallBack(this));
+                new InsertUserChoiceSelectionRequest(postId, userPollChoiceSelection);
             var insertUserSelectionChoiceUseCase =
-                new InsertUserSelectionChoiceUseCase(insertUserSelectionChoiceRequest);
+                new InsertUserSelectionChoiceUseCase(insertUserSelectionChoiceRequest, new InsertUserSelectionPostChoicePresenterCallBack(this));
             insertUserSelectionChoiceUseCase.Execute();
         }
 
@@ -403,26 +434,24 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void RemovePost(PostBObj postBObj)
         {
-            var removePostRequest = new RemovePostRequest(postBObj, new RemovePostPresenterCallBack(this));
-            var removePostUseCase = new RemovePostUseCase(removePostRequest);
+            var removePostRequest = new RemovePostRequest(postBObj);
+            var removePostUseCase = new RemovePostUseCase(removePostRequest, new RemovePostPresenterCallBack(this));
             removePostUseCase.Execute();
         }
 
         public void FollowUnFollowSearchedUser(string userId)
         {
 
-            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(userId, AppSettings.UserId,
-                new FollowUnFollowPresenterCallBack(this));
+            var followUnFollowSearchedUserRequest = new FollowUnFollowSearchedUserRequest(userId, AppSettings.UserId);
             var followUnFollowSearchedUserUseCase =
-                new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest);
+                new FollowUnFollowSearchedUserUseCase(followUnFollowSearchedUserRequest, new FollowUnFollowPresenterCallBack(this));
             followUnFollowSearchedUserUseCase.Execute();
         }
 
         public void GetUser()
         {
-            var getUserRequest = new GetUserRequestObj(new List<string>() { PostedById },
-                new GetUserDetailViewModelPresenterCallBack(this));
-            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            var getUserRequest = new GetUserRequestObj(new List<string>() { PostedById });
+            var getUserUseCase = new GetUserUseCase(getUserRequest, new GetUserDetailViewModelPresenterCallBack(this));
             getUserUseCase.Execute();
         }
 
@@ -550,7 +579,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                         {
                             _postControlViewModel.TextPostUserControl.GetUserMiniDetailSuccess();
                         }
-                        else
+                        else if(_postControlViewModel.PollPostUserControl != null)
                         {
                             _postControlViewModel.PollPostUserControl.GetUserMiniDetailSuccess();
                         }

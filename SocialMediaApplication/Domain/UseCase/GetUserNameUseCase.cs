@@ -14,17 +14,17 @@ namespace SocialMediaApplication.Domain.UseCase
 
     public class GetUserNamesUseCase : UseCaseBase<GetUserNamesResponseObj>
     {
-        private readonly IGetUserNames _userManager = UserManager.GetInstance;
+        private readonly IGetUserNamesManager _getUserNameManager = GetUserNamesManager.GetInstance;
         public readonly GetUserNamesRequestObj GetUserNamesRequestObj;
 
-        public GetUserNamesUseCase(GetUserNamesRequestObj getUserNameRequestObj)
+        public GetUserNamesUseCase(GetUserNamesRequestObj getUserNameRequestObj, IPresenterCallBack<GetUserNamesResponseObj> getUserNamePresenterCallBack) : base(getUserNamePresenterCallBack)
         {
             GetUserNamesRequestObj = getUserNameRequestObj;
         }
 
         public override void Action()
         {
-            _userManager.GetUserNamesAsync(GetUserNamesRequestObj, new GetUserNamesUseCaseCallBack(this));
+            _getUserNameManager.GetUserNamesAsync(GetUserNamesRequestObj, new GetUserNamesUseCaseCallBack(this));
         }
     }
 
@@ -40,24 +40,18 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(GetUserNamesResponseObj responseObj)
         {
-            _getUserNameUseCase?.GetUserNamesRequestObj.GetUserNamePresenterCallBack?.OnSuccess(responseObj);
+            _getUserNameUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _getUserNameUseCase?.GetUserNamesRequestObj.GetUserNamePresenterCallBack?.OnError(ex);
+            _getUserNameUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
     //Request obj
     public class GetUserNamesRequestObj
     {
-        public GetUserNamesRequestObj(IPresenterCallBack<GetUserNamesResponseObj> getUserNamePresenterCallBack)
-        {
-            GetUserNamePresenterCallBack = getUserNamePresenterCallBack;
-        }
-
-        public IPresenterCallBack<GetUserNamesResponseObj> GetUserNamePresenterCallBack { get; }
 
     }
 

@@ -25,10 +25,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
                 {
                     lock (PadLock)
                     {
-                        if (Instance == null)
-                        {
-                            Instance = new TextPostDbHandler();
-                        }
+                        Instance ??= new TextPostDbHandler();
                     }
                 }
                 return Instance;
@@ -38,7 +35,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         //insert text post to db
         public async Task InsertTextPostAsync(TextPost textPost)
         {
-            await _dbAdapter.InsertInTableAsync(textPost);
+            await _dbAdapter.InsertInTableAsync<TextPost>(textPost);
         }
 
         //remove a text post from db
@@ -51,7 +48,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
         //edit a text post field or fields
         public async Task UpdateTextPostAsync(TextPost textPost)
         {
-            await _dbAdapter.UpdateObjectInTableAsync(textPost);
+            await _dbAdapter.UpdateObjectInTableAsync<TextPost>(textPost);
         }
 
         //get all text posts

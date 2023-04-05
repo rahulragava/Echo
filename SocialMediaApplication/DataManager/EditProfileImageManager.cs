@@ -7,6 +7,7 @@ using SocialMediaApplication.Database.DatabaseHandler.Contract;
 using SocialMediaApplication.Database.DatabaseHandler;
 using SocialMediaApplication.DataManager.Contract;
 using SocialMediaApplication.Domain.UseCase;
+using SocialMediaApplication.Models.EntityModels;
 
 namespace SocialMediaApplication.DataManager
 {
@@ -36,16 +37,16 @@ namespace SocialMediaApplication.DataManager
         }
 
         private readonly IUserDbHandler _userDbHandler = UserDbHandler.GetInstance;
-        
+        public static event Action<string> ProfileUpdated;
         public async Task EditProfileImageAsync(EditProfileImageRequest request, EditProfileImageUseCaseCallBack editProfileImageUseCaseCallBack)
         {
             try
             {
                 var user = await _userDbHandler.GetUserAsync(request.UserId);
                     user.ProfileIcon = request.ImagePath;
-
                 await _userDbHandler.UpdateUserAsync(user);
                 editProfileImageUseCaseCallBack.OnSuccess(new EditProfileImageResponse(true));
+                ProfileUpdated?.Invoke(user.ProfileIcon);
             }
             catch (Exception e)
             {

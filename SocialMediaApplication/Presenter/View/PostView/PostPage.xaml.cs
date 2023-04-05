@@ -5,6 +5,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
+using Windows.ApplicationModel.Resources;
+using System.Resources;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -42,11 +44,6 @@ namespace SocialMediaApplication.Presenter.View.PostView
             CreateTextPostButton.Visibility = Visibility.Visible;
             CreatePollPostButton.Visibility = Visibility.Collapsed;
             PollChoiceContents.Visibility = Visibility.Collapsed;
-            //if (Window.Current.Bounds.Width < 800)
-            //{
-            //    TextPostPreview.Visibility = Visibility.Collapsed;
-            //    SplitView.HorizontalAlignment = HorizontalAlignment.Center;
-            //}
         }
 
         private void PollPostCreation_OnTapped(object sender, TappedRoutedEventArgs e)
@@ -106,6 +103,8 @@ namespace SocialMediaApplication.Presenter.View.PostView
                     break;
 
                 case 2:
+                    ChoiceGrid3.Visibility = Visibility.Visible;
+                    ThirdChoice.Visibility = Visibility.Visible;
                     ChoiceGrid4.Visibility = Visibility.Visible;
                     FourthChoice.Visibility = Visibility.Visible; 
                     break;
@@ -140,20 +139,14 @@ namespace SocialMediaApplication.Presenter.View.PostView
 
         private void CreateTextPostButton_OnClick(object sender, RoutedEventArgs e)
         {
-            // if the Popup is open, then close it 
-            if (string.IsNullOrEmpty(PostTitleTextBox.Text))
-            {
-                ExampleVsCodeInAppNotification.Show("Post title cannot be empty!", 5000);
-                return;
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-            }
+            // if the Popup is open, then close it 
             if (string.IsNullOrEmpty(PostContentTextBox.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Post content cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(resourceLoader.GetString("PostContentEmptyNotification"), 5000);
                 return;
             }
-
-
             SplitView.IsPaneOpen = false;
             ThirdChoice.Visibility = Visibility.Collapsed;
             FourthChoice.Visibility = Visibility.Collapsed;
@@ -162,45 +155,42 @@ namespace SocialMediaApplication.Presenter.View.PostView
             TextPostPreview.Visibility = Visibility.Collapsed;
             PollPostPreview.Visibility = Visibility.Collapsed;
             PostCreationPageViewModel.CreateTextPost();
-            ExampleVsCodeInAppNotification.Show("Text post is Successfully Created!", 2000);
+            ExampleVsCodeInAppNotification.Show(resourceLoader.GetString("TextPostCreatedNotification"), 2000);
 
 
         }
 
         private void CreatePollPostButton_OnClick(object sender, RoutedEventArgs e)
         {
-            // if the Popup is open, then close it 
-            if (string.IsNullOrEmpty(PostTitleTextBox.Text))
-            {
-                ExampleVsCodeInAppNotification.Show("Post title cannot be empty!", 5000);
-                return;
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-            }
+            // if the Popup is open, then close it 
             if (string.IsNullOrEmpty(PostContentTextBox.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Poll question cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(resourceLoader.GetString("PostQuestionEmptyNotification"), 5000);
                 return;
 
             }
 
+            var choiceEmpty = resourceLoader.GetString("ChoiceEmptyNotification");
             if (FirstChoice.Visibility == Visibility.Visible && string.IsNullOrEmpty(FirstChoice.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Choice field cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(choiceEmpty, 5000);
                 return;
             }
             if (SecondChoice.Visibility == Visibility.Visible && string.IsNullOrEmpty(SecondChoice.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Choice field cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(choiceEmpty, 5000);
                 return;
             }
             if (ThirdChoice.Visibility == Visibility.Visible && string.IsNullOrEmpty(ThirdChoice.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Choice field cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(choiceEmpty, 5000);
                 return;
             }
             if (FourthChoice.Visibility == Visibility.Visible && string.IsNullOrEmpty(FourthChoice.Text))
             {
-                ExampleVsCodeInAppNotification.Show("Choice field cannot be empty!", 5000);
+                ExampleVsCodeInAppNotification.Show(choiceEmpty, 5000);
                 return;
             }
 
@@ -229,9 +219,7 @@ namespace SocialMediaApplication.Presenter.View.PostView
             ThirdChoice.Visibility = Visibility.Collapsed;
             FourthChoice.Visibility = Visibility.Collapsed;
             PostCreationPageViewModel.CreatePollPost(pollChoiceCount);
-            //ForegroundColor = new SolidColorBrush(Colors.GreenYellow);
-            ExampleVsCodeInAppNotification.Show("Poll  is Successfully Created!", 2000);
-            //ForegroundColor = new SolidColorBrush(Colors.Red)
+            ExampleVsCodeInAppNotification.Show(resourceLoader.GetString("PollPostCreatedNotification"), 2000);
             TextPostPreview.Visibility = Visibility.Collapsed;
             PollPostPreview.Visibility = Visibility.Collapsed;
             TextPostCreation.Visibility = Visibility.Visible;
@@ -240,21 +228,13 @@ namespace SocialMediaApplication.Presenter.View.PostView
 
         private void PostPage_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var page = sender as Page;
-            if (page != null && page.ActualWidth < 800)
+            if (sender is Page page && page.ActualWidth < 800)
             {
                 FontStyleComboBox.SetValue(Grid.ColumnSpanProperty, 2);
                 FontStyleComboBox.SetValue(Grid.RowProperty, 4);
                 PollChoiceCount.SetValue(Grid.RowProperty, 5);
                 PollChoiceCount.SetValue(Grid.ColumnProperty, 0);
                 PollChoiceCount.SetValue(Grid.ColumnSpanProperty, 2);
-                //PollPostPreview.Visibility = Visibility.Collapsed;
-                //TextPostPreview.Visibility = Visibility.Collapsed;
-                //SplitView.HorizontalAlignment= HorizontalAlignment.Center;
-                //PollChoiceContents.SetValue(Grid.RowProperty, 6);
-                //CreatePollPostButton.SetValue(Grid.RowProperty, 7);
-                //CreateTextPostButton.SetValue(Grid.RowProperty, 7);
-                //DiscardButton.SetValue(Grid.RowProperty, 7);
             }
             else
             {
@@ -263,9 +243,6 @@ namespace SocialMediaApplication.Presenter.View.PostView
                 PollChoiceCount.SetValue(Grid.RowProperty, 4);
                 PollChoiceCount.SetValue(Grid.ColumnProperty, 1);
                 PollChoiceCount.SetValue(Grid.ColumnSpanProperty, 1);
-                //SplitViewContent.Visibility = Visibility.Visible;
-                //SplitViewContent.Visibility = Visibility.Visible;
-                //SplitView.HorizontalAlignment = HorizontalAlignment.Stretch;
             }
         }
     }

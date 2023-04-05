@@ -1,18 +1,19 @@
-﻿using SocialMediaApplication.Domain.UseCase;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.VisualStudio.PlatformUI;
+using SocialMediaApplication.Domain.UseCase;
+using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Windows.UI.Core;
-using SocialMediaApplication.Models.BusinessModels;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Microsoft.VisualStudio.PlatformUI;
-using SocialMediaApplication.Util;
 using SocialMediaApplication.Presenter.View.CommentView;
-using Windows.UI.Xaml.Media.Imaging;
+using SocialMediaApplication.Util;
 
 namespace SocialMediaApplication.Presenter.ViewModel
 {
@@ -20,23 +21,22 @@ namespace SocialMediaApplication.Presenter.ViewModel
     {
         public ObservableCollection<CommentBObj> PostComments = new ObservableCollection<CommentBObj>();
         public List<CommentBObj> CommentsList;
-        public List<Reaction> Reactions;
+        public ObservableCollection<Reaction> Reactions;
         public ICommentsViewUserControlView CommentViewUserControlView { get; set; }
         public ICommentUserControlView CommentUserControlView { get; set; }
 
         private Reaction _reaction;
+
         public Reaction Reaction
         {
             get => _reaction;
             set => SetProperty(ref _reaction, value);
         }
-        //public Action<CommentBObj,int> CommentInserted;
-        //public Action<List<String>> CommentRemoved;
 
         public CommentViewModel()
         {
             CommentsList = new List<CommentBObj>();
-            Reactions = new List<Reaction>();
+            Reactions = new ObservableCollection<Reaction>();
         }
 
         private string _reactionIcon;
@@ -47,6 +47,22 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _reactionIcon, value);
         }
 
+        private string _formattedDateTime;
+
+        public string FormattedDateTime
+        {
+            get => _formattedDateTime;
+            set => SetProperty(ref _formattedDateTime, value);
+        }
+
+        private string _reactionText = "React";
+
+        public string ReactionText
+        {
+            get => _reactionText;
+            set => SetProperty(ref _reactionText, value);
+        }
+
         private string _commentedBy;
 
         public string CommentedBy
@@ -55,26 +71,47 @@ namespace SocialMediaApplication.Presenter.ViewModel
             set => SetProperty(ref _commentedBy, value);
         }
 
-        public void SendCommentButtonClicked(string content, string parentId, string commentOnPostId,int depth)
+        public void SendCommentButtonClicked(string content, string parentId, string commentOnPostId, int depth)
         {
             var insertCommentRequest =
-                new InsertCommentRequest(content, parentId, commentOnPostId, depth, new InsertCommentPresenterCallBack(this));
-            var insertCommentUseCase = new InsertCommentUseCase(insertCommentRequest);
+                new InsertCommentRequest(content, parentId, commentOnPostId, depth);
+            var insertCommentUseCase =
+                new InsertCommentUseCase(insertCommentRequest, new InsertCommentPresenterCallBack(this));
             insertCommentUseCase.Execute();
         }
 
         public void RemoveSelectedComment(CommentBObj comment)
         {
-            var removeCommentRequest = new RemoveCommentRequest(comment,new RemoveCommentPresenterCallBack(this));
-            var removeCommentUseCase = new RemoveCommentUseCase(removeCommentRequest);
+            var removeCommentRequest = new RemoveCommentRequest(comment);
+            var removeCommentUseCase =
+                new RemoveCommentUseCase(removeCommentRequest, new RemoveCommentPresenterCallBack(this));
             removeCommentUseCase.Execute();
+        }
+
+        public void ChangeInReaction(Reaction commentReaction)
+        {
+            var reaction = Reactions.SingleOrDefault(r => r.ReactedBy == commentReaction.ReactedBy);
+            if (reaction != null)
+            {
+                Reactions.Remove(reaction);
+                Reactions.Add(commentReaction);
+            }
+            else
+            {
+                Reactions.Add(commentReaction);
+            }
+        }
+
+        public void SetCommentReactions(List<Reaction> reactions)
+        {
+            Reactions.Clear();
+            foreach (var reaction in reactions) Reactions.Add(reaction);
         }
 
         public void GetUser()
         {
-            var getUserRequest = new GetUserRequestObj(new List<string>() { CommentedBy },
-                new GetUserDetailViewModelPresenterCallBack(this));
-            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            var getUserRequest = new GetUserRequestObj(new List<string> { CommentedBy });
+            var getUserUseCase = new GetUserUseCase(getUserRequest, new GetUserDetailViewModelPresenterCallBack(this));
             getUserUseCase.Execute();
         }
 
@@ -83,14 +120,10 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void GetCommentReaction()
         {
-            if (Reactions == null)
+            if (Reactions != null)
             {
-
-            }
-            else
-            {
-                var react = Reactions.SingleOrDefault(r => r.ReactionOnId == CommentId && r.ReactedBy == AppSettings.UserId);
-                Reaction = react;
+                var react = Reactions.SingleOrDefault(r =>
+                    r.ReactionOnId == CommentId && r.ReactedBy == AppSettings.UserId);
                 if (react != null)
                 {
                     Reaction = react;
@@ -98,24 +131,32 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     {
                         case ReactionType.Heart:
                             ReactionIcon = "♥";
+                            ReactionText = "Heart";
                             break;
                         case ReactionType.ThumbsDown:
                             ReactionIcon = "👎";
+                            ReactionText = "Thumbs down";
+
                             break;
                         case ReactionType.ThumbsUp:
                             ReactionIcon = "👍";
+                            ReactionText = "Thumbs up";
                             break;
                         case ReactionType.Happy:
                             ReactionIcon = "😁";
+                            ReactionText = "Happy";
                             break;
                         case ReactionType.Mad:
-                            ReactionIcon = "😡";
+                            ReactionIcon = "😠";
+                            ReactionText = "Mad";
                             break;
                         case ReactionType.HeartBreak:
                             ReactionIcon = "💔";
+                            ReactionText = "Heart break";
                             break;
                         case ReactionType.Sad:
                             ReactionIcon = "😕";
+                            ReactionText = "Sad";
                             break;
                     }
                 }
@@ -123,7 +164,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 {
                     Reaction = null;
                 }
-
             }
         }
 
@@ -139,10 +179,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public void ClearAndUpdate()
         {
             PostComments.Clear();
-            foreach (var comment in CommentsList)
-            {
-                PostComments.Add(comment);
-            }
+            foreach (var comment in CommentsList) PostComments.Add(comment);
         }
 
         public async Task SetProfileIconAsync(string imagePath)
@@ -152,18 +189,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
             ProfileIcon = profileIcon;
         }
 
-        //public void SetStackPanelDepth(int depth)
-        //{
-        //    StackDepth = 45;
-        //}
-
-        //private int _stackDepth;
-
-        //public int StackDepth
-        //{
-        //    get => _stackDepth;
-        //    set => SetProperty(ref _stackDepth, value);
-        //}
         private Visibility _removeButtonVisibility;
 
         public Visibility RemoveButtonVisibility
@@ -187,31 +212,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     CommentsList.Insert(insertedIndex, commentBObj);
                     PostComments.Insert(insertedIndex, commentBObj);
                 }
+
                 CommentViewUserControlView.ParentCommentInserted();
                 CommentViewUserControlView.CommentExist();
             }
 
-            if (CommentUserControlView != null)
-            {
-
-                CommentUserControlView.InsertComment(commentBObj, insertedIndex);
-            }
-            
+            if (CommentUserControlView != null) CommentUserControlView.InsertComment(commentBObj, insertedIndex);
         }
-      
-        //public void GetCommentSuccess(List<CommentBObj> comments)
-        //{
-        //    CommentsList = comments;
-        //    PostComments.Clear();
-        //    foreach (var comment in comments)
-        //    {
-        //        PostComments.Add(comment);
-        //    }
-        //    if (CommentViewUserControlView != null)
-        //    {
-        //        CommentViewUserControlView.CommentExist();
-        //    }
-        //}
 
         public class InsertCommentPresenterCallBack : IPresenterCallBack<InsertCommentResponse>
         {
@@ -224,10 +231,11 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnSuccess(InsertCommentResponse insertCommentResponse)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _commentViewModel.SuccessfullyCommented(insertCommentResponse.CommentBObj, insertCommentResponse.InsertedIndex);
+                        _commentViewModel.SuccessfullyCommented(insertCommentResponse.CommentBObj,
+                            insertCommentResponse.InsertedIndex);
                     }
                 );
             }
@@ -249,17 +257,18 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnSuccess(RemoveCommentResponse removeCommentResponse)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _commentViewModel.CommentUserControlView.RemoveComments(removeCommentResponse.RemovedCommentIds);
+                        _commentViewModel.CommentUserControlView.RemoveComments(removeCommentResponse
+                            .RemovedCommentIds);
                     }
                 );
             }
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
 
@@ -276,7 +285,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnSuccess(GetUserResponseObj getUserResponseObj)
             {
-                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
                     CoreDispatcherPriority.Normal,
                     () =>
                     {
@@ -290,30 +299,5 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 //throw new NotImplementedException();
             }
         }
-
-        //public class GetCommentsPresenterCallBack : IPresenterCallBack<GetCommentResponse>
-        //{
-        //    private readonly CommentViewModel _commentViewModel;
-
-        //    public GetCommentsPresenterCallBack(CommentViewModel commentViewModel)
-        //    {
-        //        _commentViewModel = commentViewModel;
-        //    }
-
-        //    public void OnSuccess(GetCommentResponse getCommentResponse)
-        //    {
-        //        Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-        //            () =>
-        //            {
-        //                _commentViewModel.GetCommentSuccess(getCommentResponse.Comments);
-        //            }
-        //        );
-        //    }
-
-        //    public void OnError(Exception ex)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
     }
 }

@@ -14,7 +14,7 @@ namespace SocialMediaApplication.Domain.UseCase
     {
         public readonly IReactionManager ReactionManager = DataManager.ReactionManager.GetInstance;
         public readonly GetUserReactionRequest GetUserReactionRequest;
-        public GetUserReactionUseCase(GetUserReactionRequest getUserReactionRequest)
+        public GetUserReactionUseCase(GetUserReactionRequest getUserReactionRequest, IPresenterCallBack<GetUserReactionResponse> getUserReactionPresenterCallBack) : base(getUserReactionPresenterCallBack)
         {
             GetUserReactionRequest = getUserReactionRequest;
         }
@@ -37,26 +37,24 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(GetUserReactionResponse responseObj)
         {
-            _getUserReactionUseCase?.GetUserReactionRequest.GetUserReactionPresenterCallBack?.OnSuccess(responseObj);
+            _getUserReactionUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _getUserReactionUseCase?.GetUserReactionRequest.GetUserReactionPresenterCallBack?.OnError(ex);
+            _getUserReactionUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
     //Request obj
     public class GetUserReactionRequest
     {
-        public GetUserReactionRequest(string userId, string reactionOnId, IPresenterCallBack<GetUserReactionResponse> getUserReactionPresenterCallBack)
+        public GetUserReactionRequest(string userId, string reactionOnId)
         {
             UserId = userId;
             ReactionOnId = reactionOnId;
-            GetUserReactionPresenterCallBack = getUserReactionPresenterCallBack;
         }
 
-        public IPresenterCallBack<GetUserReactionResponse> GetUserReactionPresenterCallBack { get; }
         public string UserId { get; }
         public string ReactionOnId { get; }
     }

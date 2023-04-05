@@ -1,14 +1,6 @@
 ﻿using SocialMediaApplication.DataManager.Contract;
-using SocialMediaApplication.DataManager;
-using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using SocialMediaApplication.Models.Constant;
 using SocialMediaApplication.Models.EntityModels;
 
 namespace SocialMediaApplication.Domain.UseCase
@@ -18,7 +10,7 @@ namespace SocialMediaApplication.Domain.UseCase
         public IReactionManager ReactionManager = DataManager.ReactionManager.GetInstance;
         public readonly ReactionToPostRequestObj ReactionToPostRequestObj;
 
-        public ReactionToPostUseCase(ReactionToPostRequestObj reactionToPostRequestObj)
+        public ReactionToPostUseCase(ReactionToPostRequestObj reactionToPostRequestObj, IPresenterCallBack<ReactionToPostResponse> reactionToPostResponsePresenterCallBack) :base(reactionToPostResponsePresenterCallBack)
         {
             ReactionToPostRequestObj = reactionToPostRequestObj;
         }
@@ -38,13 +30,13 @@ namespace SocialMediaApplication.Domain.UseCase
         }
         public void OnSuccess(ReactionToPostResponse responseObj)
         {
-            _reactionToPostUseCase?.ReactionToPostRequestObj.ReactionToPostResponsePresenterCallBack?.OnSuccess(responseObj);
+            _reactionToPostUseCase?.PresenterCallBack?.OnSuccess(responseObj);
 
         }
 
         public void OnError(Exception ex)
         {
-            _reactionToPostUseCase?.ReactionToPostRequestObj.ReactionToPostResponsePresenterCallBack?.OnError(ex);
+            _reactionToPostUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
@@ -52,13 +44,10 @@ namespace SocialMediaApplication.Domain.UseCase
     public class ReactionToPostRequestObj
     {
         public Reaction Reaction { get; }
-        public IPresenterCallBack<ReactionToPostResponse> ReactionToPostResponsePresenterCallBack { get; }
 
-
-        public ReactionToPostRequestObj(Reaction reaction, IPresenterCallBack<ReactionToPostResponse> reactionToPostResponsePresenterCallBack)
+        public ReactionToPostRequestObj(Reaction reaction)
         {
             Reaction = reaction;
-            ReactionToPostResponsePresenterCallBack = reactionToPostResponsePresenterCallBack;
         }
     }
 

@@ -373,7 +373,7 @@
         <Style x:Key="ButtonStyle1"
                TargetType="Button">
             <Setter Property="Background"
-                    Value="{ThemeResource ButtonBackground}" />
+                    Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
             <Setter Property="BackgroundSizing"
                     Value="OuterBorderEdge" />
             <Setter Property="Foreground"
@@ -508,12 +508,14 @@
                                 Value="Center"></Setter>
                         <Setter Target="PostPreview.Visibility"
                                 Value="Collapsed"></Setter>
+                        <Setter Target="FontStyleComboBox.(Grid.ColumnSpan)"
+                                Value="2"></Setter>
                     </VisualState.Setters>
                 </VisualState>
 
                 <VisualState x:Name="Mid">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="800" />
+                        <AdaptiveTrigger MinWindowWidth="900" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="TextPostPreview.Width"
@@ -526,6 +528,9 @@
                                 Value="20 0 0 0"></Setter>
                         <Setter Target="PollPostPreview.Width"
                                 Value="400"></Setter>
+                        <Setter Target="FontStyleComboBox.(Grid.ColumnSpan)"
+                                Value="2"></Setter>
+
                         <Setter Target="SplitView.HorizontalAlignment"
                                 Value="Stretch"></Setter>
                         <Setter Target="UserReactions.HorizontalAlignment"
@@ -537,7 +542,7 @@
                 </VisualState>
                 <VisualState x:Name="Wide">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1000" />
+                        <AdaptiveTrigger MinWindowWidth="1150" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="TextPostPreview.Width"
@@ -548,6 +553,8 @@
                                 Value="Stretch"></Setter>
                         <Setter Target="UserReactions.FontSize"
                                 Value="20"></Setter>
+                        <Setter Target="FontStyleComboBox.(Grid.ColumnSpan)"
+                                Value="2"></Setter>
                         <Setter Target="UserReactions.Margin"
                                 Value="15 0 0 0"></Setter>
                         <Setter Target="UserReactions.HorizontalAlignment"
@@ -556,22 +563,20 @@
                                 Value="15"></Setter>
                         <Setter Target="PostPreview.Visibility"
                                 Value="Visible"></Setter>
-
                     </VisualState.Setters>
                 </VisualState>
-
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
         <SplitView x:Name="SplitView"
                    PaneBackground="{ThemeResource BackgroundColor}"
-                   OpenPaneLength="300"
+                   OpenPaneLength="500"
                    DisplayMode="Inline">
             <SplitView.Pane>
                 <Grid Margin="10"
+                      CornerRadius="10"
                       x:Name="SplitViewPane"
-                      BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                      BorderThickness="0 0 1 0">
+                      BorderThickness="0 0 0 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -604,7 +609,7 @@
                                                  Grid.Column="0"
                                                  Grid.ColumnSpan="2" />
 
-                    <TextBox Style="{StaticResource MouseHoverRemovedStyle}"
+                    <!--<TextBox Style="{StaticResource MouseHoverRemovedStyle}"
                              Grid.ColumnSpan="2"
                              Grid.Column="0"
                              Margin="5 10"
@@ -619,7 +624,7 @@
                              x:Name="PostTitleTextBox"
                              x:Uid="PostTitle"
                              Text="{x:Bind PostCreationPageViewModel.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             CornerRadius="10" />
+                             CornerRadius="10" />-->
 
                     <TextBox Style="{StaticResource MouseHoverRemovedStyle}"
                              Grid.ColumnSpan="2"
@@ -695,16 +700,16 @@
                                  IsFocusEngaged="False"
                                  Text="{x:Bind PostCreationPageViewModel.PollChoice3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  Visibility="Collapsed" />
-                        <TextBox                                  x:Uid="ChoiceEnter"
-                                                                  HorizontalAlignment="Stretch"
-                                                                  x:Name="FourthChoice"
-                                                                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                                                                  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                                                                  Style="{StaticResource MouseHoverRemovedStyle}"
-                                                                  IsFocusEngagementEnabled="False"
-                                                                  IsFocusEngaged="False"
-                                                                  Text="{x:Bind PostCreationPageViewModel.PollChoice4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                  Visibility="Collapsed"></TextBox>
+                        <TextBox x:Uid="ChoiceEnter"
+                                 HorizontalAlignment="Stretch"
+                                 x:Name="FourthChoice"
+                                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                 BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                 Style="{StaticResource MouseHoverRemovedStyle}"
+                                 IsFocusEngagementEnabled="False"
+                                 IsFocusEngaged="False"
+                                 Text="{x:Bind PostCreationPageViewModel.PollChoice4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Visibility="Collapsed"></TextBox>
 
                     </StackPanel>
                     <Button Grid.Row="7"
@@ -856,7 +861,7 @@
                                         <TextBlock VerticalAlignment="Top"
                                                    FontSize="13"
                                                    Margin="-3 -5 "
-                                                   Text="CreationDateTime" />
+                                                   x:Uid="JustNow" />
                                     </StackPanel>
                                 </StackPanel>
 
@@ -885,13 +890,13 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <!--<TextBlock HorizontalAlignment="Center"
                                                Margin="0 0 0 0"
                                                VerticalAlignment="Center"
                                                FontSize="18"
                                                TextWrapping="Wrap"
                                                FontFamily="{x:Bind PostCreationPageViewModel.FontStyle,Mode=OneWay, Converter={StaticResource FontStyleConverter}}"
-                                               Text="{x:Bind PostCreationPageViewModel.Title,Mode=OneWay}" />
+                                               Text="{x:Bind PostCreationPageViewModel.Title,Mode=OneWay}" />-->
 
                                     <TextBlock Grid.Row="1"
                                                FontSize="18"
@@ -1020,6 +1025,7 @@
                                                                  Grid.ColumnSpan="3"></NavigationViewItemSeparator>
 
                                     <HyperlinkButton Grid.Row="1"
+                                                     IsEnabled="False"
                                                      Grid.Column="0"
                                                      Margin="15 0 0 0"
                                                      VerticalAlignment="Center"
@@ -1072,6 +1078,7 @@
                                               Glyph=""
                                               FontSize="60" />
                                     <TextBox Grid.Column="0"
+                                             IsEnabled="False"
                                              Grid.Row="1"
                                              Grid.ColumnSpan="1"
                                              HorizontalAlignment="Stretch"
@@ -1081,6 +1088,7 @@
                                     </TextBox>
                                     <Button Grid.Row="1"
                                             Grid.Column="1"
+                                            IsEnabled="False"
                                             Style="{StaticResource ButtonStyle1}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0 0 4 0">
@@ -1134,7 +1142,7 @@
                                                    FontSize="13"
                                                    Foreground="{ThemeResource SubtleText}"
                                                    Margin="0 -5 "
-                                                   Text="datetime" />
+                                                   x:Uid="JustNow" />
                                     </StackPanel>
                                 </StackPanel>
 
@@ -1206,6 +1214,7 @@
                                                      Foreground="{ThemeResource SubtleText}"
                                                      x:Name="UserReactions"
                                                      VerticalAlignment="Center"
+                                                     IsEnabled="False"
                                                      HorizontalAlignment="Left">
                                         <HyperlinkButton.Content>
                                             <StackPanel Orientation="Horizontal">
@@ -1226,7 +1235,7 @@
                                                Margin="0 0 20 0"
                                                FontSize="15"
                                                HorizontalAlignment="Right">
-                            <Run>Comments</Run>
+                                        <Run x:Uid="Comment">Comments</Run>
                                     </TextBlock>
                                 </Grid>
 
@@ -1253,6 +1262,7 @@
                                     <TextBox Grid.Column="0"
                                              x:Name="CommentContent"
                                              Grid.Row="1"
+                                             IsEnabled="False"
                                              Grid.ColumnSpan="1"
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Center"
@@ -1263,6 +1273,7 @@
                                             Grid.Column="1"
                                             Style="{StaticResource ButtonStyle1}"
                                             HorizontalAlignment="Stretch"
+                                            IsEnabled="False"
                                             Margin="0 0 4 0"
                                             x:Name="PostCommentButton">
                                         <Button.Content>

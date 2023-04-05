@@ -4,7 +4,7 @@ using System.Threading;
 using SocialMediaApplication.Domain.UseCase;
 using Windows.UI.Core;
 using SocialMediaApplication.Presenter.View;
-using SocialMediaApplication.Presenter.View.LogInView;
+using SocialMediaApplication.Presenter.View.MainPageView.LogInView;
 using SocialMediaApplication.Util;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
 
@@ -82,7 +82,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 {
                     // invalid email visibility
                     IsMailErrorVisible = true;
-                    MailErrorMessage = "Invalid mail id ";
+                    LogInView.MailErrorMessage("Invalid mail id ");
                     return;
                 }
             }
@@ -91,23 +91,21 @@ namespace SocialMediaApplication.Presenter.ViewModel
             {
                 //password cant be null visible
                 IsPasswordErrorVisible = true;
-                PasswordErrorMessage = "Password can't be empty";
+                LogInView.PasswordErrorMessageNotification("Password can't be empty");
                 return;
             }
-            else
-            {
-                if (Password.Length < 8)
-                {
-                    // invalid password visible
-                    IsPasswordErrorVisible = true;
-                    PasswordErrorMessage = "Password must contain at least 8 characters";
-                    return;
-                }
-            }
-            
-            var loginRequestObj = new LoginRequest(Email,Password,new LogInViewModelPresenterCallBack(this));
 
-            var loginUseCase= new LoginUseCase(loginRequestObj);
+            if (Password.Length < 8)
+            {
+                // invalid password visible
+                IsPasswordErrorVisible = true;
+                LogInView.PasswordErrorMessageNotification("Password must contain at least 8 characters");
+                return;
+            }
+
+            var loginRequestObj = new LoginRequest(Email,Password);
+
+            var loginUseCase= new LoginUseCase(loginRequestObj, new LogInViewModelPresenterCallBack(this));
             loginUseCase.Execute();
             Email = string.Empty;
             Password = string.Empty;
@@ -135,13 +133,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
             public void OnError(Exception ex)
             {
-                //throw new NotImplementedException();
+                Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _loginViewModel.LogInView.ErrorMessageNotification(ex);
+                    }
+                );
             }
         }
     }
-
-
- 
-
-
 }

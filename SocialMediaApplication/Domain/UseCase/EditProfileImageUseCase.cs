@@ -16,7 +16,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IEditProfileImageManager _editProfileImageManager = EditProfileImageManager.GetInstance;
         public EditProfileImageRequest EditProfileImageRequest;
 
-        public EditProfileImageUseCase(EditProfileImageRequest editProfileImageRequest)
+        public EditProfileImageUseCase(EditProfileImageRequest editProfileImageRequest, EditProfileImagePresenterCallBack editProfileImagePresenterCallBack) : base(editProfileImagePresenterCallBack)
         {
             EditProfileImageRequest = editProfileImageRequest;
         }
@@ -27,20 +27,17 @@ namespace SocialMediaApplication.Domain.UseCase
                 new EditProfileImageUseCaseCallBack(this));
         }
     }
-
-   
+    
     //req obj
     public class EditProfileImageRequest
     {
-        public EditProfileImagePresenterCallBack EditProfileImagePresenterCallBack { get; }
         public string UserId { get; }
         public string ImagePath { get; }
 
-        public EditProfileImageRequest(string userId, string imagePath ,EditProfileImagePresenterCallBack editProfileImagePresenterCallBack)
+        public EditProfileImageRequest(string userId, string imagePath)
         {
             UserId = userId;
             ImagePath = imagePath;
-            EditProfileImagePresenterCallBack = editProfileImagePresenterCallBack;
         }
     }
 
@@ -65,12 +62,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(EditProfileImageResponse responseObj)
         {
-            _editProfileImageUseCase?.EditProfileImageRequest.EditProfileImagePresenterCallBack?.OnSuccess(responseObj);
+            _editProfileImageUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _editProfileImageUseCase?.EditProfileImageRequest.EditProfileImagePresenterCallBack?.OnError(ex);
+            _editProfileImageUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 }

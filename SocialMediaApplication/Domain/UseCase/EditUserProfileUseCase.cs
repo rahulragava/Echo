@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Models.Constant;
+using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
 
 namespace SocialMediaApplication.Domain.UseCase
@@ -14,19 +15,18 @@ namespace SocialMediaApplication.Domain.UseCase
     //use case
     public class EditUserProfileUseCase : UseCaseBase<EditUserProfileResponseObj>
     {
-        private readonly IUserManager _userManager = UserManager.GetInstance;
+        private readonly IEditUserBObj _editUserManager = EditUserManager.GetInstance;
         public readonly EditUserProfileRequestObj EditUserProfileRequestObj;
 
-        public EditUserProfileUseCase(EditUserProfileRequestObj editUserProfileRequestObj)
+        public EditUserProfileUseCase(EditUserProfileRequestObj editUserProfileRequestObj, IPresenterCallBack<EditUserProfileResponseObj> editUserProfilePresenterCallBack) : base(editUserProfilePresenterCallBack)
         {
             EditUserProfileRequestObj = editUserProfileRequestObj;
         }
 
         public override void Action()
         {
-            _userManager.EditUserBObjAsync(EditUserProfileRequestObj, new EditUserProfileUseCaseCallBack(this));
+            _editUserManager.EditUserBObjAsync(EditUserProfileRequestObj, new EditUserProfileUseCaseCallBack(this));
         }
-
     }
 
     //req obj
@@ -40,11 +40,11 @@ namespace SocialMediaApplication.Domain.UseCase
         public string Education { get; }
         public string Occupation { get; }
         public string Place { get; }
-        public ProfilePageViewModel.EditUserProfilePresenterCallBack EditUserProfilePresenterCallBack { get; }
+        public string UserId { get; }
 
-
-        public EditUserProfileRequestObj(string userName, string firstName, string lastName, Gender gender, MaritalStatus maritalStatus, string education, string occupation, string place, ProfilePageViewModel.EditUserProfilePresenterCallBack editUserProfilePresenterCallBack)
+        public EditUserProfileRequestObj(string userId, string userName, string firstName, string lastName, Gender gender, MaritalStatus maritalStatus, string education, string occupation, string place)
         {
+            UserId = userId;
             UserName = userName;
             FirstName = firstName;
             LastName = lastName;
@@ -53,16 +53,15 @@ namespace SocialMediaApplication.Domain.UseCase
             Education = education;
             Occupation = occupation;
             Place = place;
-            EditUserProfilePresenterCallBack = editUserProfilePresenterCallBack;
         }
     }
 
     //response obj
     public class EditUserProfileResponseObj
     {
-        public UserBObj User { get; }
+        public User User { get; }
 
-        public EditUserProfileResponseObj(UserBObj user)
+        public EditUserProfileResponseObj(User user)
         {
             User = user;
         }
@@ -79,12 +78,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(EditUserProfileResponseObj responseObj)
         {
-            _editUserProfileUseCase?.EditUserProfileRequestObj.EditUserProfilePresenterCallBack?.OnSuccess(responseObj);
+            _editUserProfileUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _editUserProfileUseCase?.EditUserProfileRequestObj.EditUserProfilePresenterCallBack?.OnError(ex);
+            _editUserProfileUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 }

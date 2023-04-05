@@ -15,6 +15,10 @@ using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using SocialMediaApplication.Models.BusinessModels;
+using Windows.UI.Core;
+using Windows.UI.Text;
+using static System.Net.Mime.MediaTypeNames;
+using Windows.UI.Xaml.Controls.Primitives;
 using static System.Collections.Specialized.BitVector32;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -97,16 +101,6 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             set => SetValue(ProfileUserIdProperty, value);
         }
 
-        // Handles the Click event on the Button on the page and opens the Popup. 
-        private void ShowPopupOffsetClicked(object sender, RoutedEventArgs e)
-        {
-            // open the Popup if it isn't open already 
-            if (!EditPopUp.IsOpen)
-            {
-                EditPopUp.IsOpen = true;
-            }
-        }
-
         private void ClosePopupClicked(object sender, RoutedEventArgs e)
         {
             // if the Popup is open, then close it 
@@ -115,11 +109,16 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
                 ExampleVsCodeInAppNotification.Show("User Name Field Cannot Be Empty!", 5000);
                 return;
             }
-            if (EditPopUp.IsOpen) { EditPopUp.IsOpen = false; }
+          
+            if (EditButton.Flyout != null)
+            {
+                EditButton.Flyout.Hide();
+            }
+
 
             var gender = GenderComboBox.SelectedIndex;
             var maritalStatus = MaritalStatusComboBox.SelectedIndex;
-            _profilePageViewModel.EditUserProfile(UserNameTextBox.Text, FirstNameTextBox.Text, LastNameTextBox.Text, gender, maritalStatus, EducationTextBox.Text, OccupationTextBox.Text, PlaceTextBox.Text);
+            _profilePageViewModel.EditUserProfile(AppSettings.UserId,UserNameTextBox.Text, FirstNameTextBox.Text, LastNameTextBox.Text, gender, maritalStatus, EducationTextBox.Text, OccupationTextBox.Text, PlaceTextBox.Text);
         }
 
         public void UserNameAlreadyExist()
@@ -127,10 +126,11 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             ExampleVsCodeInAppNotification.Show("Already User with this UserName Exist! Try Something new", 5000);
         }
 
-        private void ShowFollowerPopup(object sender, RoutedEventArgs e)
+        private void ShowFollowingPopupTapped(object sender, RoutedEventArgs e)
         {
             // open the Popup if it isn't open already 
             FollowerPopUp.Visibility = Visibility.Visible;
+            FollowerPopInStoryboard.Begin();
             if (!FollowerPopUp.IsOpen)
             {
                 FollowerPopUp.IsOpen = true;
@@ -141,62 +141,10 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
 
         private void ShowFilterPopupOffsetClicked(object sender, RoutedEventArgs e)
         {
-            // open the Popup if it isn't open already 
-            if (!FilterPopup.IsOpen)
+            if (sender is FontIcon icon)
             {
-                FilterPopup.IsOpen = true;
+                icon.ContextFlyout.ShowAt(icon,new FlyoutShowOptions());
             }
-        }
-
-        private void CloseFilterPopupClicked(object sender, RoutedEventArgs e)
-        {
-            // if the Popup is open, then close it 
-            if (FilterPopup.IsOpen)
-            {
-                FilterPopup.IsOpen = false;
-            }
-        }
-
-        private void PostTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!(e.AddedItems[0] is ComboBoxItem comboBoxItem)) return;
-            var content = comboBoxItem.Content as string;
-
-            if (content != null && content.Equals("Text Post"))
-            {
-                PostListView.ItemsSource = _profilePageViewModel.TextPosts;
-            }
-            else if (content != null && content.Equals("Poll Post"))
-            {
-                PostListView.ItemsSource = _profilePageViewModel.PollPosts;
-            }
-            else if (content != null && content.Equals("All"))
-            {
-                if (PostListView != null)
-                {
-                    PostListView.ItemsSource = _profilePageViewModel.PostList;
-                }
-            }
-        }
-
-        private void PostTypeComboBox_OnDropDownClosed(object sender, object e)
-        {
-            FilterPopup.IsOpen = false;
-        }
-
-        private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
-        {
-            PostReactionsPopup.Visibility = Visibility.Visible;
-            PostReactionsPopup.IsOpen = true;
-            _profilePageViewModel.SetPostReactions(reactions);
-        }
-
-
-        private void PollPostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> commentReactions)
-        {
-            CommentReactionsPopup.Visibility = Visibility.Visible;
-            CommentReactionsPopup.IsOpen = true;
-            _profilePageViewModel.SetCommentReactions(commentReactions);
         }
 
         private void FollowerFollowing_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -213,11 +161,12 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             }
         }
 
-        private void ShowFollowingsPopup(object sender, TappedRoutedEventArgs e)
+        private void ShowFollowerPopupTapped(object sender, TappedRoutedEventArgs e)
         {
             FollowerPopUp.Visibility = Visibility.Visible;
+            FollowerPopInStoryboard.Begin();
             if (!FollowerPopUp.IsOpen) { FollowerPopUp.IsOpen = true; }
-            NavigationViewItem itemContent = FollowerFollowing.MenuItems.ElementAt(2) as NavigationViewItem;
+            NavigationViewItem itemContent = FollowerFollowing.MenuItems.ElementAt(1) as NavigationViewItem;
             FollowerFollowing.SelectedItem = itemContent;
 
         }
@@ -293,38 +242,13 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             }
         }
 
-        //var picker = new FileOpenPicker();
-        //picker.ViewMode = PickerViewMode.Thumbnail;
-        //picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-        //picker.FileTypeFilter.Add(".jpg");
-        //picker.FileTypeFilter.Add(".jpeg");
-        //picker.FileTypeFilter.Add(".png");
-
-        //StorageFile file = await picker.PickSingleFileAsync();
-
-        //    // If a file was selected, save it in the app folder
-        //    if (file != null)
-        //{
-        //    StorageFolder appFolder = ApplicationData.Current.LocalFolder;
-        //    StorageFile newFile = await file.CopyAsync(appFolder, file.Name, NameCollisionOption.ReplaceExisting);
-
-        //    // Update the image source with the new file
-        //    var temp = new BitmapImage(new Uri(newFile.Path));
-        //    ProfilePath = temp.UriSource.LocalPath.ToString();
-
-        //    Initial.ProfilePicture = temp;
-
-
-
-
         public async void SetProfileImage()
         {
             if (_profilePageViewModel.ProfileImage != null)
             {
-
-                var imageConversion = new StringToImageUtil();
-                var profileIcon = await imageConversion.GetImageFromStringAsync(_profilePageViewModel.ProfileImage);
-                ProfileImage.Source = profileIcon;
+                //var imageConversion = new StringToImageUtil();
+                //var profileIcon = await imageConversion.GetImageFromStringAsync(_profilePageViewModel.ProfileImage);
+                ProfileImage.Source = new BitmapImage(new Uri(_profilePageViewModel.ProfileImage));
             }
         }
 
@@ -363,9 +287,7 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         {
             if (!string.IsNullOrEmpty(_profilePageViewModel.HomePageImage))
             {
-                var imageConversion = new StringToImageUtil();
-                var homeIcon = await imageConversion.GetImageFromStringAsync(_profilePageViewModel.HomePageImage);
-                HomeImage.Source = homeIcon;
+                HomeImage.Source = new BitmapImage(new Uri(_profilePageViewModel.HomePageImage));
             }
         }
 
@@ -396,9 +318,43 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
 
         private void MiniTextPostCreation_OnOnTextPostCreationSuccess(TextPostBObj textPost)
         {
-            ExampleVsCodeInAppNotification.Show("Post  is Successfully Created!", 2000);
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+
+            ExampleVsCodeInAppNotification.Show(resourceLoader.GetString("TextPostCreatedNotification"), 2000);
             _profilePageViewModel.PostList.Insert(0, textPost);
             _profilePageViewModel.TextPosts.Insert(0, textPost);
+        }
+
+        private void TextBlock_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is TextBlock text)
+            {
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Hand, 1);
+            }
+        }
+
+        private void TextBlock_OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is TextBlock text)
+            {
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
+            }
+        }
+
+        private void FontIcon_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is FontIcon icon)
+            {
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Hand, 1);
+            }
+        }
+
+        private void FontIcon_OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is FontIcon icon)
+            {
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
+            }
         }
 
         private void PostControl_OnReactionChanged(Reaction reaction)
@@ -408,6 +364,146 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
             _profilePageViewModel.ChangeInReactions(reactions);
         }
 
+        private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
+        {
+            //PostReactionsPopup.Visibility = Visibility.Visible;
+            _profilePageViewModel.SetPostReactions(reactions);
+            PopInStoryboard.Begin();
+            PostReactionPopup.IsOpen = true;
+        }
+
+
+        private void PostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> commentReactions)
+        {
+            //CommentReactionsPopup.Visibility = Visibility.Visible;
+            _profilePageViewModel.SetCommentReactions(commentReactions);
+            CommentPopInStoryboard.Begin();
+            CommentReactionPopup.IsOpen = true;
+        }
+
+        private void PostSortComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(e.AddedItems[0] is ComboBoxItem comboBoxItem)){ return;}
+                var tag = comboBoxItem.Tag as string;
+
+                if (tag != null && tag.Equals("OldToNew"))
+                {
+                    _profilePageViewModel.OrderByAscending(_profilePageViewModel.PostList);
+                    _profilePageViewModel.OrderByAscending(_profilePageViewModel.TextPosts);
+                    _profilePageViewModel.OrderByAscending(_profilePageViewModel.PollPosts);
+                }
+                else if (tag != null && tag.Equals("NewToOld"))
+                {
+                    _profilePageViewModel.OrderByDescending(_profilePageViewModel.PostList);
+                    _profilePageViewModel.OrderByDescending(_profilePageViewModel.TextPosts);
+                    _profilePageViewModel.OrderByDescending(_profilePageViewModel.PollPosts);
+                }
+        }
+
+        private void SortPost_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            //SortPopup.IsOpen = true;
+            if (sender is FontIcon icon)
+            {
+                icon.ContextFlyout.ShowAt(icon, new FlyoutShowOptions());
+            }
+        }
+
+        //private void PostSortComboBox_OnDropDownClosed(object sender, object e)
+        //{
+        //    SortPopup.IsOpen = false;
+        //}
+
+        private void PollPostControl_OnCommentReactionChanged(Reaction reaction)
+        {
+            _profilePageViewModel.CommentReaction = reaction;
+            var reactions = _profilePageViewModel.CommentReactions.ToList();
+            _profilePageViewModel.ChangeInCommentReactions(reactions);
+        }
+
+        private void NewestFirst_OnClick(object sender, RoutedEventArgs e)
+        {
+           
+            if (sender is MenuFlyoutItem menuItem && menuItem.Tag is string tag && tag.Equals("NewToOld"))
+            {
+                _profilePageViewModel.OrderByDescending(_profilePageViewModel.PostList);
+                _profilePageViewModel.OrderByDescending(_profilePageViewModel.TextPosts);
+                _profilePageViewModel.OrderByDescending(_profilePageViewModel.PollPosts);
+            }
+        }
+
+        private void OldestFirst_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem menuItem && menuItem.Tag is string tag && tag.Equals("OldToNew"))
+            {
+                _profilePageViewModel.OrderByAscending(_profilePageViewModel.PostList);
+                _profilePageViewModel.OrderByAscending(_profilePageViewModel.TextPosts);
+                _profilePageViewModel.OrderByAscending(_profilePageViewModel.PollPosts);
+            }
+        }
+
+
+        private void PostTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(e.AddedItems[0] is ComboBoxItem comboBoxItem)) return;
+            var tag = comboBoxItem.Tag as string;
+
+            if (tag != null && tag.Equals("TextPost"))
+            {
+                PostListView.ItemsSource = _profilePageViewModel.TextPosts;
+            }
+            else if (tag != null && tag.Equals("PollPost"))
+            {
+                PostListView.ItemsSource = _profilePageViewModel.PollPosts;
+            }
+            else if (tag != null && tag.Equals("All"))
+            {
+                if (PostListView != null)
+                {
+                    PostListView.ItemsSource = _profilePageViewModel.PostList;
+                }
+            }
+        }
+
+        private void AllPostFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem menuItem && menuItem.Tag is string tag && tag.Equals("All"))
+            {
+                PostListView.ItemsSource = _profilePageViewModel.PostList;
+            }
+        }
+
+        private void TextPostFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem menuItem && menuItem.Tag is string tag && tag.Equals("TextPost"))
+            {
+                PostListView.ItemsSource = _profilePageViewModel.TextPosts;
+            }
+
+        }
+
+        private void PollPostFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem menuItem && menuItem.Tag is string tag && tag.Equals("PollPost"))
+            {
+                PostListView.ItemsSource = _profilePageViewModel.PollPosts;
+            }
+
+        }
+
+        private void PostControl_OnEditTextPostClicked(string textPostId)
+        {
+            _profilePageViewModel.TextPost = _profilePageViewModel.TextPosts.SingleOrDefault(t => t.Id == textPostId);
+            EditTextPopup.IsOpen = false;
+            EditTextPopInStoryboard.Begin();
+            EditTextPopup.IsOpen = true;
+        }
+
+        private void EditTextPostUserControl_OnCloseEdit(TextPostBObj textPostBObj)
+        {
+            EditTextPopOutStoryboard.Begin();
+            EditTextPopup.IsOpen = false;
+        }
     }
 
     public interface IProfileView

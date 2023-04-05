@@ -17,7 +17,7 @@ namespace SocialMediaApplication.Domain.UseCase
         public IFollowUnFollowManager FollowUnFollowManager =  DataManager.FollowUnFollowManager.GetInstance;
         public FollowUnFollowSearchedUserRequest FollowUnFollowSearchedUserRequest;
 
-        public FollowUnFollowSearchedUserUseCase(FollowUnFollowSearchedUserRequest followUnFollowSearchedUserRequest)
+        public FollowUnFollowSearchedUserUseCase(FollowUnFollowSearchedUserRequest followUnFollowSearchedUserRequest, IPresenterCallBack<FollowUnFollowSearchedUserResponse> followUnFollowSearchedUserPresenterCallback) : base(followUnFollowSearchedUserPresenterCallback)
         {
             FollowUnFollowSearchedUserRequest = followUnFollowSearchedUserRequest;
         }
@@ -40,26 +40,24 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(FollowUnFollowSearchedUserResponse responseObj)
         {
-            _followUnFollowSearchedUserUseCase?.FollowUnFollowSearchedUserRequest?.FollowUnFollowSearchedUserPresenterCallback?.OnSuccess(responseObj);
+            _followUnFollowSearchedUserUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _followUnFollowSearchedUserUseCase?.FollowUnFollowSearchedUserRequest?.FollowUnFollowSearchedUserPresenterCallback?.OnError(ex);
+            _followUnFollowSearchedUserUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
     public class FollowUnFollowSearchedUserRequest
     {
-        public IPresenterCallBack<FollowUnFollowSearchedUserResponse> FollowUnFollowSearchedUserPresenterCallback;
         public string SearchedUserId;
         public string ViewingUserId;
 
-        public FollowUnFollowSearchedUserRequest(string searchedUserId, string viewingUserId, IPresenterCallBack<FollowUnFollowSearchedUserResponse> followUnFollowSearchedUserPresenterCallback)
+        public FollowUnFollowSearchedUserRequest(string searchedUserId, string viewingUserId)
         {
             SearchedUserId = searchedUserId;
             ViewingUserId = viewingUserId;
-            FollowUnFollowSearchedUserPresenterCallback = followUnFollowSearchedUserPresenterCallback;
         }
     }
 

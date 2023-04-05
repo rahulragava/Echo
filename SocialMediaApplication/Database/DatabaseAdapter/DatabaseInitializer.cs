@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Windows.Media.Audio;
 using SocialMediaApplication.Models.EntityModels;
 using SQLite;
 
@@ -12,7 +11,7 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
     {
         private static DatabaseInitializer _dbInstance;
         private static readonly object PadLock = new object();
-        
+
         private DatabaseInitializer()
         {
         }
@@ -21,26 +20,25 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
         {
             get
             {
-                if(_dbInstance == null)
-                {
+                if (_dbInstance == null)
                     lock (PadLock)
                     {
-                        if(_dbInstance == null)
-                        {
-                            _dbInstance = new DatabaseInitializer();
-                        }
+                        if (_dbInstance == null) _dbInstance = new DatabaseInitializer();
                     }
-                }
+
                 return _dbInstance;
             }
         }
+
         public SQLiteAsyncConnection Db { get; set; }
 
         public void InitializeDatabase()
         {
-            if(Db == null)
+            if (Db == null)
             {
-                var databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SocialMediaDatabase.db3");
+                var databasePath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "SocialMediaDatabase.db3");
                 Db = new SQLiteAsyncConnection(databasePath);
                 Debug.WriteLine(databasePath);
                 //await CreateAllTablesAsync();

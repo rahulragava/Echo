@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountCreation.Text" xml:space="preserve">
+    <value>Create an account</value>
+  </data>
+  <data name="All.Text" xml:space="preserve">
+    <value>All</value>
+  </data>
   <data name="And.Text" xml:space="preserve">
-    <value>And</value>
+    <value> And</value>
   </data>
   <data name="CallUser.Text" xml:space="preserve">
     <value>Call me</value>
+  </data>
+  <data name="Casual" xml:space="preserve">
+    <value>Casual</value>
+  </data>
+  <data name="ChoiceEmptyNotification" xml:space="preserve">
+    <value>Choice field cannot be empty!</value>
   </data>
   <data name="ChoiceEnter.PlaceholderText" xml:space="preserve">
     <value>Enter your choice</value>
@@ -132,26 +144,58 @@
   <data name="Comment.Text" xml:space="preserve">
     <value>Comments</value>
   </data>
+  <data name="CommentDeletion" xml:space="preserve">
+    <value>Comment deletion</value>
+  </data>
   <data name="CommentEnter.PlaceholderText" xml:space="preserve">
     <value>type your comment here ...</value>
+  </data>
+  <data name="CommentRemovalWarning" xml:space="preserve">
+    <value>The Comment about to be removed cannot be retrieved!
+Are you sure, you want to delete ?</value>
   </data>
   <data name="Create.Content" xml:space="preserve">
     <value>Create</value>
   </data>
+  <data name="CreateAccount.Text" xml:space="preserve">
+    <value>Create Account</value>
+  </data>
   <data name="Created.Text" xml:space="preserve">
-    <value>fb user since, </value>
+    <value>echo user since, </value>
   </data>
   <data name="Discard.Content" xml:space="preserve">
     <value>Discard</value>
   </data>
+  <data name="DoNotSpecify" xml:space="preserve">
+    <value>Do not specify</value>
+  </data>
+  <data name="EditPost.Text" xml:space="preserve">
+    <value>Edit Post</value>
+  </data>
   <data name="Education.Text" xml:space="preserve">
     <value>Studied At</value>
+  </data>
+  <data name="Email.Text" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Every.Text" xml:space="preserve">
+    <value>All</value>
+    <comment>Shows everyones reaction</comment>
+  </data>
+  <data name="Fancy" xml:space="preserve">
+    <value>Fancy</value>
   </data>
   <data name="Feed.Content" xml:space="preserve">
     <value>Feeds</value>
   </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
   <data name="FirstName.Text" xml:space="preserve">
     <value>First name</value>
+  </data>
+  <data name="Follow.Content" xml:space="preserve">
+    <value>Follow</value>
   </data>
   <data name="Follower.Text" xml:space="preserve">
     <value>Followers</value>
@@ -165,20 +209,77 @@
   <data name="Gender.text" xml:space="preserve">
     <value>Gender</value>
   </data>
+  <data name="HaveAccount.Text" xml:space="preserve">
+    <value>Already have an account ? </value>
+  </data>
+  <data name="InvalidMail" xml:space="preserve">
+    <value>Invalid mail</value>
+  </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>Password must contain atleast 8 character</value>
+  </data>
+  <data name="InvalidRetypePassword" xml:space="preserve">
+    <value>Retyped password is not same as password</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>just now </value>
+  </data>
   <data name="LastName.Text" xml:space="preserve">
     <value>Last name</value>
+  </data>
+  <data name="Loading.Text" xml:space="preserve">
+    <value>Please wait till we fetch the echoes :)</value>
+  </data>
+  <data name="Login.Content" xml:space="preserve">
+    <value>Login</value>
   </data>
   <data name="LogOut.Content" xml:space="preserve">
     <value>Log out</value>
   </data>
+  <data name="MailEmpty" xml:space="preserve">
+    <value>Mail cannot be empty</value>
+  </data>
+  <data name="MailExistNotification" xml:space="preserve">
+    <value>already existing mail. try login</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
   <data name="MaritalStatus.Text" xml:space="preserve">
     <value>Marital status</value>
   </data>
+  <data name="Married" xml:space="preserve">
+    <value>Married</value>
+  </data>
+  <data name="NewToOld.Text" xml:space="preserve">
+    <value>Newest to oldest</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OldToNew.Text" xml:space="preserve">
+    <value>Oldest to Newest</value>
+  </data>
+  <data name="OneHourAgo" xml:space="preserve">
+    <value>an hour ago</value>
+  </data>
   <data name="Others.Text" xml:space="preserve">
-    <value>Others</value>
+    <value> others</value>
+  </data>
+  <data name="Password.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Password cannot be empty</value>
   </data>
   <data name="Place.Text" xml:space="preserve">
     <value>Lives in</value>
+  </data>
+  <data name="PollPost.Text" xml:space="preserve">
+    <value>Poll post</value>
+  </data>
+  <data name="PollPostCreatedNotification" xml:space="preserve">
+    <value>Poll post is Successfully Created!</value>
   </data>
   <data name="PollPostCreation.Text" xml:space="preserve">
     <value>Create a poll post</value>
@@ -186,11 +287,27 @@
   <data name="Post.Content" xml:space="preserve">
     <value>Post</value>
   </data>
+  <data name="PostContentEmptyNotification" xml:space="preserve">
+    <value>Post content cannot be empty!</value>
+  </data>
+  <data name="PostDeletion" xml:space="preserve">
+    <value>Post deletion</value>
+  </data>
+  <data name="PostQuestionEmptyNotification" xml:space="preserve">
+    <value>Poll question cannot be empty!</value>
+  </data>
+  <data name="PostRemovalWarning" xml:space="preserve">
+    <value>The post about to be removed cannot be retrieved! 
+Are you sure, you want to delete ?</value>
+  </data>
   <data name="Posts.Text" xml:space="preserve">
     <value>Posts</value>
   </data>
   <data name="PostTitle.PlaceholderText" xml:space="preserve">
     <value>Post title</value>
+  </data>
+  <data name="PostTitleEmptyNotification" xml:space="preserve">
+    <value>Post title cannot be empty!</value>
   </data>
   <data name="Profile.Content" xml:space="preserve">
     <value>Profile</value>
@@ -201,8 +318,14 @@
   <data name="ReplyEnter.PlaceholderText" xml:space="preserve">
     <value>type your reply here ... </value>
   </data>
+  <data name="RetypePassword.Text" xml:space="preserve">
+    <value>Retype Password</value>
+  </data>
   <data name="Save.Content" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="SaveChange.Content" xml:space="preserve">
+    <value>Save Changes</value>
   </data>
   <data name="Schooling.Text" xml:space="preserve">
     <value>Education</value>
@@ -213,16 +336,49 @@
   <data name="SearchContent.Content" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="SignUp.Content" xml:space="preserve">
+    <value>SignUp</value>
+  </data>
+  <data name="Simple" xml:space="preserve">
+    <value>Simple</value>
+  </data>
+  <data name="SometimeAgo" xml:space="preserve">
+    <value>sometimes ago</value>
+  </data>
+  <data name="TextPost.Text" xml:space="preserve">
+    <value>Text post</value>
+  </data>
+  <data name="TextPostCreatedNotification" xml:space="preserve">
+    <value>Text post is Successfully Created!</value>
+  </data>
   <data name="TextPostCreation.Text" xml:space="preserve">
     <value>Create a text post</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>today</value>
+  </data>
+  <data name="Type.Text" xml:space="preserve">
+    <value>Type : </value>
   </data>
   <data name="Typing.PlaceholderText" xml:space="preserve">
     <value>Start typing ...</value>
   </data>
+  <data name="UnFollow.Content" xml:space="preserve">
+    <value>UnFollow</value>
+  </data>
+  <data name="Unmarried" xml:space="preserve">
+    <value>Unmarried</value>
+  </data>
   <data name="UserName.Text" xml:space="preserve">
     <value>User name</value>
   </data>
-  <data name="UserThought.PlaceholderText" xml:space="preserve">
+  <data name="UserNameExistNotification" xml:space="preserve">
+    <value>Already User with this UserName Exist! Try Something new</value>
+  </data>
+  <data name="UserNotExist" xml:space="preserve">
+    <value>No such user exist !</value>
+  </data>
+  <data name="UserThought" xml:space="preserve">
     <value>Whats on your mind, </value>
   </data>
   <data name="Vote.Text" xml:space="preserve">
@@ -231,10 +387,19 @@
   <data name="Votes.Text" xml:space="preserve">
     <value>Votes</value>
   </data>
+  <data name="Welcome.Text" xml:space="preserve">
+    <value>Welcome back  !</value>
+  </data>
   <data name="Work.Text" xml:space="preserve">
     <value>Currently working as </value>
   </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>yesterday</value>
+  </data>
   <data name="You.Text" xml:space="preserve">
-    <value>You</value>
+    <value> you</value>
   </data>
 </root>

@@ -15,17 +15,17 @@ namespace SocialMediaApplication.Domain.UseCase
     public class GetUserProfileUseCase : UseCaseBase<GetUserProfileResponseObj>
     {
         //profile page use case 
-        private readonly IUserManager _userManager = UserManager.GetInstance;
+        private readonly IGetUserManager _getUserManager = GetUserManager.GetInstance;
         public readonly GetUserProfileRequestObj GetUserProfileRequest;
 
-        public GetUserProfileUseCase(GetUserProfileRequestObj getUserProfileRequest)
+        public GetUserProfileUseCase(GetUserProfileRequestObj getUserProfileRequest, IPresenterCallBack<GetUserProfileResponseObj> profilePresenterCallBack) : base(profilePresenterCallBack)
         {
             GetUserProfileRequest = getUserProfileRequest;
         }
 
         public override void Action()
         {
-            _userManager.GetUserBObjAsync(GetUserProfileRequest, new GetUserProfileUseCaseCallBack(this));
+            _getUserManager.GetUserBObjAsync(GetUserProfileRequest, new GetUserProfileUseCaseCallBack(this));
         }
     }
 
@@ -42,27 +42,23 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(GetUserProfileResponseObj responseObj)
         {
-            _getUserProfileUseCase?.GetUserProfileRequest.ProfilePresenterCallBack?.OnSuccess(responseObj);
+            _getUserProfileUseCase?.PresenterCallBack?.OnSuccess(responseObj);
 
         }
 
         public void OnError(Exception ex)
         {
-            _getUserProfileUseCase?.GetUserProfileRequest.ProfilePresenterCallBack?.OnError(ex);
+            _getUserProfileUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
-
-
 
     public class GetUserProfileRequestObj
     {
         public string UserId { get; }
-        public IPresenterCallBack<GetUserProfileResponseObj> ProfilePresenterCallBack { get; }
 
-        public GetUserProfileRequestObj(string userId, IPresenterCallBack<GetUserProfileResponseObj> profilePresenterCallBack)
+        public GetUserProfileRequestObj(string userId)
         {
             UserId = userId;
-            ProfilePresenterCallBack = profilePresenterCallBack;
         }
     }
 

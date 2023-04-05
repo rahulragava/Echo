@@ -11,6 +11,8 @@
       mc:Ignorable="d"
       xmlns:util="using:SocialMediaApplication.Util"
       xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+      xmlns:controls1="using:Microsoft.UI.Xaml.Controls"
+      xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
@@ -117,16 +119,17 @@
                                               PostContent="{x:Bind Content,Mode=OneWay}"
                                               CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
                                               PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                              PostTitle="{x:Bind Title,Mode=OneWay}"
                                               PostComments="{x:Bind Comments,Mode=OneWay}"
                                               PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
                                               PostReaction="{x:Bind Reactions,Mode=OneWay}"
                                               PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
                                               PostRemoved="PostControl_OnPostRemoved"
-                                              ReactionChanged="PostControl_OnReactionChanged"
-                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                              HorizontalAlignment="Stretch"
                                               CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
+                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                              ReactionChanged="PostControl_OnReactionChanged"
+                                              HorizontalAlignment="Stretch"
+                                              EditTextPostClicked="PostControl_OnEditTextPostClicked"
+                                              CommentReactionChanged="PostControl_OnCommentReactionChanged"
                                               VerticalAlignment="Stretch" />
         </DataTemplate>
 
@@ -139,16 +142,16 @@
                                               CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
                                               PollChoiceList="{x:Bind Choices,Mode=OneWay}"
                                               PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                              PostTitle="{x:Bind Title,Mode=OneWay}"
                                               PostComments="{x:Bind Comments,Mode=OneWay}"
                                               PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
-                                              ReactionChanged="PostControl_OnReactionChanged"
                                               PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
                                               PostReaction="{x:Bind Reactions,Mode=OneWay}"
                                               PostRemoved="PostControl_OnPostRemoved"
-                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                              HorizontalAlignment="Stretch"
                                               CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
+                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                              ReactionChanged="PostControl_OnReactionChanged"
+                                              CommentReactionChanged="PostControl_OnCommentReactionChanged"
+                                              HorizontalAlignment="Stretch"
                                               VerticalAlignment="Stretch" />
         </DataTemplate>
         <util:SelectTemplate x:Key="MyDataTemplateSelector"
@@ -158,11 +161,7 @@
     </Page.Resources>
 
     <Grid x:Name="FeedsGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
                 <VisualState x:Name="Narrow">
@@ -170,64 +169,96 @@
                         <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="MainGrid.MaxWidth" Value="400"></Setter>
+                        <Setter Target="PostListView.Width"
+                                Value="400"></Setter>
+                        <Setter Target="TextPostCreation.Width"
+                                Value="400"></Setter>
                     </VisualState.Setters>
                 </VisualState>
 
                 <VisualState x:Name="Wide">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="650" />
+                        <AdaptiveTrigger MinWindowWidth="750" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="MainGrid.MaxWidth"
+
+                        <Setter Target="PostListView.Width"
                                 Value="700"></Setter>
-                        
+                        <Setter Target="TextPostCreation.Width"
+                                Value="700"></Setter>
+
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
-        <Grid Grid.Column="1"
-              Visibility="Collapsed"
-              Width="300"
-              VerticalAlignment="Top"
-              x:Name="ReactionsPopup">
-            <StackPanel>
-                <Button Margin="5"
-                        x:Name="HideReaction"
-                        Click="HideReaction_OnClick">
-                    <Button.Content>
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                  Glyph="&#xE111;" />
-                    </Button.Content>
-                </Button>
-                <reactionView:UserSelectedReaction x:Name="UserSelectedReactionControl"
-                                                   HorizontalAlignment="Stretch"
-                                                   VerticalAlignment="Stretch"
-                                                   ReactionList="{x:Bind FeedPageViewModel.Reactions,Mode=OneWay}" />
-            </StackPanel>
-        </Grid>
 
-        <Grid Grid.Column="1"
-              Visibility="Collapsed"
-              Width="300"
-              VerticalAlignment="Top"
-              x:Name="CommentReactionsPopup">
-            <StackPanel>
-                <Button Margin="5"
-                        x:Name="HideCommentReaction"
-                        Click="HideCommentReaction_OnClick">
-                    <Button.Content>
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                  Glyph="&#xE111;" />
-                    </Button.Content>
-                </Button>
-                <reactionView:UserSelectedReaction x:Name="UserSelectedCommentReactionControl"
-                                                   HorizontalAlignment="Stretch"
-                                                   VerticalAlignment="Stretch"
-                                                   ReactionList="{x:Bind FeedPageViewModel.CommentReactions,Mode=OneWay}" />
-            </StackPanel>
-        </Grid>
+        <Popup HorizontalAlignment="Center"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               LightDismissOverlayMode="On"
+               IsLightDismissEnabled="True"
+               VerticalAlignment="Center"
+               x:Name="PostReactionPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="PopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="PostReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="PopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="PostReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <reactionView:UserSelectedReaction x:Name="UserSelectedReactionControl"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               ReactionList="{x:Bind FeedPageViewModel.Reactions,Mode=OneWay}" />
+
+        </Popup>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               HorizontalOffset="-200"
+               LightDismissOverlayMode="On"
+               IsLightDismissEnabled="True"
+               VerticalOffset="-116"
+               x:Name="EditTextPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="EditTextPopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="PostReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="EditTextPopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="PostReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <textPostView:EditTextPostUserControl HorizontalAlignment="Stretch"
+                                                  TextPost="{x:Bind FeedPageViewModel.TextPostBObj,Mode=OneWay}"
+                                                  VerticalAlignment="Stretch"
+                                                  CloseEdit="EditTextPostUserControl_OnCloseEdit" />
+        </Popup>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               LightDismissOverlayMode="On"
+               IsLightDismissEnabled="True"
+               x:Name="CommentReactionPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="CommentPopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="CommentReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="CommentPopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="CommentReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <reactionView:UserSelectedReaction x:Name="UserSelectedCommentReactionControl"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               ReactionList="{x:Bind FeedPageViewModel.CommentReactions,Mode=OneWay}" />
+
+        </Popup>
 
         <ScrollViewer Grid.Row="0"
                       Grid.Column="0"
@@ -238,23 +269,22 @@
                       ViewChanged="ScrollViewer_ViewChanged">
 
             <Grid Background="{ThemeResource BackgroundColor}"
-                  x:Name="MainGrid"
-                  MaxWidth="700">
+                  Margin="0"
+                  x:Name="MainGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <textPostView:MiniTextPostCreation
-                    Margin="5 20 5 0"
-                    HorizontalAlignment="Stretch"
-                    OnTextPostCreationSuccess="MiniTextPostCreation_OnOnTextPostCreationSuccess"></textPostView:MiniTextPostCreation>
+                <textPostView:MiniTextPostCreation Margin="0 20 0 0"
+                                                   x:Name="TextPostCreation"
+                                                   HorizontalAlignment="Stretch"
+                                                   OnTextPostCreationSuccess="MiniTextPostCreation_OnOnTextPostCreationSuccess"></textPostView:MiniTextPostCreation>
 
                 <ListView HorizontalAlignment="Stretch"
-                          x:Name="TextPostListView"
+                          x:Name="PostListView"
                           Grid.Row="1"
-                          Grid.Column="0"
-                          Margin="5 10"
+                          Margin="0 10"
                           x:FieldModifier="public"
                           ScrollViewer.VerticalScrollMode="Disabled"
                           ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"
@@ -272,7 +302,7 @@
                     </ListView.ItemContainerStyle>
 
                 </ListView>
-               
+
                 <controls:InAppNotification x:Name="ExampleVsCodeInAppNotification"
                                             AnimationDuration="00:00:00.1000000"
                                             Grid.Row="0"
@@ -285,9 +315,40 @@
                                             VerticalAlignment="top"
                                             StackMode="Replace">
                 </controls:InAppNotification>
-
             </Grid>
         </ScrollViewer>
+
+        <!--<controls:Loading HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          x:Name="LoadingControl"
+                          IsLoading="{x:Bind FeedPageViewModel.IsLoading,Mode=OneWay}">
+            <controls:Loading.Background>
+                <media:AcrylicBrush BackgroundSource="Backdrop"
+                                    TintColor="{ThemeResource SystemAccentColor}"
+                                    TintOpacity="0.5"
+                                    BlurAmount="3" />
+            </controls:Loading.Background>
+            <ContentControl x:Name="LoadingContentControl" />
+        </controls:Loading>-->
+
+        <controls:Loading x:Name="LoadingControl"
+                          IsLoading="{x:Bind FeedPageViewModel.IsLoading,Mode=OneWay}">
+            <controls:Loading.Background>
+                <media:AcrylicBrush BackgroundSource="Backdrop"
+                                    TintColor="Black"
+                                    TintOpacity="0.5"
+                                    BlurAmount="3" />
+            </controls:Loading.Background>
+            <StackPanel Orientation="Horizontal"
+                        Padding="12">
+                <Grid Margin="0,0,8,0">
+                    <ProgressRing IsActive="True"
+                                  Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" />
+                </Grid>
+                <TextBlock x:Uid="Loading"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </controls:Loading>
 
     </Grid>
 </Page>

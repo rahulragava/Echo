@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.View.CommentView;
+using static SocialMediaApplication.Presenter.ViewModel.PostControlViewModel;
 
 namespace SocialMediaApplication.Domain.UseCase
 {
@@ -18,7 +19,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IUserMiniDetailManager _userManager = UserMiniDetailManager.GetInstance;
         public readonly UserMiniDetailRequest UserMiniDetailRequest;
 
-        public UserMiniDetailUseCase(UserMiniDetailRequest userMiniDetailRequest)
+        public UserMiniDetailUseCase(UserMiniDetailRequest userMiniDetailRequest, IPresenterCallBack<UserMiniDetailResponse> userMiniDetailPresenterCallBack) :base(userMiniDetailPresenterCallBack)
         {
             UserMiniDetailRequest = userMiniDetailRequest;
         }
@@ -34,13 +35,10 @@ namespace SocialMediaApplication.Domain.UseCase
     public class UserMiniDetailRequest
     {
         public string UserId { get; }
-        public PostControlViewModel.UserMiniDetailPresenterCallBack UserMiniDetailPresenterCallBack { get; }
 
-
-        public UserMiniDetailRequest(string userId, PostControlViewModel.UserMiniDetailPresenterCallBack userMiniDetailPresenterCallBack)
+        public UserMiniDetailRequest(string userId)
         {
             UserId = userId;
-            UserMiniDetailPresenterCallBack = userMiniDetailPresenterCallBack;
         }
     }
 
@@ -70,13 +68,13 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(UserMiniDetailResponse responseObj)
         {
-            _userMiniDetailUseCase?.UserMiniDetailRequest.UserMiniDetailPresenterCallBack?.OnSuccess(responseObj);
+            _userMiniDetailUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
 
         public void OnError(Exception ex)
         {
-            _userMiniDetailUseCase?.UserMiniDetailRequest.UserMiniDetailPresenterCallBack?.OnError(ex);
+            _userMiniDetailUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 }

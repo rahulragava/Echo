@@ -16,7 +16,7 @@ namespace SocialMediaApplication.Database.DatabaseAdapter
         private static DbAdapter Instance { get; set; }
         private static readonly object PadLock = new object();
 
-        DbAdapter() { }
+        private DbAdapter() { }
 
         public static DbAdapter GetInstance
         {

@@ -1,6 +1,4 @@
-﻿//using SocialMediaApplication.DataManager.ResponseObj;
-using SocialMediaApplication.DataManager;
-//using SocialMediaApplication.Presenter.ViewModel.RequestObj;
+﻿using SocialMediaApplication.DataManager;
 using System;
 using SocialMediaApplication.DataManager.Contract;
 using SocialMediaApplication.Models.BusinessModels;
@@ -12,16 +10,16 @@ namespace SocialMediaApplication.Domain.UseCase
     //sign up use case 
     public class SignUpUseCase : UseCaseBase<SignUpResponse>
     {
-        private readonly IUserManager _userManager = UserManager.GetInstance;
+        private readonly ISignUpManager _signUpManager = SignUpManager.GetInstance;
         public readonly SignUpRequestObj SignUpRequestObj;
-        public SignUpUseCase(SignUpRequestObj signUpRequestObj)
+        public SignUpUseCase(SignUpRequestObj signUpRequestObj,IPresenterCallBack<SignUpResponse> signUpPresenterCallBack):base(signUpPresenterCallBack)
         {
             SignUpRequestObj = signUpRequestObj;
         }
 
         public override void Action()
         {
-            _userManager.SignUpUserAsync(SignUpRequestObj, new SignUpUseCaseCallBack(this));
+            _signUpManager.SignUpUserAsync(SignUpRequestObj, new SignUpUseCaseCallBack(this));
         }
     }
 
@@ -36,12 +34,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(SignUpResponse response)
         {
-            _signUpUseCase?.SignUpRequestObj.SignUpPresenterCallBack?.OnSuccess(response);
+            _signUpUseCase?.PresenterCallBack?.OnSuccess(response);
         }
 
         public void OnError(Exception ex)
         {
-            _signUpUseCase?.SignUpRequestObj.SignUpPresenterCallBack?.OnError(ex);
+            _signUpUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
@@ -52,15 +50,13 @@ namespace SocialMediaApplication.Domain.UseCase
         public string Email { get; }
         public string Password { get; }
         public string RetypePassword { get; }
-        public IPresenterCallBack<SignUpResponse> SignUpPresenterCallBack { get; }
 
-        public SignUpRequestObj(string userName, string email, string password, string retypePassword, IPresenterCallBack<SignUpResponse> loginPresenterCallBack)
+        public SignUpRequestObj(string userName, string email, string password, string retypePassword)
         {
             UserName = userName;
             Email = email;
             Password = password;
             RetypePassword = retypePassword;
-            SignUpPresenterCallBack = loginPresenterCallBack;
         }
     }
 

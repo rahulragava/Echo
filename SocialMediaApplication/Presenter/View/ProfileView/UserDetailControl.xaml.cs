@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.Constant;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -22,7 +10,7 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
     {
         public UserDetailControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public static readonly DependencyProperty FirstNameProperty = DependencyProperty.Register(
@@ -71,11 +59,12 @@ namespace SocialMediaApplication.Presenter.View.ProfileView
         }
 
         public static readonly DependencyProperty MarriageStatusProperty = DependencyProperty.Register(
-            nameof(MarriageStatus), typeof(MaritalStatus), typeof(UserDetailControl), new PropertyMetadata(default(MaritalStatus)));
+            nameof(MarriageStatus), typeof(string), typeof(UserDetailControl),
+            new PropertyMetadata(default(MaritalStatus)));
 
-        public MaritalStatus MarriageStatus
+        public string MarriageStatus
         {
-            get => (MaritalStatus)GetValue(MarriageStatusProperty);
+            get => (string)GetValue(MarriageStatusProperty);
             set => SetValue(MarriageStatusProperty, value);
         }
 

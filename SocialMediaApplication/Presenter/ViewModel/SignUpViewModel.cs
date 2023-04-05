@@ -1,14 +1,8 @@
 ﻿using System;
 using SocialMediaApplication.Domain.UseCase;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Microsoft.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio.Threading;
-using SocialMediaApplication.Models.BusinessModels;
-using SocialMediaApplication.Presenter.View;
-using SocialMediaApplication.Presenter.View.SignUp;
+using SocialMediaApplication.Presenter.View.MainPageView.SignUp;
 using ObservableObject = Microsoft.VisualStudio.PlatformUI.ObservableObject;
 
 
@@ -87,68 +81,56 @@ namespace SocialMediaApplication.Presenter.ViewModel
             if (string.IsNullOrEmpty(Email))
             {
                 IsMailErrorVisible = true;
-                MailErrorMessage = "Mail id Cannot be empty";
+                SignUpView.MailErrorMessage("Mail id Cannot be empty");
                 return;
             }
-            else
+
+            if (!Regex.IsMatch(Email,
+                    @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z",
+                    RegexOptions.IgnoreCase))
             {
-                if (!Regex.IsMatch(Email,
-                        @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z",
-                        RegexOptions.IgnoreCase))
-                {
-                    // invalid email visibility
-                    IsMailErrorVisible = true;
-                    MailErrorMessage = "Invalid Mail";
-                    return;
-                }
-                else
-                {
-                    IsMailErrorVisible = false;
-                }
+                // invalid email visibility
+                IsMailErrorVisible = true;
+                SignUpView.MailErrorMessage("Invalid Mail");
+                return;
             }
+
+            IsMailErrorVisible = false;
 
             if (string.IsNullOrEmpty(Password))
             {
                 //password cant be null visible
                 IsPasswordErrorVisible = true;
-                PasswordErrorMessage = "Password cannot be empty";
+                SignUpView.PasswordErrorMessageNotification("Password cannot be empty");
                 return;
             }
-            else
+
+            if (Password.Length < 8)
             {
-                if (Password.Length < 8)
-                {
-                    // invalid password visible
-                    IsPasswordErrorVisible = true;
-                    PasswordErrorMessage = "Invalid password";
-                    return;
-                }
-                else
-                {
-                    IsPasswordErrorVisible = false;
-                }
+                // invalid password visible
+                IsPasswordErrorVisible = true;
+                SignUpView.PasswordErrorMessageNotification("Invalid password");
+                return;
             }
+
+            IsPasswordErrorVisible = false;
 
             if (string.IsNullOrEmpty(RetypedPassword))
             {
                 IsRetypePasswordErrorVisible = true;
-                ReTypePasswordErrorMessage = "this slot cannot be empty";
+                SignUpView.PasswordErrorMessageNotification("This slot can't be empty");
                 return;
             }
-            else
+
+            if (Password != RetypedPassword)
             {
-                if (Password != RetypedPassword)
-                {
-                    //error visible 
-                    IsRetypePasswordErrorVisible = true;
-                    ReTypePasswordErrorMessage = "retype password is not same as password";
-                    return;
-                }
-                else
-                {
-                    IsRetypePasswordErrorVisible = false;
-                }
+                //error visible 
+                IsRetypePasswordErrorVisible = true;
+                SignUpView.PasswordErrorMessageNotification("retype password is not same as password");
+                return;
             }
+
+            IsRetypePasswordErrorVisible = false;
 
             if (string.IsNullOrEmpty(UserName))
             {
@@ -159,13 +141,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             _isUserNameErrorVisible = false;
 
-            var signUpRequestObj = new SignUpRequestObj(UserName, Email, Password, RetypedPassword, new SignUpViewModelPresenterCallBack(this));
-            var signUpUseCase= new SignUpUseCase(signUpRequestObj);
+            var signUpRequestObj = new SignUpRequestObj(UserName, Email, Password, RetypedPassword);
+            var signUpUseCase= new SignUpUseCase(signUpRequestObj, new SignUpViewModelPresenterCallBack(this));
             signUpUseCase.Execute();
-            UserName = string.Empty;
-            Email = string.Empty;
-            Password = string.Empty;
-            RetypedPassword = string.Empty;
+            //UserName = string.Empty;
+            //Email = string.Empty;
+            //Password = string.Empty;
+            //RetypedPassword = string.Empty;
         }
 
         public class SignUpViewModelPresenterCallBack : IPresenterCallBack<SignUpResponse>
@@ -192,7 +174,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        _signUpViewModel.SignUpView.ErrorMessageNotification(ex.Message);
+                        _signUpViewModel.SignUpView.ErrorMessageNotification(ex);
                     }
                 );
             }

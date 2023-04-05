@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using SocialMediaApplication.Models.BusinessModels;
-using Windows.UI.Xaml.Controls.Maps;
 using SocialMediaApplication.Models.EntityModels;
 using SocialMediaApplication.Presenter.ViewModel;
-using Color = Windows.UI.Color;
-using Windows.UI.Xaml.Media.Animation;
-using SocialMediaApplication.DataManager;
-using SocialMediaApplication.Presenter.View.ReactionView;
-using Windows.UI.Core;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -47,13 +38,13 @@ namespace SocialMediaApplication.Presenter.View.CommentView
                 if (!Comments.Any())
                 {
                     CommentList.Visibility = Visibility.Collapsed;
-                    //NoCommentsMessage.Visibility = Visibility.Visible;
                     NoCommentFont.Visibility = Visibility.Visible;
                 }
             }
             CommentViewModel.PostId = PostId;
         }
         public event Action<int> CommentCountChanged;
+        public event Action<Reaction> CommentReactionChanged;
         public event Action<List<Reaction>> CommentReactionButtonClicked;
 
         public static readonly DependencyProperty CommentsProperty = DependencyProperty.Register(
@@ -118,6 +109,12 @@ namespace SocialMediaApplication.Presenter.View.CommentView
 
         }
 
+        private void CommentUserControl_OnCommentReactionIconClicked(List<Reaction> reactions)
+        {
+            CommentReactionButtonClicked?.Invoke(reactions);
+        }
+
+
         public void RemoveCommentsInList(List<string> commentIds)
         {
             foreach (var commentId in commentIds)
@@ -171,9 +168,9 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             }
         }
 
-        private void CommentUserControl_OnCommentReactionIconClicked(List<Reaction> reactions)
+        private void CommentUserControl_OnChangeInReaction(Reaction reaction)
         {
-            CommentReactionButtonClicked?.Invoke(reactions);
+            CommentReactionChanged?.Invoke(reaction);
         }
     }
 

@@ -18,7 +18,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly ICreatePostManager _createPostManager = CreatePostManager.GetInstance;
         public readonly TextPostCreationRequest TextPostCreationRequest;
 
-        public TextPostCreationUseCase(TextPostCreationRequest textPostCreationRequest)
+        public TextPostCreationUseCase(TextPostCreationRequest textPostCreationRequest, IPresenterCallBack<TextPostCreationResponse> textPostCreationPresenterCallBack):base(textPostCreationPresenterCallBack)
         {
             TextPostCreationRequest = textPostCreationRequest;
         }
@@ -33,12 +33,10 @@ namespace SocialMediaApplication.Domain.UseCase
     public class TextPostCreationRequest
     {
         public TextPost TextPost;
-        public IPresenterCallBack<TextPostCreationResponse> TextPostCreationPresenterCallBack;
 
-        public TextPostCreationRequest(TextPost textPost, IPresenterCallBack<TextPostCreationResponse> textPostCreationPresenterCallBack)
+        public TextPostCreationRequest(TextPost textPost)
         {
             TextPost = textPost;
-            TextPostCreationPresenterCallBack = textPostCreationPresenterCallBack;
         }
     }
 
@@ -55,12 +53,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(TextPostCreationResponse responseObj)
         {
-            _textPostCreationUseCase?.TextPostCreationRequest.TextPostCreationPresenterCallBack?.OnSuccess(responseObj);
+            _textPostCreationUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _textPostCreationUseCase?.TextPostCreationRequest.TextPostCreationPresenterCallBack?.OnError(ex);
+            _textPostCreationUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 

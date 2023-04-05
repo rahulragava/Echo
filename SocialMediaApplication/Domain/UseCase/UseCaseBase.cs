@@ -8,8 +8,13 @@ namespace SocialMediaApplication.Domain.UseCase
 {
     public abstract class UseCaseBase<T>
     {
-        //public IPresenterCallBack<T> PresenterCallBack { get; }
-        protected UseCaseBase() { }
+        public IPresenterCallBack<T> PresenterCallBack { get; set; }
+
+        protected UseCaseBase(IPresenterCallBack<T> presenterCallBack)
+        {
+            PresenterCallBack = presenterCallBack;
+        }
+
         public abstract void Action();
 
         public void Execute()
@@ -27,9 +32,7 @@ namespace SocialMediaApplication.Domain.UseCase
                 }
                 catch (Exception ex)
                 {
-                    //should have my own error obj
-                    //ZError errObj = new ZError(ex,ex.Message);
-                    //PresenterCallBack?.OnError(errObj);
+                    PresenterCallBack?.OnError(ex);
                 }
             });
         }

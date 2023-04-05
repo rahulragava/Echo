@@ -113,7 +113,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             var pollPost = new PollPost()
             {
-                Title = Title,
                 Question = Content,
                 CreatedAt = DateTime.Now,
                 FontStyle = FontStyle,
@@ -176,8 +175,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
             }
 
             var pollPostCreationRequest =
-                new PollPostCreationRequest(pollPost, choices, new PollPostCreationPresenterCallBack(this));
-            var pollPostCreationUseCase = new PollPostCreationUseCase(pollPostCreationRequest);
+                new PollPostCreationRequest(pollPost, choices);
+            var pollPostCreationUseCase = new PollPostCreationUseCase(pollPostCreationRequest, new PollPostCreationPresenterCallBack(this));
             pollPostCreationUseCase.Execute();
         }
 
@@ -190,20 +189,18 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 LastModifiedAt = DateTime.Now,
                 FontStyle = FontStyle,
                 PostedBy = AppSettings.LocalSettings.Values["user"].ToString(),
-                Title = Title
             };
 
             var textPostCreationRequest =
-                new TextPostCreationRequest(textPost , new TextPostCreationPresenterCallBack(this));
-            var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest);
+                new TextPostCreationRequest(textPost);
+            var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest, new TextPostCreationPresenterCallBack(this));
             textPostCreationUseCase.Execute();
         }
 
         public void GetUser()
         {
-            var getUserRequest = new GetUserRequestObj(new List<string>() { AppSettings.UserId },
-                new GetUserDetailViewModelPresenterCallBack(this));
-            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            var getUserRequest = new GetUserRequestObj(new List<string>() { AppSettings.UserId });
+            var getUserUseCase = new GetUserUseCase(getUserRequest, new GetUserDetailViewModelPresenterCallBack(this));
             getUserUseCase.Execute();
         }
 

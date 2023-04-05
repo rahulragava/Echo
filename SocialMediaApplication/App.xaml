@@ -5,11 +5,9 @@
     xmlns:local="using:SocialMediaApplication"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls">
     <Application.Resources>
-        <!--<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />-->
         <controls:XamlControlsResources>
             <controls:XamlControlsResources.MergedDictionaries>
                 <ResourceDictionary Source="/Presenter/Resource/ThemeResourceDictionary.xaml"></ResourceDictionary>
-
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>
     </Application.Resources>

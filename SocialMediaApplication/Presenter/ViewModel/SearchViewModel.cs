@@ -35,8 +35,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
        
         public void GetUserNames()
         {
-            var getUserNamesRequestObj = new GetUserNamesRequestObj(new SearchViewModelPresenterCallBack(this));
-            var getUserNamesUseCase = new GetUserNamesUseCase(getUserNamesRequestObj);
+            var getUserNamesRequestObj = new GetUserNamesRequestObj();
+            var getUserNamesUseCase = new GetUserNamesUseCase(getUserNamesRequestObj, new SearchViewModelPresenterCallBack(this));
             getUserNamesUseCase.Execute();
         }
 

@@ -59,7 +59,6 @@ namespace SocialMediaApplication.DataManager
                 var textPostBObj = new TextPostBObj
                 {
                     Id = textPost.Id,
-                    Title = textPost.Title,
                     PostedBy = textPost.PostedBy,
                     CreatedAt = textPost.CreatedAt,
                     FormattedCreatedTime = textPost.CreatedAt.ToString("dddd, dd MMMM yyyy"),
@@ -94,7 +93,6 @@ namespace SocialMediaApplication.DataManager
                 var pollPostBObj = new PollPostBObj()
                 {
                     Id = pollPost.Id,
-                    Title = pollPost.Title,
                     PostedBy = pollPost.PostedBy,
                     CreatedAt = pollPost.CreatedAt,
                     LastModifiedAt = pollPost.LastModifiedAt,

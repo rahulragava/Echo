@@ -32,7 +32,6 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             {
                 FeedPageViewModel.GetFeeds();
             }
-            
         }
 
         public void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -46,6 +45,7 @@ namespace SocialMediaApplication.Presenter.View.FeedView
                     if (maxOffset > 0 && FeedPageViewModel.ScrollPosition >= maxOffset - 100)
                     {
                         FeedPageViewModel.GetFeeds();
+                        //FeedPageViewModel.IsLoading = true;
                     }
                 }
             }
@@ -56,46 +56,28 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             FeedPageViewModel.PostBObjList.Remove(FeedPageViewModel.PostBObjList.SingleOrDefault(p => p.Id == postId));
         }
 
-        private void TextPostClicked_OnClick(object sender, RoutedEventArgs e)
-        {
-            TextPostListView.Visibility = Visibility.Visible;
-            ListScroll.ScrollToVerticalOffset(0);
-        }
-
-        private void PollPostClicked_OnClick(object sender, RoutedEventArgs e)
-        {
-            ListScroll.ScrollToVerticalOffset(0);
-            TextPostListView.Visibility = Visibility.Collapsed;
-        }
-
         private void PostControl_OnReactionPopUpButtonClicked(List<Reaction> reactions)
         {
-            if (ReactionsPopup.Visibility == Visibility.Visible)
-            {
-                ReactionsPopup.Visibility = Visibility.Collapsed;
-            }
-
-            if (CommentReactionsPopup.Visibility == Visibility.Visible)
-            {
-                CommentReactionsPopup.Visibility = Visibility.Collapsed;
-            }
-            ReactionsPopup.Visibility = Visibility.Visible;
             FeedPageViewModel.SetReactions(reactions);
-        }
-
-
-
-        private void HideReaction_OnClick(object sender, RoutedEventArgs e)
-        {
-            ReactionsPopup.Visibility = Visibility.Collapsed;
+            PopInStoryboard.Begin();
+            PostReactionPopup.IsOpen = true;
         }
 
         private void PostControl_OnReactionChanged(Reaction reaction)
         {
             FeedPageViewModel.Reaction = reaction;
-            var reactions= FeedPageViewModel.Reactions.ToList();
+            var reactions = FeedPageViewModel.Reactions.ToList();
             FeedPageViewModel.ChangeInReactions(reactions);
         }
+
+        private void PostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> reactions)
+        {
+            FeedPageViewModel.SetCommentReactions(reactions);
+            CommentPopInStoryboard.Begin();
+            CommentReactionPopup.IsOpen = true;
+        }
+
+
 
         private void MiniTextPostCreation_OnOnTextPostCreationSuccess(TextPostBObj textPost)
         {
@@ -103,24 +85,24 @@ namespace SocialMediaApplication.Presenter.View.FeedView
             FeedPageViewModel.PostBObjList.Insert(0, textPost);
         }
 
-        private void PostControl_OnCommentReactionPopUpButtonClicked(List<Reaction> reactions)
+        private void PostControl_OnCommentReactionChanged(Reaction reaction)
         {
-            if (ReactionsPopup.Visibility == Visibility.Visible)
-            {
-                ReactionsPopup.Visibility = Visibility.Collapsed;
-            }
-
-            if (CommentReactionsPopup.Visibility == Visibility.Visible)
-            {
-                CommentReactionsPopup.Visibility = Visibility.Collapsed;
-            }
-            FeedPageViewModel.SetCommentReactions(reactions);
-            CommentReactionsPopup.Visibility = Visibility.Visible;
+            FeedPageViewModel.CommentReaction = reaction;
+            var reactions = FeedPageViewModel.CommentReactions.ToList();
+            FeedPageViewModel.ChangeInCommentReactions(reactions);
         }
 
-        private void HideCommentReaction_OnClick(object sender, RoutedEventArgs e)
+        private void PostControl_OnEditTextPostClicked(string textPostId)
         {
-            CommentReactionsPopup.Visibility = Visibility.Collapsed;
+            FeedPageViewModel.TextPostBObj = FeedPageViewModel.PostBObjList.SingleOrDefault(t => t.Id == textPostId) as TextPostBObj;
+            EditTextPopInStoryboard.Begin();
+            EditTextPopup.IsOpen = true;
+        }
+
+        private void EditTextPostUserControl_OnCloseEdit(TextPostBObj obj)
+        {
+            EditTextPopOutStoryboard.Begin();
+            EditTextPopup.IsOpen = false;
         }
     }
 }

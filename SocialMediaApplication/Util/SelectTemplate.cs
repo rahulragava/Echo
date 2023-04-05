@@ -16,12 +16,15 @@ namespace SocialMediaApplication.Util
 
         protected override DataTemplate SelectTemplateCore(object post)
         {
-            if (post is TextPostBObj)
-                return TextPostDataTemplate;
-            if (post is PollPostBObj)
-                return PollPostDataTemplate;
-
-            return base.SelectTemplateCore(post);
+            switch (post)
+            {
+                case TextPostBObj _:
+                    return TextPostDataTemplate;
+                case PollPostBObj _:
+                    return PollPostDataTemplate;
+                default:
+                    return base.SelectTemplateCore(post);
+            }
         }
 
         protected override DataTemplate SelectTemplateCore(object post, DependencyObject container)

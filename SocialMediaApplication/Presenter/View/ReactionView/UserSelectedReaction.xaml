@@ -1,19 +1,19 @@
-﻿<UserControl
-    x:Class="SocialMediaApplication.Presenter.View.ReactionView.UserSelectedReaction"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SocialMediaApplication.Presenter.View.ReactionView"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:view="using:SocialMediaApplication.Presenter.View"
-    mc:Ignorable="d"
-    >
+﻿<UserControl x:Class="SocialMediaApplication.Presenter.View.ReactionView.UserSelectedReaction"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:SocialMediaApplication.Presenter.View.ReactionView"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:view="using:SocialMediaApplication.Presenter.View"
+             mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-          CornerRadius="10" 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          CornerRadius="10"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+          Width="400"
           Height="400">
         <NavigationView PaneDisplayMode="Top"
-                        x:Name="ReactionNavigationView" 
+                        x:Name="ReactionNavigationView"
                         IsBackButtonVisible="Collapsed"
                         IsSettingsVisible="False"
                         SelectionChanged="ReactionNavigationView_OnSelectionChanged"
@@ -22,109 +22,129 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="5 0 5 0"
+                                    x:Name="All"
+                                    Tag="AllReactionTag">
+                    <NavigationViewItem.Content>
+                        <StackPanel>
+                            <TextBlock Text="All"
+                                       x:Uid="Every"
+                                       ToolTipService.ToolTip="All"
+                                       x:Name="AllReaction" />
+                        </StackPanel>
+                    </NavigationViewItem.Content>
+
+                </NavigationViewItem>
+                <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
+                                    Margin="5 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="Heart"
                                     Tag="HeartReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
                                       Glyph="&#x2665;"
                                       ToolTipService.ToolTip="Heart"
-                                      x:Name="HeartReaction"/>
+                                      x:Name="HeartReaction" />
                         </StackPanel>
                     </NavigationViewItem.Content>
-                    
+
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="DisLike"
                                     Tag="DisLikeReactionTag">
                     <NavigationViewItem.Content>
-                            <StackPanel>
-                                <FontIcon FontFamily="Segoe UI Emoji" 
-                                          Glyph="&#x1F44E;" x:Name="DislikeReaction"
-                                          ToolTipService.ToolTip="Dislike"/>
-                            </StackPanel>
+                        <StackPanel>
+                            <FontIcon FontFamily="Segoe UI Emoji"
+                                      Glyph="&#x1F44E;"
+                                      x:Name="DislikeReaction"
+                                      ToolTipService.ToolTip="Dislike" />
+                        </StackPanel>
                     </NavigationViewItem.Content>
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="Like"
                                     Tag="LikeReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
-                                      Glyph="&#x1F44D;" x:Name="LikeReaction"
-                                      ToolTipService.ToolTip="Like"/>
+                                      Glyph="&#x1F44D;"
+                                      x:Name="LikeReaction"
+                                      ToolTipService.ToolTip="Like" />
                         </StackPanel>
                     </NavigationViewItem.Content>
-                    
+
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="HeartBreak"
                                     Tag="HeartBreakReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
-                                      Glyph="&#x1F494;" 
+                                      Glyph="&#x1F494;"
                                       x:Name="HeartBreakReaction"
-                                      ToolTipService.ToolTip="HeartBreak"/>
+                                      ToolTipService.ToolTip="HeartBreak" />
                         </StackPanel>
                     </NavigationViewItem.Content>
-                    
+
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="Happy"
                                     Tag="HappyReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
-                                      Glyph="&#x1F601;" 
+                                      Glyph="&#x1F601;"
                                       x:Name="HappyReaction"
-                                      ToolTipService.ToolTip="Happy"
-                            />
+                                      ToolTipService.ToolTip="Happy" />
                         </StackPanel>
                     </NavigationViewItem.Content>
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="Sad"
                                     Tag="SadReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
                                       Glyph="&#x1F615;"
                                       x:Name="SadReaction"
-                                      ToolTipService.ToolTip="Sad"/>
+                                      ToolTipService.ToolTip="Sad" />
                         </StackPanel>
                     </NavigationViewItem.Content>
-                  
+
                 </NavigationViewItem>
 
                 <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
                                     Margin="0 0 5 0"
+                                    Visibility="Collapsed"
+                                    x:Name="Mad"
                                     Tag="MadReactionTag">
                     <NavigationViewItem.Content>
                         <StackPanel>
                             <FontIcon FontFamily="Segoe UI Emoji"
-                                      Glyph="😠" 
+                                      Glyph="😠"
                                       x:Name="MadReaction"
-                                      ToolTipService.ToolTip="Mad"/>
+                                      ToolTipService.ToolTip="Mad" />
                         </StackPanel>
                     </NavigationViewItem.Content>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <Frame x:Name="ReactionFrame" />
-            <!--<NavigationView.Content>
-                <view:UserListUserControl x:Name="UserReactionsFrame"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          Height="800"
-                                          UserIdList="{x:Bind UserSelectionReactionsViewModel.UserIds,Mode=OneWay}"
-                                          />
-
-            </NavigationView.Content>-->
         </NavigationView>
 
     </Grid>

@@ -1,10 +1,8 @@
-﻿using SQLite;
-
-namespace SocialMediaApplication.Models.Constant
+﻿namespace SocialMediaApplication.Models.Constant
 {
     public enum ReactionType
     {
-        None=1,
+        None = 1,
         Happy,
         Sad,
         Mad,

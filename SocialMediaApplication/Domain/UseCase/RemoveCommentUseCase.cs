@@ -15,7 +15,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IRemoveCommentManager _removeCommentManager = RemoveCommentManager.GetInstance;
         public readonly RemoveCommentRequest RemoveCommentRequest;
 
-        public RemoveCommentUseCase(RemoveCommentRequest removeCommentRequest)
+        public RemoveCommentUseCase(RemoveCommentRequest removeCommentRequest, IPresenterCallBack<RemoveCommentResponse> removeCommentPresenterCallBack) : base(removeCommentPresenterCallBack)
         {
             RemoveCommentRequest = removeCommentRequest;
         }
@@ -23,9 +23,6 @@ namespace SocialMediaApplication.Domain.UseCase
         public override void Action()
         {
             _removeCommentManager.RemoveCommentAsync(RemoveCommentRequest, new RemoveCommentUseCaseCallBack(this));
-            //_addCommentManager.InsertCommentAsync(InsertCommentRequest, new InsertCommentUseCaseCallBack(this));
-            //_userManager.LoginUserAsync(LoginRequest, new LogInUseCaseCallBack(this));
-
         }
 
     }
@@ -42,24 +39,22 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(RemoveCommentResponse responseObj)
         {
-            _removeCommentUseCase?.RemoveCommentRequest.RemoveCommentPresenterCallBack?.OnSuccess(responseObj);
+            _removeCommentUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _removeCommentUseCase?.RemoveCommentRequest.RemoveCommentPresenterCallBack?.OnError(ex);
+            _removeCommentUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
     //request object
     public class RemoveCommentRequest
     {
         public CommentBObj Comment;
-        public IPresenterCallBack<RemoveCommentResponse> RemoveCommentPresenterCallBack;
 
-        public RemoveCommentRequest(CommentBObj comment, IPresenterCallBack<RemoveCommentResponse> removeCommentPresenterCallBack)
+        public RemoveCommentRequest(CommentBObj comment)    
         {
             Comment = comment;
-            RemoveCommentPresenterCallBack = removeCommentPresenterCallBack;
         }
     }
 

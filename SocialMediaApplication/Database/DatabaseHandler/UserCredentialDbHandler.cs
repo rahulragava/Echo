@@ -12,10 +12,10 @@ namespace SocialMediaApplication.Database.DatabaseHandler
     {
 
         private static UserCredentialDbHandler Instance { get; set; }
-        private static object _padLock = new object();
+        private static readonly object PadLock = new object();
         private readonly IDbAdapter _dbAdapter = DbAdapter.GetInstance;
 
-        UserCredentialDbHandler() { }
+        private UserCredentialDbHandler() { }
 
         public static UserCredentialDbHandler GetInstance
         {
@@ -23,7 +23,7 @@ namespace SocialMediaApplication.Database.DatabaseHandler
             {
                 if (Instance == null)
                 {
-                    lock (_padLock)
+                    lock (PadLock)
                     {
                         if (Instance == null)
                         {

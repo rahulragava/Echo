@@ -24,8 +24,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 ReactedBy = AppSettings.UserId
             };
             Reaction = reaction;
-            var reactionToPostRequest = new ReactionToPostRequestObj(reaction, new ReactionToPostPresenterCallBack(this));
-            var reactionToPostUseCase = new ReactionToPostUseCase(reactionToPostRequest);
+            var reactionToPostRequest = new ReactionToPostRequestObj(reaction);
+            var reactionToPostUseCase = new ReactionToPostUseCase(reactionToPostRequest, new ReactionToPostPresenterCallBack(this));
             reactionToPostUseCase.Execute();
         }
 

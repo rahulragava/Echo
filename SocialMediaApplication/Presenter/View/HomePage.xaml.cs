@@ -9,13 +9,14 @@ using Windows.UI.Xaml.Input;
 using SocialMediaApplication.Presenter.View.ProfileView;
 using SocialMediaApplication.Presenter.View.CommentView;
 using SocialMediaApplication.Presenter.View.FeedView;
-using SocialMediaApplication.Presenter.View.LogInView;
 using SocialMediaApplication.Presenter.View.PostView;
 using SocialMediaApplication.Presenter.View.PostView.PollPostView;
 using SocialMediaApplication.Presenter.View.PostView.TextPostView;
 using SocialMediaApplication.Util;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using Windows.UI.Xaml.Media;
+using SocialMediaApplication.Presenter.View.MainPageView;
 
 namespace SocialMediaApplication.Presenter.View
 {
@@ -80,32 +81,30 @@ namespace SocialMediaApplication.Presenter.View
                 ThemeIcon = "";
                 ThemeChangerNavigationItem.Content = "Dark";
                 var titleBar = AppSettings.TitleBar;
-                titleBar.BackgroundColor = Colors.White;
+                //titleBar.BackgroundColor = Colors.White;
                 titleBar.ForegroundColor = Colors.Black;
-                titleBar.ButtonBackgroundColor = Colors.White;
+                //titleBar.ButtonBackgroundColor= Colors.White;
+                titleBar.BackgroundColor = Color.FromArgb(255, 240, 242, 245);
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 240, 242, 245);
                 titleBar.ButtonForegroundColor = Colors.Black;
-
-                //ThemeChanger.Glyph = "&#xE945;";
             }
             else
             {
-                //ThemeChanger.Glyph = "&#E793;";
                 ThemeIcon = "";
                 var titleBar = AppSettings.TitleBar;
-                titleBar.BackgroundColor = Colors.Black;
+                //titleBar.BackgroundColor = Colors.Black;
+
                 titleBar.ForegroundColor = Colors.White;
                
-                titleBar.ButtonBackgroundColor = Colors.Black;
+                //titleBar.ButtonBackgroundColor = Colors.Black;
+                titleBar.BackgroundColor = Color.FromArgb(255, 24, 25, 26);
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 24, 25, 26);
                 titleBar.ButtonForegroundColor = Colors.White;
                 ThemeChangerNavigationItem.Content = "Light";
 
             }
         }
-
-        public readonly List<string> LanguageList = new List<string>(){"En","Ta"};
         
-        
-
         private void NavigationMenu_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
 
@@ -115,7 +114,6 @@ namespace SocialMediaApplication.Presenter.View
             {
                 case "HomePage":
                     NavigationMenu.IsPaneOpen = false;
-                    //this.Frame.Navigate(typeof(HomePage));
                     ContentFrame.Navigate(typeof(FeedsPage));
                     break;
                 case "SearchPage":
@@ -139,8 +137,6 @@ namespace SocialMediaApplication.Presenter.View
                     ContentFrame.Navigate(typeof(ProfilePage),AppSettings.UserId);
                     break;
                 case "Logout":
-                    //var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    //localSettings.Values.Remove("user");
                     AppSettings.LocalSettings.Values.Remove("user");
                     AppSettings.UserId = null;
                     this.Frame.Navigate(typeof(MainPage));
@@ -175,10 +171,12 @@ namespace SocialMediaApplication.Presenter.View
             {
                 AppSettings.Theme = AppSettings.DarkTheme;
                 var titleBar = AppSettings.TitleBar;
-                titleBar.BackgroundColor = Colors.Black;
+                //titleBar.BackgroundColor = Colors.Black;
                 titleBar.ForegroundColor = Colors.White;
-                titleBar.ButtonBackgroundColor = Colors.Black;
+                //titleBar.ButtonBackgroundColor = Colors.Black;
                 titleBar.ButtonForegroundColor = Colors.White;
+                titleBar.BackgroundColor = Color.FromArgb(255, 24, 25, 26);
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 24, 25, 26);
                 window.RequestedTheme = AppSettings.DarkTheme;
                 ThemeChangerNavigationItem.Content = "Light";
                 //ThemeChanger.Glyph = "&#E793;";
@@ -190,16 +188,17 @@ namespace SocialMediaApplication.Presenter.View
                 window.RequestedTheme = AppSettings.LightTheme;
                 //ThemeChanger.Glyph = "&#xE945;";
                 var titleBar = AppSettings.TitleBar;
-                titleBar.BackgroundColor = Colors.White;
+                //titleBar.BackgroundColor = Colors.White;
                 titleBar.ForegroundColor = Colors.Black;
-                titleBar.ButtonBackgroundColor = Colors.White;
+                //titleBar.ButtonBackgroundColor = Colors.White;
+                titleBar.BackgroundColor = Color.FromArgb(255, 240, 242, 245);
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 240, 242, 245);
                 titleBar.ButtonForegroundColor = Colors.Black;
                 ThemeChangerNavigationItem.Content = "Dark";
                 ThemeIcon = "";
 
             }
         }
-
         private string _themeIcon;
 
         public string ThemeIcon

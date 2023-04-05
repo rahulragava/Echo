@@ -10,664 +10,335 @@
       xmlns:pollPostView="using:SocialMediaApplication.Presenter.View.PostView.PollPostView"
       xmlns:textPostView="using:SocialMediaApplication.Presenter.View.PostView.TextPostView"
       xmlns:util="using:SocialMediaApplication.Util"
+      xmlns:controls1="using:Microsoft.UI.Xaml.Controls"
+      xmlns:view="using:SocialMediaApplication.Presenter.View"
       Background="{ThemeResource BackgroundColor}"
       mc:Ignorable="d">
 
     <Page.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize"
-                    Value="20" />
-            <Setter Property="FontWeight"
-                    Value="Normal" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resource/ProfilePageResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="GradientTextBlock"
-               TargetType="TextBlock">
-            <Setter Property="FontSize"
-                    Value="20" />
-            <Setter Property="Foreground"
-                    Value="{ThemeResource ImportantTextBlockForegroundGradient}" />
-        </Style>
-        <Style x:Key="VsCodeNotificationStyle"
-               TargetType="controls:InAppNotification">
+            <DataTemplate x:DataType="data:TextPostBObj"
+                          x:Key="TextPostDataTemplate">
+                <textPostView:TextPostUserControl x:Name="PostControl"
+                                                  PostId="{x:Bind Id,Mode=OneWay}"
+                                                  PostedByUserName="{x:Bind UserName,Mode=OneWay}"
+                                                  PostContent="{x:Bind Content,Mode=OneWay}"
+                                                  PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                  PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                  CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                  PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                  PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                  HorizontalAlignment="Stretch"
+                                                  PostRemoved="PostControl_OnPostRemoved"
+                                                  CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
+                                                  ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                                  ReactionChanged="PostControl_OnReactionChanged"
+                                                  PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
+                                                  EditTextPostClicked="PostControl_OnEditTextPostClicked"
+                                                  CommentReactionChanged="PollPostControl_OnCommentReactionChanged"
+                                                  FollowerListChanged="PostControl_OnFollowerListChanged"
+                                                  VerticalAlignment="Stretch" />
+            </DataTemplate>
 
-            <Setter Property="Foreground"
-                    Value="red" />
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="ShowDismissButton"
-                    Value="False" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Stretch" />
-            <Setter Property="VerticalAlignment"
-                    Value="Top" />
-            <Setter Property="FontSize"
-                    Value="14" />
-            <Setter Property="MinHeight"
-                    Value="35" />
-            <Setter Property="RenderTransformOrigin"
-                    Value="0.5,0" />
-            <Setter Property="Margin"
-                    Value="20,0" />
-            <Setter Property="Padding"
-                    Value="0" />
-            <Setter Property="VerticalOffset"
-                    Value="-100" />
-        </Style>
+            <DataTemplate x:DataType="data:PollPostBObj"
+                          x:Key="PollPostDataTemplate">
+                <pollPostView:PollPostUserControl x:Name="PollPostControl"
+                                                  PostedByUser="{x:Bind UserName,Mode=OneWay}"
+                                                  PostQuestion="{x:Bind Question,Mode=OneWay}"
+                                                  PostId="{x:Bind Id,Mode=OneWay}"
+                                                  PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
+                                                  CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
+                                                  PostComments="{x:Bind Comments,Mode=OneWay}"
+                                                  PollChoiceList="{x:Bind Choices,Mode=OneWay}"
+                                                  PostReaction="{x:Bind Reactions,Mode=OneWay}"
+                                                  PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
+                                                  PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
+                                                  PostRemoved="PollPostControl_OnPostRemoved"
+                                                  CommentReactionPopUpButtonClicked="PostControl_OnCommentReactionPopUpButtonClicked"
+                                                  ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
+                                                  ReactionChanged="PostControl_OnReactionChanged"
+                                                  CommentReactionChanged="PollPostControl_OnCommentReactionChanged"
+                                                  FollowerListChanged="PostControl_OnFollowerListChanged" />
+            </DataTemplate>
+            <util:SelectTemplate x:Key="MyDataTemplateSelector"
+                                 TextPostDataTemplate="{StaticResource TextPostDataTemplate}"
+                                 PollPostDataTemplate="{StaticResource PollPostDataTemplate}">
+            </util:SelectTemplate>
 
-        <Style x:Key="BorderAppearsHoverStyle"
-               TargetType="Button">
-            <Setter Property="Background"
-                    Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
-            <Setter Property="CornerRadius"
-                    Value="10"></Setter>
-            <Setter Property="BackgroundSizing"
-                    Value="OuterBorderEdge" />
-            <Setter Property="Foreground"
-                    Value="{ThemeResource ButtonForeground}" />
-            <Setter Property="BorderBrush"
-                    Value="{ThemeResource ButtonBorderBrush}" />
-            <Setter Property="BorderThickness"
-                    Value="{ThemeResource ButtonBorderThemeThickness}" />
-            <Setter Property="Padding"
-                    Value="{StaticResource ButtonPadding}" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Left" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="FontFamily"
-                    Value="{ThemeResource ContentControlThemeFontFamily}" />
-            <Setter Property="FontWeight"
-                    Value="Normal" />
-            <Setter Property="FontSize"
-                    Value="{ThemeResource ControlContentThemeFontSize}" />
-            <Setter Property="UseSystemFocusVisuals"
-                    Value="{StaticResource UseSystemFocusVisuals}" />
-            <Setter Property="FocusVisualMargin"
-                    Value="-3" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter x:Name="ContentPresenter"
-                                          AutomationProperties.AccessibilityView="Raw"
-                                          Background="{TemplateBinding Background}"
-                                          BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          CornerRadius="{TemplateBinding CornerRadius}"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTransitions="{TemplateBinding ContentTransitions}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          Padding="{TemplateBinding Padding}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBackgroundPointerOver}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBorderBrushPointerOver}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonForegroundPointerOver}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBackgroundPressed}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBorderBrushPressed}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonForegroundPressed}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBackgroundDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBorderBrushDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonForegroundDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </ContentPresenter>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="controls:InAppNotification"
-               x:Key="MsEdgeNotificationTemplateNoDismissButton">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Grid>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="State">
-                                    <VisualState x:Name="Collapsed">
-                                        <Storyboard>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                                <EasingDoubleKeyFrame KeyTime="0"
-                                                                      Value="0" />
-                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                            </DoubleAnimationUsingKeyFrames>
-
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                                <EasingDoubleKeyFrame KeyTime="0"
-                                                                      Value="0" />
-                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                            </DoubleAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
-                                                <DiscreteObjectKeyFrame KeyTime="0">
-                                                    <DiscreteObjectKeyFrame.Value>
-                                                        <Visibility>Visible</Visibility>
-                                                    </DiscreteObjectKeyFrame.Value>
-                                                </DiscreteObjectKeyFrame>
-                                                <DiscreteObjectKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
-                                                    <DiscreteObjectKeyFrame.Value>
-                                                        <Visibility>Collapsed</Visibility>
-                                                    </DiscreteObjectKeyFrame.Value>
-                                                </DiscreteObjectKeyFrame>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-
-                                    <VisualState x:Name="Visible">
-                                        <Storyboard>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                                <EasingDoubleKeyFrame KeyTime="0"
-                                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                                      Value="0" />
-                                            </DoubleAnimationUsingKeyFrames>
-
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                                <EasingDoubleKeyFrame KeyTime="0"
-                                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                                      Value="0" />
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Grid x:Name="RootGrid"
-                                  RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
-                                  Margin="{TemplateBinding Margin}"
-                                  Padding="{TemplateBinding Padding}"
-                                  MaxWidth="{TemplateBinding MaxWidth}"
-                                  Visibility="{TemplateBinding Visibility}"
-                                  Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}">
-                                <Grid.RenderTransform>
-                                    <CompositeTransform />
-                                </Grid.RenderTransform>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <ContentPresenter x:Name="PART_Presenter"
-                                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                                  HorizontalContentAlignment="Stretch"
-                                                  Foreground="Red"
-                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                  VerticalContentAlignment="Center"
-                                                  TextWrapping="WrapWholeWords" />
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="ButtonStyle1"
-               TargetType="Button">
-            <Setter Property="Background"
-                    Value="{ThemeResource ButtonBackground}" />
-            <Setter Property="BackgroundSizing"
-                    Value="OuterBorderEdge" />
-            <Setter Property="Foreground"
-                    Value="{ThemeResource ButtonForeground}" />
-            <Setter Property="BorderBrush"
-                    Value="{ThemeResource ButtonBorderBrush}" />
-            <Setter Property="BorderThickness"
-                    Value="{ThemeResource ButtonBorderThemeThickness}" />
-            <Setter Property="Padding"
-                    Value="{StaticResource ButtonPadding}" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Left" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="FontFamily"
-                    Value="{ThemeResource ContentControlThemeFontFamily}" />
-            <Setter Property="FontWeight"
-                    Value="Normal" />
-            <Setter Property="FontSize"
-                    Value="{ThemeResource ControlContentThemeFontSize}" />
-            <Setter Property="UseSystemFocusVisuals"
-                    Value="{StaticResource UseSystemFocusVisuals}" />
-            <Setter Property="FocusVisualMargin"
-                    Value="-3" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter x:Name="ContentPresenter"
-                                          AutomationProperties.AccessibilityView="Raw"
-                                          Background="{TemplateBinding Background}"
-                                          BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                          BorderBrush="{TemplateBinding BorderBrush}"
-                                          BorderThickness="{TemplateBinding BorderThickness}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          CornerRadius="5"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTransitions="{TemplateBinding ContentTransitions}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          Padding="{TemplateBinding Padding}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource SecondaryColor}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0" />
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="White" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBackgroundPressed}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonForegroundPressed}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBackgroundDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonBorderBrushDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-                                                                           Storyboard.TargetProperty="Foreground">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{ThemeResource ButtonForegroundDisabled}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </ContentPresenter>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <DataTemplate x:DataType="data:TextPostBObj"
-                      x:Key="TextPostDataTemplate">
-            <textPostView:TextPostUserControl x:Name="PostControl"
-                                              PostId="{x:Bind Id,Mode=OneWay}"
-                                              PostedByUserName="{x:Bind UserName,Mode=OneWay}"
-                                              PostContent="{x:Bind Content,Mode=OneWay}"
-                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                              PostTitle="{x:Bind Title,Mode=OneWay}"
-                                              PostComments="{x:Bind Comments,Mode=OneWay}"
-                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                              HorizontalAlignment="Stretch"
-                                              PostRemoved="PostControl_OnPostRemoved"
-                                              ReactionChanged="PostControl_OnReactionChanged"
-                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
-                                              FollowerListChanged="PostControl_OnFollowerListChanged"
-                                              CommentReactionPopUpButtonClicked="PollPostControl_OnCommentReactionPopUpButtonClicked"
-                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked"
-                                              VerticalAlignment="Stretch" />
-        </DataTemplate>
-
-        <DataTemplate x:DataType="data:PollPostBObj"
-                      x:Key="PollPostDataTemplate">
-            <pollPostView:PollPostUserControl x:Name="PollPostControl"
-                                              PostedByUser="{x:Bind UserName,Mode=OneWay}"
-                                              PostQuestion="{x:Bind Question,Mode=OneWay}"
-                                              PostId="{x:Bind Id,Mode=OneWay}"
-                                              PostCreatedAt="{x:Bind FormattedCreatedTime,Mode=OneWay}"
-                                              CreatedAt="{x:Bind CreatedAt,Mode=OneWay}"
-                                              PostTitle="{x:Bind Title,Mode=OneWay}"
-                                              PostComments="{x:Bind Comments,Mode=OneWay}"
-                                              PollChoiceList="{x:Bind Choices,Mode=OneWay}"
-                                              PostReaction="{x:Bind Reactions,Mode=OneWay}"
-                                              PostedByUserId="{x:Bind PostedBy,Mode=OneWay}"
-                                              PostContentFont="{x:Bind FontStyle,Mode=OneWay}"
-                                              PostRemoved="PollPostControl_OnPostRemoved"
-                                              CommentReactionPopUpButtonClicked="PollPostControl_OnCommentReactionPopUpButtonClicked"
-                                              FollowerListChanged="PostControl_OnFollowerListChanged"
-                                              ReactionPopUpButtonClicked="PostControl_OnReactionPopUpButtonClicked" />
-        </DataTemplate>
-        <util:SelectTemplate x:Key="MyDataTemplateSelector"
-                             TextPostDataTemplate="{StaticResource TextPostDataTemplate}"
-                             PollPostDataTemplate="{StaticResource PollPostDataTemplate}">
-        </util:SelectTemplate>
+        </ResourceDictionary>
 
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="VisualStateGroup">
+            <VisualStateGroup>
                 <VisualState x:Name="NarrowState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
+                        <AdaptiveTrigger MinWindowWidth="0"></AdaptiveTrigger>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PostOperationGrid.(Grid.Row)"
-                                Value="5"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.Column)"
-                                Value="0"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.ColumnSpan)"
+                        <Setter Target="UserProfileGrid.(Grid.ColumnSpan)"
                                 Value="2"></Setter>
-
-                        <Setter Target="PostOperationGrid.Margin"
-                                Value="45 5"></Setter>
-                        <Setter Target="UserThoughtPost.Margin"
-                                Value="45 5"></Setter>
-                        <Setter Target="PostGrid.Margin"
-                                Value="45 0"></Setter>
-
-                        <Setter Target="UserNameGrid.(Grid.ColumnSpan)"
+                        <Setter Target="UserProfileGrid.(Grid.Row)"
                                 Value="2"></Setter>
-                        <Setter Target="UserNameGrid.(Grid.Row)"
-                                Value="2"></Setter>
-                        <Setter Target="FollowerGrid.(Grid.Row)"
+                        <Setter Target="UserPostGrid.(Grid.Row)"
                                 Value="3"></Setter>
-                        <Setter Target="FollowerGrid.(Grid.ColumnSpan)"
+                        <Setter Target="UserPostGrid.(Grid.ColumnSpan)"
                                 Value="2"></Setter>
-                        <Setter Target="FollowerGrid.(Grid.Column)"
+                        <Setter Target="UserPostGrid.(Grid.Column)"
                                 Value="0"></Setter>
-                        <Setter Target="FollowerGrid.Margin"
-                                Value="180 15 0  70"></Setter>
-                        <Setter Target="FollowerGrid.Padding"
-                                Value="10"></Setter>
-
-                        <Setter Target="UserDetailControl.(Grid.ColumnSpan)"
-                                Value="2"></Setter>
-                        <Setter Target="UserDetailControl.(Grid.Row)"
-                                Value="4"></Setter>
-                        <Setter Target="UserDetailControl.(Grid.Column)"
-                                Value="0"></Setter>
-                        <Setter Target="UserDetailControl.(Grid.RowSpan)"
-                                Value="1"></Setter>
-                        <Setter Target="UserDetailControl.(Grid.Column)"
-                                Value="0"></Setter>
-                        <Setter Target="UserNameGrid.Margin"
-                                Value="120 0 0 0"></Setter>
-                        <Setter Target="UserName.Margin"
-                                Value="120 0 0 0"></Setter>
-                        <Setter Target="ProfileImage1.(Grid.Row)"
-                                Value="1"></Setter>
-
-                        <Setter Target="UserThoughtPost.(Grid.Row)"
-                                Value="6"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.Column)"
-                                Value="0"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.ColumnSpan)"
-                                Value="2"></Setter>
-                        <Setter Target="PostGrid.(Grid.Row)"
-                                Value="7"></Setter>
-                        <Setter Target="PostGrid.(Grid.Column)"
-                                Value="0"></Setter>
-
-                        <Setter Target="PostGrid.(Grid.ColumnSpan)"
-                                Value="2"></Setter>
-
-                    </VisualState.Setters>
-                </VisualState>
-
-                <!--<VisualState x:Name="MidState1">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="800" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="PostGrid.Width" Value="500"></Setter>
-                        <Setter Target="UserThoughtPost.Width" Value="500"></Setter>
-                        <Setter Target="PostOperationGrid.Width" Value="500"></Setter>
-                       
-                    </VisualState.Setters>
-                </VisualState>-->
-
-                <VisualState x:Name="MidState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="900" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="RowOne.Visibility"
-                                Value="Visible"></Setter>
-                        <Setter Target="ProfileImage1.(RelativePanel.AlignHorizontalCenterWith)"
-                                Value="HomeImageBorder"></Setter>
-                        <Setter Target="UserNameGrid.Margin"
-                                Value="0"></Setter>
-                        <Setter Target="UserNameGrid.HorizontalAlignment"
-                                Value="Left"></Setter>
-                        <Setter Target="UserDetailControl.Margin"
-                                Value="20 0 0 0"></Setter>
-                        <Setter Target="FollowerGrid.Margin"
-                                Value="40 0 0 0"></Setter>
-                        <Setter Target="UserNameGrid.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="FollowerGrid.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="UserDetailControl.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="ProfileGrid.MaxHeight"
-                                Value="1250"></Setter>
-                        <Setter Target="ProfileImage1.Margin"
-                                Value="-10 0 0 -50"></Setter>
+                        <Setter Target="UserPostGrid.Margin"
+                                Value="100 20 0 0"></Setter>
+                        <Setter Target="UserPostGrid.HorizontalAlignment"
+                                Value="Stretch"></Setter>
+                        <Setter Target="ProfileImage.Width"
+                                Value="100"></Setter>
+                        <Setter Target="ProfileImage.Height"
+                                Value="100"></Setter>
                         <Setter Target="EditPhoto.Margin"
-                                Value="100 0 0 -50"></Setter>
-                        <Setter Target="UserName.MaxWidth"
-                                Value="200"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.Row)"
-                                Value="2"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.Column)"
-                                Value="1"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.Row)"
-                                Value="3"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.Column)"
-                                Value="1"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
-                        <Setter Target="PostGrid.(Grid.Row)"
-                                Value="4"></Setter>
-                        <Setter Target="PostGrid.(Grid.Column)"
-                                Value="1"></Setter>
+                                Value="100 -20 0 -50" />
 
-                        <Setter Target="PostGrid.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
-                        <!--<Setter Target="UserThoughtPost.Grid.Row"></Setter>-->
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="MidState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="600"></AdaptiveTrigger>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="UserProfileGrid.(Grid.ColumnSpan)"
+                                    Value="2"></Setter>
+                            <Setter Target="UserProfileGrid.(Grid.Row)"
+                                    Value="2"></Setter>
+                            <Setter Target="UserPostGrid.(Grid.Row)"
+                                    Value="3"></Setter>
+                            <Setter Target="UserPostGrid.(Grid.ColumnSpan)"
+                                    Value="2"></Setter>
+                            <Setter Target="UserPostGrid.(Grid.Column)"
+                                    Value="0"></Setter>
+                            <Setter Target="UserPostGrid.Margin"
+                                    Value="100 20 0 0"></Setter>
+                            <Setter Target="UserPostGrid.HorizontalAlignment"
+                                    Value="Stretch"></Setter>
+                            <Setter Target="ProfileImage.Width"
+                                    Value="150"></Setter>
+                            <Setter Target="ProfileImage.Height"
+                                    Value="150"></Setter>
+                            <Setter Target="EditPhoto.Margin"
+                                    Value="130 0 0 -50" />
 
-                <VisualState x:Name="WideState">
+                        </VisualState.Setters>
+                    </VisualState>
+
+                    <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1340" />
+                        <AdaptiveTrigger MinWindowWidth="1070"></AdaptiveTrigger>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-
+                        <Setter Target="UserProfileGrid.(Grid.ColumnSpan)"
+                                Value="1"></Setter>
+                        <Setter Target="UserPostGrid.(Grid.Row)"
+                                Value="2"></Setter>
+                        <Setter Target="UserPostGrid.(Grid.Column)"
+                                Value="1"></Setter>
+                        <Setter Target="UserPostGrid.(Grid.ColumnSpan)"
+                                Value="1"></Setter>
+                        <Setter Target="UserPostGrid.HorizontalAlignment"
+                                Value="Stretch"></Setter>
+                        <Setter Target="UserPostGrid.Margin"
+                                Value="0"></Setter>
                         <Setter Target="ProfileGrid.MaxHeight"
                                 Value="1250"></Setter>
-                        <Setter Target="FollowerGrid.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="UserNameGrid.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="UserNameGrid.Margin"
-                                Value="80 0 0 0"></Setter>
-                        <Setter Target="UserDetailControl.HorizontalAlignment"
-                                Value="Center"></Setter>
-                        <Setter Target="FollowerGrid.(Grid.Row)"
-                                Value="3"></Setter>
-                        <Setter Target="FollowerGrid.Margin"
-                                Value="150 15 0 10" />
-                        <Setter Target="FollowerGrid.(Gri.Column)"
-                                Value="0"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.Row)"
-                                Value="3"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.Column)"
-                                Value="1"></Setter>
-                        <Setter Target="UserThoughtPost.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
-                        <Setter Target="UserName.MaxWidth"
-                                Value="200"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.Row)"
-                                Value="2"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.Column)"
-                                Value="1"></Setter>
-                        <Setter Target="PostOperationGrid.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
-                        <Setter Target="PostGrid.(Grid.Row)"
-                                Value="4"></Setter>
-                        <Setter Target="PostGrid.(Grid.Column)"
-                                Value="1"></Setter>
+                        <Setter Target="ProfileImage.Width"
+                                Value="150"></Setter>
+                        <Setter Target="ProfileImage.Height"
+                                Value="150"></Setter>
+                        <Setter Target="EditPhoto.Margin" Value="130 0 0 -50"/>
 
-                        <Setter Target="PostGrid.(Grid.ColumnSpan)"
-                                Value="1"></Setter>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-
         </VisualStateManager.VisualStateGroups>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               LightDismissOverlayMode="On"
+               IsLightDismissEnabled="True"
+               x:Name="PostReactionPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="PopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="PostReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="PopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="PostReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <reactionView:UserSelectedReaction x:Name="UserSelectedReactionControl"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               ReactionList="{x:Bind _profilePageViewModel.PostReactions,Mode=OneWay}" />
+        </Popup>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               LightDismissOverlayMode="On"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               IsLightDismissEnabled="True"
+               x:Name="CommentReactionPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="CommentPopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="PostReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="CommentPopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="PostReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <reactionView:UserSelectedReaction x:Name="UserSelectedCommentReactionControl"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               ReactionList="{x:Bind _profilePageViewModel.CommentReactions,Mode=OneWay}" />
+
+        </Popup>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               HorizontalOffset="-200"
+               VerticalOffset="-116"
+               LightDismissOverlayMode="on"
+               IsLightDismissEnabled="True"
+               x:Name="EditTextPopup">
+            <Popup.Resources>
+                <Storyboard x:Name="EditTextPopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="PostReactionPopup"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+                <Storyboard x:Name="EditTextPopOutStoryboard">
+                    <PopOutThemeAnimation  Storyboard.TargetName="PostReactionPopup" />
+                </Storyboard>
+            </Popup.Resources>
+            <textPostView:EditTextPostUserControl HorizontalAlignment="Stretch"
+                                                  TextPost="{x:Bind _profilePageViewModel.TextPost,Mode=OneWay}"
+                                                  VerticalAlignment="Stretch"
+                                                  CloseEdit="EditTextPostUserControl_OnCloseEdit"/>
+        </Popup>
+
+        <Popup x:Name="FollowerPopUp"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               LightDismissOverlayMode="On"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               IsLightDismissEnabled="True">
+            <Popup.Resources>
+                <Storyboard x:Name="FollowerPopInStoryboard">
+                    <PopInThemeAnimation  Storyboard.TargetName="FollowerPopUp"
+                                          FromHorizontalOffset="500" />
+                </Storyboard>
+            </Popup.Resources>
+            <Grid Height="400"
+                  Width="400"
+                  HorizontalAlignment="Stretch"
+                  CornerRadius="10"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Border BorderThickness="2"
+                        BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                        CornerRadius="10">
+                    <NavigationView PaneDisplayMode="Top"
+                                    x:Name="FollowerFollowing"
+                                    IsBackButtonVisible="Collapsed"
+                                    IsSettingsVisible="False"
+                                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                    SelectionChanged="FollowerFollowing_OnSelectionChanged">
+                        <NavigationView.MenuItems>
+                            <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
+                                                Margin="15 0 5 0"
+                                                Tag="FollowerTag">
+                                <NavigationViewItem.Content>
+                                    <StackPanel>
+                                        <TextBlock x:Uid="Following" />
+                                    </StackPanel>
+                                </NavigationViewItem.Content>
+
+                            </NavigationViewItem>
+                            <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
+                                                Margin="35 0 5 0"
+                                                Tag="FollowingTag">
+                                <NavigationViewItem.Content>
+                                    <StackPanel>
+                                        <TextBlock x:Uid="Follower" />
+                                    </StackPanel>
+                                </NavigationViewItem.Content>
+                            </NavigationViewItem>
+                        </NavigationView.MenuItems>
+                        <Frame x:Name="FollowerFollowingFrame" />
+                    </NavigationView>
+                </Border>
+            </Grid>
+
+        </Popup>
+
+        <Popup HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               LightDismissOverlayMode="On"
+               IsLightDismissEnabled="True"
+               HorizontalOffset="-200"
+               VerticalOffset="-200"
+               Grid.ColumnSpan="2"
+               x:Name="ResizePopup">
+
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                  Width="400">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <controls:ImageCropper Grid.Row="0"
+                                       Grid.Column="0"
+                                       Height="400"
+                                       HorizontalAlignment="Stretch"
+                                       Grid.ColumnSpan="2"
+                                       x:Name="CroppedImage" />
+                <Button Grid.Row="1"
+                        Grid.Column="0"
+                        x:Name="Unset"
+                        Click="Unset_OnClick">Cancel</Button>
+                <Button Grid.Row="1"
+                        x:Name="Set"
+                        HorizontalAlignment="Right"
+                        Click="Set_OnClick"
+                        Grid.Column="1">Set</Button>
+            </Grid>
+        </Popup>
+
         <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       x:Name="ProfileScroll">
             <Grid RowSpacing="5"
                   x:Name="ProfileGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"
-                                      MaxWidth="700"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
 
                 </Grid.ColumnDefinitions>
 
-                <Popup Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       Grid.Row="0"
-                       x:Name="ResizePopup"
-                       Grid.RowSpan="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <controls:ImageCropper Grid.Row="0"
-                                               Grid.Column="0"
-                                               HorizontalAlignment="Stretch"
-                                               Grid.ColumnSpan="2"
-                                               x:Name="CroppedImage" />
-                        <Button Grid.Row="1"
-                                Grid.Column="0"
-                                x:Name="Unset"
-                                Click="Unset_OnClick">Cancel</Button>
-                        <Button Grid.Row="1"
-                                x:Name="Set"
-                                HorizontalAlignment="Right"
-                                Click="Set_OnClick"
-                                Grid.Column="1">Set</Button>
-                    </Grid>
-                </Popup>
+                
 
                 <RelativePanel Grid.Row="0"
                                Grid.Column="0"
@@ -696,6 +367,8 @@
                              Tapped="HomeIconEditButton_OnTapped">
                         <FontIcon FontFamily="Segoe MDL2 Assets"
                                   FontSize="20"
+                                  PointerEntered="FontIcon_OnPointerEntered"
+                                  PointerExited="FontIcon_OnPointerExited"
                                   Visibility="Visible"
                                   Glyph="&#xE104;" />
                     </Border>
@@ -724,464 +397,416 @@
                              RelativePanel.AlignTopWith="ProfileImage1">
                         <FontIcon FontFamily="Segoe MDL2 Assets"
                                   FontSize="20"
+                                  PointerEntered="FontIcon_OnPointerEntered"
+                                  PointerExited="FontIcon_OnPointerExited"
                                   Visibility="Visible"
                                   Glyph="&#xE104;" />
                     </Border>
-
                 </RelativePanel>
 
-                <!--</Grid>-->
                 <Grid Grid.Column="0"
                       x:Name="RowOne"
                       Grid.ColumnSpan="2"
                       Grid.Row="1"
                       Height="50"
                       Visibility="Collapsed" />
-                <Grid>
 
-                </Grid>
                 <Grid Grid.Row="2"
                       Grid.Column="0"
-                      ColumnSpacing="15"
-                      x:Name="UserNameGrid"
-                      Margin="120 0 0 0"
-                      HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock FontSize="28"
-                               x:Name="UserName"
-                               Grid.Column="0"
-                               Margin="120 0 0 0"
-                               FontWeight="Medium"
-                               HorizontalAlignment="Stretch"
-                               VerticalAlignment="Top"
-                               TextTrimming="CharacterEllipsis"
-                               ToolTipService.ToolTip="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}"
-                               Text="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}">
-                    </TextBlock>
-                    <Button  Style="{StaticResource BorderAppearsHoverStyle}"
-                             x:Name="EditButton"
-                             Grid.Column="1"
-                             Width="50"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center"
-                             Margin="0 -5 0 0"
-                             Click="ShowPopupOffsetClicked">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="8">
-                                <FontIcon Glyph="&#xE104;"
-                                          FontSize="18"
-                                          FontFamily="Segoe MDL2 Assets" />
-
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-                    <Button Grid.Column="1"
-                            Style="{StaticResource BorderAppearsHoverStyle}"
-                            x:Name="FollowButton"
-                            Visibility="Collapsed"
-                            Width="82"
-                            Content="Follow"
-                            Click="FollowButton_OnClick"
-                            Margin="0 -5 0 0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    </Button>
-
-                    <Button Grid.Column="1"
-                            Style="{StaticResource BorderAppearsHoverStyle}"
-                            x:Name="UnFollowButton"
-                            Visibility="Collapsed"
-                            Width="82"
-                            Content="UnFollow"
-                            Click="UnFollowButton_OnClick"
-                            Margin="0 -5 0 0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    </Button>
-
-                    <Popup Grid.Column="1"
-                           x:Name="PostReactionsPopup"
-                           HorizontalOffset="-200"
-                           LightDismissOverlayMode="On"
-                           IsLightDismissEnabled="True"
-                           VerticalOffset="-50"
-                           Visibility="Collapsed">
-
-                        <reactionView:UserSelectedReaction x:Name="UserSelectedReactionControl"
-                                                           HorizontalAlignment="Stretch"
-                                                           VerticalAlignment="Stretch"
-                                                           ReactionList="{x:Bind _profilePageViewModel.PostReactions,Mode=OneWay}" />
-
-                    </Popup>
-
-                    <Popup Grid.Column="1"
-                           x:Name="CommentReactionsPopup"
-                           HorizontalOffset="-200"
-                           LightDismissOverlayMode="On"
-                           IsLightDismissEnabled="True"
-                           VerticalOffset="-50"
-                           Visibility="Collapsed">
-
-                        <reactionView:UserSelectedReaction x:Name="UserSelectedCommentReactionControl"
-                                                           HorizontalAlignment="Stretch"
-                                                           VerticalAlignment="Stretch"
-                                                           ReactionList="{x:Bind _profilePageViewModel.CommentReactions,Mode=OneWay}" />
-
-                    </Popup>
-
-                    <Popup Grid.Column="1"
-                           HorizontalOffset="-200"
-                           VerticalOffset="-50"
-                           LightDismissOverlayMode="On"
-                           IsLightDismissEnabled="True"
-                           Visibility="Collapsed"
-                           x:Name="FollowerPopUp">
-                        <Grid Height="400"
-                              CornerRadius="10"
-                              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                            <Border BorderThickness="2"
-                                    BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                                    CornerRadius="10">
-                                <NavigationView PaneDisplayMode="Top"
-                                                x:Name="FollowerFollowing"
-                                                IsBackButtonVisible="Collapsed"
-                                                IsSettingsVisible="False"
-                                                SelectionChanged="FollowerFollowing_OnSelectionChanged"
-                                                OpenPaneLength="200"
-                                                IsPaneOpen="False">
-                                    <NavigationView.MenuItems>
-                                        <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
-                                                            Margin="15 0 5 0"
-                                                            Tag="FollowerTag">
-                                            <NavigationViewItem.Content>
-                                                <StackPanel>
-                                                    <TextBlock>Following</TextBlock>
-                                                </StackPanel>
-                                            </NavigationViewItem.Content>
-
-                                        </NavigationViewItem>
-                                        <NavigationViewItemSeparator Margin="50 0 0 0"></NavigationViewItemSeparator>
-                                        <NavigationViewItem Foreground="{ThemeResource NavigationForegroundColor}"
-                                                            Margin="15 0 5 0"
-                                                            Tag="FollowingTag">
-                                            <NavigationViewItem.Content>
-                                                <StackPanel>
-                                                    <TextBlock>Follower</TextBlock>
-                                                </StackPanel>
-                                            </NavigationViewItem.Content>
-                                        </NavigationViewItem>
-                                    </NavigationView.MenuItems>
-                                    <Frame x:Name="FollowerFollowingFrame" />
-                                </NavigationView>
-                            </Border>
-
-                        </Grid>
-
-                    </Popup>
-
-                    <Popup Grid.Column="1"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           LightDismissOverlayMode="On"
-                           IsLightDismissEnabled="True"
-                           HorizontalOffset="-60"
-                           VerticalOffset="-50"
-                           x:Name="EditPopUp">
-                        <Grid Padding="50"
-                              Width="500"
-                              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                              HorizontalAlignment="Center"
-                              RowSpacing="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock x:Uid="UserName" />
-                            <TextBox HorizontalAlignment="Stretch"
-                                     Width="200"
-                                     x:Name="UserNameTextBox"
-                                     Grid.Row="0"
-                                     Grid.Column="1"
-                                     Text="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}" />
-
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="0"
-                                       x:Uid="FirstName"
-                                       HorizontalAlignment="Left" />
-                            <TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Text="{x:Bind _profilePageViewModel.FirstName, Mode=OneWay}"
-                                     Width="200"
-                                     x:Name="FirstNameTextBox"
-                                     HorizontalAlignment="Stretch" />
-
-                            <TextBlock Grid.Row="2"
-                                       x:Uid="LastName"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Left" />
-                            <TextBox Text="{x:Bind _profilePageViewModel.LastName, Mode=OneWay}"
-                                     Width="200"
-                                     Grid.Row="2"
-                                     Grid.Column="1"
-                                     x:Name="LastNameTextBox"
-                                     HorizontalAlignment="Stretch" />
-
-                            <TextBlock Grid.Row="3"
-                                       x:Uid="Gender"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Left" />
-
-                            <ComboBox Grid.Row="3"
-                                      Grid.Column="1"
-                                      ItemsSource="{x:Bind _profilePageViewModel.Genders,Mode=OneWay}"
-                                      HorizontalAlignment="Stretch"
-                                      Width="200"
-                                      x:Name="GenderComboBox"
-                                      SelectedItem="{x:Bind _profilePageViewModel.Gender, Mode=OneWay}" />
-
-                            <TextBlock x:Uid="MaritalStatus"
-                                       Grid.Column="0"
-                                       Grid.Row="4"
-                                       HorizontalAlignment="Left" />
-
-                            <ComboBox Grid.Row="4"
-                                      Grid.Column="1"
-                                      ItemsSource="{x:Bind _profilePageViewModel.MaritalStatuses,Mode=OneWay}"
-                                      SelectedItem="{x:Bind _profilePageViewModel.MaritalStatus, Mode=OneWay}"
-                                      Width="200"
-                                      x:Name="MaritalStatusComboBox"
-                                      HorizontalAlignment="Stretch" />
-
-                            <TextBlock x:Uid="Schooling"
-                                       Grid.Row="5"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Left" />
-
-                            <TextBox Grid.Row="5"
-                                     Grid.Column="1"
-                                     x:Name="EducationTextBox"
-                                     Text="{x:Bind _profilePageViewModel.Education, Mode=OneWay}"
-                                     Width="200" />
-
-                            <TextBlock Grid.Row="6"
-                                       Grid.Column="0"
-                                       x:Uid="Work"
-                                       HorizontalAlignment="Left" />
-
-                            <TextBox Text="{x:Bind _profilePageViewModel.Occupation, Mode=OneWay}"
-                                     x:Name="OccupationTextBox"
-                                     Grid.Row="6"
-                                     Grid.Column="1"
-                                     Width="200"
-                                     HorizontalAlignment="Stretch" />
-
-                            <TextBlock Grid.Row="7"
-                                       Grid.Column="0"
-                                       x:Uid="Place"
-                                       HorizontalAlignment="Left" />
-
-                            <TextBox Grid.Column="1"
-                                     Grid.Row="7"
-                                     x:Name="PlaceTextBox"
-                                     Text="{x:Bind _profilePageViewModel.Place, Mode=OneWay}"
-                                     Width="200"
-                                     HorizontalAlignment="Stretch" />
-                            <Button Width="80"
-                                    x:Uid="Save"
-                                    HorizontalAlignment="Center"
-                                    Grid.Row="8"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Background="{ThemeResource SecondaryColor}"
-                                    Foreground="White"
-                                    Click="ClosePopupClicked"
-                                    Margin="30 10" />
-
-                        </Grid>
-
-                    </Popup>
-                </Grid>
-
-                <StackPanel CornerRadius="10"
-                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            x:Name="FollowerGrid"
-                            VerticalAlignment="Top"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            Padding="15"
-                            Margin="180 15 0  10"
-                            Spacing="30">
-                    <StackPanel Tapped="ShowFollowerPopup">
-                        <TextBlock x:Uid="Following" />
-                        <TextBlock Style="{StaticResource GradientTextBlock}"
-                                   HorizontalAlignment="Center"
-                                   Text="{x:Bind _profilePageViewModel.UserFollowerCount, Mode = OneWay}" />
-                    </StackPanel>
-                    <StackPanel Tapped="ShowFollowingsPopup">
-                        <TextBlock x:Uid="Follower" />
-                        <TextBlock Style="{StaticResource GradientTextBlock}"
-                                   HorizontalAlignment="Center"
-                                   Text="{x:Bind _profilePageViewModel.UserFollowingCount, Mode = OneWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock x:Uid="Posts" />
-                        <TextBlock Style="{StaticResource GradientTextBlock}"
-                                   HorizontalAlignment="Center"
-                                   Text="{x:Bind _profilePageViewModel.UserPostCount , Mode = OneWay}" />
-                    </StackPanel>
-                </StackPanel>
-
-                <local:UserDetailControl Grid.Row="4"
-                                         Grid.ColumnSpan="1"
-                                         x:Name="UserDetailControl"
-                                         CornerRadius="10"
-                                         Grid.Column="0"
-                                         Margin="140 -60 0 0"
-                                         HorizontalAlignment="Stretch"
-                                         UserCreatedAt="{x:Bind _profilePageViewModel.FormattedCreatedTime,Mode=OneWay}"
-                                         FirstName="{x:Bind _profilePageViewModel.FirstName,Mode=OneWay}"
-                                         LastName="{x:Bind _profilePageViewModel.LastName,Mode=OneWay}"
-                                         Place="{x:Bind _profilePageViewModel.Place,Mode=OneWay}"
-                                         Occupation="{x:Bind _profilePageViewModel.Occupation,Mode=OneWay}"
-                                         Education="{x:Bind _profilePageViewModel.Education,Mode=OneWay}"
-                                         MarriageStatus="{x:Bind _profilePageViewModel.MaritalStatus,Mode=OneWay}" />
-
-                <Grid Grid.Row="2"
-                      Grid.Column="1"
-                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                      HorizontalAlignment="Stretch"
-                      BorderThickness="1"
-                      x:Name="PostOperationGrid"
-                      VerticalAlignment="Top"
-                      MaxWidth="700"
-                      Margin="-30 5 10 0"
-                      Padding="5"
-                      CornerRadius="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               x:Uid="Posts"
-                               HorizontalAlignment="Center"
-                               Margin="5 0" />
-                    <FontIcon Grid.Column="2"
-                              Glyph="&#xE16E;"
-                              HorizontalAlignment="Right"
-                              Tapped="ShowFilterPopupOffsetClicked"
-                              Margin="0 0 10 0"
-                              FontFamily="Segoe MDL2 Assets" />
-                    <FontIcon Grid.Column="1"
-                              Margin="0 0 20 0"
-                              HorizontalAlignment="Right"
-                              FontFamily="Segoe Fluent Icons"
-                              x:Name="CreatePostButton"
-                              Tapped="CreatePostButton_OnTapped"
-                              Glyph="&#xE710;" />
-
-                    <Popup Grid.Column="0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           IsLightDismissEnabled="True"
-                           LightDismissOverlayMode="Off"
-                           x:Name="FilterPopup">
-                        <StackPanel Padding="30"
-                                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                                    HorizontalAlignment="Center"
-                                    Spacing="10">
-
-                            <!--<TextBlock HorizontalAlignment="Center" >Post Filter</TextBlock>
-                            <NavigationViewItemSeparator/>-->
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <TextBlock Text="Type: "
-                                           FontSize="14"
-                                           VerticalAlignment="Center" />
-                                <ComboBox x:Name="PostTypeComboBox"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          PlaceholderText="Post type"
-                                          Margin="10 0 0 0"
-                                          SelectionChanged="PostTypeComboBox_OnSelectionChanged"
-                                          DropDownClosed="PostTypeComboBox_OnDropDownClosed"
-                                          Width="200">
-                                    <ComboBoxItem Content="All"
-                                                  IsSelected="True" />
-                                    <ComboBoxItem Content="Text Post" />
-                                    <ComboBoxItem Content="Poll Post" />
-                                </ComboBox>
-                            </StackPanel>
-                        </StackPanel>
-                    </Popup>
-                </Grid>
-
-                <textPostView:MiniTextPostCreation Grid.Row="3"
-                                                   MaxWidth="700"
-                                                   Grid.Column="1"
-                                                   x:Name="UserThoughtPost"
-                                                   OnTextPostCreationSuccess="MiniTextPostCreation_OnOnTextPostCreationSuccess"
-                                                   Margin="-30 5 10 0"
-                                                   HorizontalAlignment="Stretch" />
-
-                <Grid Grid.Row="4"
-                      x:Name="PostGrid"
-                      Grid.Column="1"
-                      Grid.RowSpan="2"
-                      Background="{ThemeResource BackgroundColor}"
-                      CornerRadius="10"
-                      Margin="-30 0 10 0"
-                      HorizontalAlignment="Stretch">
+                      RowSpacing="20"
+                      x:Name="UserProfileGrid"
+                      HorizontalAlignment="Center"
+                      Margin="100 0 0 0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+
                     </Grid.RowDefinitions>
 
-                    <Grid ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    <Grid Grid.Row="0"
+                          x:Name="UserNameGrid"
+                          ColumnSpacing="15"
+                          HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontSize="28"
+                                   x:Name="UserName"
+                                   Grid.Column="0"
+                                   FontWeight="Medium"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Top"
+                                   MaxWidth="200"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTipService.ToolTip="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}"
+                                   Text="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}">
+                        </TextBlock>
+                        <Button  Style="{StaticResource BorderAppearsHoverStyle}"
+                                 x:Name="EditButton"
+                                 Grid.Column="1"
+                                 Width="50"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Margin="0 1 0 0">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <FontIcon Glyph="&#xE104;"
+                                              FontSize="18"
+                                              FontFamily="Segoe MDL2 Assets" />
+                                </StackPanel>
+                            </Button.Content>
+                            <Button.Flyout>
+                                <Flyout Placement="Right">
+                                    <Grid Padding="20"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch"
+                                          RowSpacing="20">
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment"
+                                                        Value="Center" />
+                                                <Setter Property="TextTrimming"
+                                                        Value="CharacterEllipsis" />
+                                                <Setter Property="TextWrapping"
+                                                        Value="Wrap" />
+                                                <Setter Property="MaxWidth"
+                                                        Value="200" />
+                                                <Setter Property="FontSize"
+                                                        Value="17" />
+                                                <Setter Property="Margin"
+                                                        Value="0 0 25 0" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Uid="UserName" />
+                                        <TextBox HorizontalAlignment="Stretch"
+                                                 Width="200"
+                                                 x:Name="UserNameTextBox"
+                                                 Grid.Row="0"
+                                                 Grid.Column="1"
+                                                 Text="{x:Bind _profilePageViewModel.UserName, Mode=OneWay}" />
+
+                                        <TextBlock Grid.Row="1"
+                                                   Grid.Column="0"
+                                                   x:Uid="FirstName"
+                                                   HorizontalAlignment="Left" />
+                                        <TextBox Grid.Row="1"
+                                                 Grid.Column="1"
+                                                 Text="{x:Bind _profilePageViewModel.FirstName, Mode=OneWay}"
+                                                 Width="200"
+                                                 x:Name="FirstNameTextBox"
+                                                 HorizontalAlignment="Stretch" />
+
+                                        <TextBlock Grid.Row="2"
+                                                   x:Uid="LastName"
+                                                   Grid.Column="0"
+                                                   HorizontalAlignment="Left" />
+                                        <TextBox Text="{x:Bind _profilePageViewModel.LastName, Mode=OneWay}"
+                                                 Width="200"
+                                                 Grid.Row="2"
+                                                 Grid.Column="1"
+                                                 x:Name="LastNameTextBox"
+                                                 HorizontalAlignment="Stretch" />
+
+                                        <TextBlock Grid.Row="3"
+                                                   x:Uid="Gender"
+                                                   Grid.Column="0"
+                                                   HorizontalAlignment="Left" />
+
+                                        <ComboBox Grid.Row="3"
+                                                  Grid.Column="1"
+                                                  ItemsSource="{x:Bind _profilePageViewModel.Genders,Mode=OneWay}"
+                                                  HorizontalAlignment="Stretch"
+                                                  Width="200"
+                                                  x:Name="GenderComboBox"
+                                                  SelectedItem="{x:Bind _profilePageViewModel.Gender, Mode=OneWay}" />
+
+                                        <TextBlock x:Uid="MaritalStatus"
+                                                   Grid.Column="0"
+                                                   Grid.Row="4"
+                                                   HorizontalAlignment="Left" />
+
+                                        <ComboBox Grid.Row="4"
+                                                  Grid.Column="1"
+                                                  ItemsSource="{x:Bind _profilePageViewModel.MaritalStatuses,Mode=OneWay}"
+                                                  SelectedItem="{x:Bind _profilePageViewModel.MaritalStatus, Mode=OneWay}"
+                                                  Width="200"
+                                                  x:Name="MaritalStatusComboBox"
+                                                  HorizontalAlignment="Stretch" />
+
+                                        <TextBlock x:Uid="Schooling"
+                                                   Grid.Row="5"
+                                                   Grid.Column="0"
+                                                   HorizontalAlignment="Left" />
+
+                                        <TextBox Grid.Row="5"
+                                                 Grid.Column="1"
+                                                 x:Name="EducationTextBox"
+                                                 Text="{x:Bind _profilePageViewModel.Education, Mode=OneWay}"
+                                                 Width="200" />
+
+                                        <TextBlock Grid.Row="6"
+                                                   Grid.Column="0"
+                                                   x:Uid="Work"
+                                                   HorizontalAlignment="Left" />
+
+                                        <TextBox Text="{x:Bind _profilePageViewModel.Occupation, Mode=OneWay}"
+                                                 x:Name="OccupationTextBox"
+                                                 Grid.Row="6"
+                                                 Grid.Column="1"
+                                                 Width="200"
+                                                 HorizontalAlignment="Stretch" />
+
+                                        <TextBlock Grid.Row="7"
+                                                   Grid.Column="0"
+                                                   x:Uid="Place"
+                                                   HorizontalAlignment="Left" />
+
+                                        <TextBox Grid.Column="1"
+                                                 Grid.Row="7"
+                                                 x:Name="PlaceTextBox"
+                                                 Text="{x:Bind _profilePageViewModel.Place, Mode=OneWay}"
+                                                 Width="200"
+                                                 HorizontalAlignment="Stretch" />
+                                        <Button Width="80"
+                                                x:Uid="Save"
+                                                HorizontalAlignment="Center"
+                                                Grid.Row="8"
+                                                Style="{ThemeResource ButtonStyle1}"
+                                                BorderThickness="2"
+                                                Grid.Column="0"
+                                                Background="Green"
+                                                Grid.ColumnSpan="2"
+                                                Click="ClosePopupClicked"
+                                                Margin="30 10" />
+
+                                    </Grid>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <Button Grid.Column="1"
+                                Style="{StaticResource BorderAppearsHoverStyle}"
+                                x:Name="FollowButton"
+                                Visibility="Collapsed"
+                                x:Uid="Follow"
+                                Click="FollowButton_OnClick"
+                                Margin="0 0 0 0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                        </Button>
+
+                        <Button Grid.Column="1"
+                                Style="{StaticResource BorderAppearsHoverStyle}"
+                                x:Name="UnFollowButton"
+                                Visibility="Collapsed"
+                                x:Uid="UnFollow"
+                                Click="UnFollowButton_OnClick"
+                                Margin="0 0 0 0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                        </Button>
+                    </Grid>
+
+                    <StackPanel CornerRadius="10"
+                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                Grid.Row="1"
+                                MaxWidth="520"
+                                x:Name="FollowerGrid"
+                                VerticalAlignment="Top"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Padding="10"
+                                Spacing="30">
+                        <StackPanel x:Name="ShowFollowingPopUp"
+                                    Tapped="ShowFollowingPopupTapped">
+                            <TextBlock x:Uid="Following" />
+                            <TextBlock Style="{StaticResource GradientTextBlock}"
+                                       HorizontalAlignment="Center"
+                                       PointerEntered="TextBlock_OnPointerEntered"
+                                       PointerExited="TextBlock_OnPointerExited"
+                                       Text="{x:Bind _profilePageViewModel.UserFollowerCount, Mode = OneWay}" />
+                        </StackPanel>
+                        <StackPanel x:Name="ShowFollowerPopUp"
+                                    Tapped="ShowFollowerPopupTapped">
+                            <TextBlock x:Uid="Follower" />
+                            <TextBlock Style="{StaticResource GradientTextBlock}"
+                                       HorizontalAlignment="Center"
+                                       PointerEntered="TextBlock_OnPointerEntered"
+                                       PointerExited="TextBlock_OnPointerExited"
+                                       Text="{x:Bind _profilePageViewModel.UserFollowingCount, Mode = OneWay}" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock x:Uid="Posts" />
+                            <TextBlock Style="{StaticResource GradientTextBlock}"
+                                       HorizontalAlignment="Center"
+                                       Text="{x:Bind _profilePageViewModel.UserPostCount , Mode = OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <local:UserDetailControl Grid.Row="2"
+                                             x:Name="UserDetailControl"
+                                             CornerRadius="10"
+                                             Margin="-10 10 10 0"
+                                             Grid.Column="0"
+                                             HorizontalAlignment="Center"
+                                             UserCreatedAt="{x:Bind _profilePageViewModel.FormattedCreatedTime,Mode=OneWay}"
+                                             FirstName="{x:Bind _profilePageViewModel.FirstName,Mode=OneWay}"
+                                             LastName="{x:Bind _profilePageViewModel.LastName,Mode=OneWay}"
+                                             Place="{x:Bind _profilePageViewModel.Place,Mode=OneWay}"
+                                             Occupation="{x:Bind _profilePageViewModel.Occupation,Mode=OneWay}"
+                                             Education="{x:Bind _profilePageViewModel.Education,Mode=OneWay}"
+                                             MarriageStatus="{x:Bind _profilePageViewModel.MaritalStatus,Mode=OneWay}" />
+
+                </Grid>
+                <Grid Grid.Row="2"
+                      RowSpacing="10"
+                      x:Name="UserPostGrid"
+                      Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0"
+                          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                          HorizontalAlignment="Stretch"
+                          BorderThickness="1"
+                          x:Name="PostOperationGrid"
+                          VerticalAlignment="Top"
+                          MaxWidth="700"
+                          Margin="-30 5 10 0"
+                          Padding="5"
                           CornerRadius="10">
 
-                        <ListView x:Name="PostListView"
-                                  Margin="-10 10"
-                                  x:FieldModifier="public"
-                                  MaxWidth="700"
-                                  ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"
-                                  ItemsSource="{x:Bind _profilePageViewModel.PostList,Mode=OneWay}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate>
-                                                <ContentPresenter />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
+                        <TextBlock Grid.Column="0"
+                                   x:Uid="Posts"
+                                   HorizontalAlignment="Center"
+                                   Margin="5 0" />
+
+                        <FontIcon Grid.Column="2"
+                                  Glyph="&#xE16E;"
+                                  x:Name="FilterIcon"
+                                  HorizontalAlignment="Right"
+                                  PointerEntered="FontIcon_OnPointerEntered"
+                                  PointerExited="FontIcon_OnPointerExited"
+                                  Tapped="ShowFilterPopupOffsetClicked"
+                                  Margin="0 0 20 0"
+                                  FontFamily="Segoe MDL2 Assets" >
+                            <FontIcon.ContextFlyout>
+                                    <MenuFlyout Placement="Bottom">
+                                        <MenuFlyoutItem x:Uid="All"
+                                                    Click="AllPostFilter_OnClick"
+                                                        Tag="All" />
+                                        <MenuFlyoutItem x:Uid="TextPost"
+                                                        Click="TextPostFilter_OnClick"
+                                                        Tag="TextPost"></MenuFlyoutItem>
+                                        <MenuFlyoutItem x:Uid="PollPost"
+                                                    Click="PollPostFilter_OnClick"
+                                                        Tag="PollPost"></MenuFlyoutItem>
+
+                                </MenuFlyout>
+                            </FontIcon.ContextFlyout>
+                        </FontIcon>
+
+                        <FontIcon Grid.Column="1"
+                                  Margin="0 0 20 0"
+                                  HorizontalAlignment="Right"
+                                  PointerEntered="FontIcon_OnPointerEntered"
+                                  PointerExited="FontIcon_OnPointerExited"
+                                  FontFamily="Segoe Fluent Icons"
+                                  x:Name="CreatePostButton"
+                                  Tapped="CreatePostButton_OnTapped"
+                                  Glyph="&#xE710;" />
+
+                        <FontIcon Grid.Column="3"
+                                  FontFamily="Segoe Fluent Icons"
+                                  x:Name="SortPost"
+                                  PointerEntered="FontIcon_OnPointerEntered"
+                                  PointerExited="FontIcon_OnPointerExited"
+                                  Tapped="SortPost_OnTapped"
+                                  Margin="0 0 10 0"
+                                  Glyph="&#xE8CB;" >
+                            <FontIcon.ContextFlyout>
+                                <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                    <MenuFlyoutItem x:Uid="NewToOld"
+                                                    x:Name="NewestFirst"
+                                                    Click="NewestFirst_OnClick"
+                                                    Tag="NewToOld" />
+                                    <MenuFlyoutItem x:Uid="OldToNew"
+                                                    x:Name="OldestFirst" 
+                                                    Click="OldestFirst_OnClick"  
+                                                    Tag="OldToNew"></MenuFlyoutItem>
+
+                                </MenuFlyout>
+                            </FontIcon.ContextFlyout>
+
+                        </FontIcon>
                     </Grid>
-                    <!--</ScrollViewer>-->
-                </Grid>
+                    <textPostView:MiniTextPostCreation Grid.Row="1"
+                                                       MaxWidth="700"
+                                                       x:Name="UserThoughtPost"
+                                                       VerticalAlignment="Top"
+                                                       OnTextPostCreationSuccess="MiniTextPostCreation_OnOnTextPostCreationSuccess"
+                                                       Margin="-30 0 10 -5"
+                                                       HorizontalAlignment="Stretch" />
+                    <Grid Grid.Row="2"
+                          x:Name="PostGrid"
+                          Background="{ThemeResource BackgroundColor}"
+                          CornerRadius="10"
+                          Margin="-30 -10 10 0"
+                          HorizontalAlignment="Stretch">
 
+                        <Grid ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Padding="15"
+                              CornerRadius="10">
+
+                            <ListView x:Name="PostListView"
+                                      Margin="-10 0"
+                                      x:FieldModifier="public"
+                                      MaxWidth="700"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      ItemTemplateSelector="{StaticResource MyDataTemplateSelector}"
+                                      ItemsSource="{x:Bind _profilePageViewModel.PostList,Mode=OneWay}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 <controls:InAppNotification x:Name="ExampleVsCodeInAppNotification"
                                             AnimationDuration="00:00:00.1000000"
                                             Grid.Row="0"
@@ -1195,9 +820,7 @@
                                             VerticalAlignment="top"
                                             StackMode="Replace">
                 </controls:InAppNotification>
-
             </Grid>
-
         </ScrollViewer>
     </Grid>
 </Page>

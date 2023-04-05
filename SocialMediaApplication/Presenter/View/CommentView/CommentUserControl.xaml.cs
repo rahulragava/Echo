@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using SocialMediaApplication.Models.EntityModels;
@@ -8,6 +9,7 @@ using SocialMediaApplication.Presenter.ViewModel;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Imaging;
 using SocialMediaApplication.DataManager;
 using SocialMediaApplication.Util;
 using SocialMediaApplication.Models.Constant;
@@ -24,20 +26,22 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             CommentViewModel = new CommentViewModel();
             this.InitializeComponent();
             Loaded += CommentUserControl_Loaded;
-            Unloaded -= OnUnloaded;
+            Unloaded += OnUnloaded;
         }
 
         private void CommentUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            UserManager.UserNameChanged += UserNameChanged; 
-            //if (CommentDepthProperty != null)
-            //{
-            //    //CommentViewModel.SetStackPanelDepth(CommentDepth);
-            //}
-
+            EditUserManager.UserNameChanged += UserNameChanged;
+            EditProfileImageManager.ProfileUpdated += EditProfileImageManagerOnProfileUpdated;
             CommentViewModel.CommentId = CommentId;
-            CommentViewModel.Reactions = CommentReactions;
+            if (CommentReactions != null)
+            {
+                CommentViewModel.SetCommentReactions(CommentReactions);
+            }
+
+            CommentViewModel.FormattedDateTime = RelativeDateTime.DateTimeConversion(CommentDateTime);
             CommentViewModel.CommentedBy = CommentedBy;
+            
             CommentViewModel.CommentUserControlView = this;
             CommentViewModel.GetUser();
             CommentViewModel.GetCommentReaction();
@@ -52,12 +56,26 @@ namespace SocialMediaApplication.Presenter.View.CommentView
             }
             CommentViewModel.RemoveButtonVisibility = AppSettings.UserId == CommentedBy ? Visibility.Visible : Visibility.Collapsed;
         }
-        public static event Action<string> NavigateToSearchPage;
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            UserManager.UserNameChanged -= UserNameChanged;
+            EditUserManager.UserNameChanged -= UserNameChanged;
+            EditProfileImageManager.ProfileUpdated -= EditProfileImageManagerOnProfileUpdated;
         }
+
+        private void EditProfileImageManagerOnProfileUpdated(string imagePath)
+        {
+            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    CommentViewModel.ProfileIcon = new BitmapImage(new Uri(imagePath));
+                }
+            );
+        }
+
+        public static event Action<string> NavigateToSearchPage;
+
+       
         private void UserNameChanged(string userName)
         {
             Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
@@ -74,6 +92,7 @@ namespace SocialMediaApplication.Presenter.View.CommentView
         public event Action<CommentBObj, int> CommentInserted;
         public event Action<List<Reaction>> CommentReactionIconClicked;
         public event Action<List<string>> CommentsRemoved;
+        public event Action<Reaction> ChangeInReaction;
 
         //public Thickness Thickness
 
@@ -169,13 +188,15 @@ namespace SocialMediaApplication.Presenter.View.CommentView
 
         private async void RemoveComment_OnTapped(object sender, TappedRoutedEventArgs e)
         {
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+
             ContentDialog dialog = new ContentDialog
             {
-                Title = "Comment Deletion",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "No",
+                Title = resourceLoader.GetString("CommentDeletion"),
+                PrimaryButtonText = resourceLoader.GetString("Yes"),
+                CloseButtonText = resourceLoader.GetString("No"),
                 DefaultButton = ContentDialogButton.Primary,
-                Content = "The Comment about to be removed cannot be retrieved! \n Are you sure, you want to delete ?"
+                Content = resourceLoader.GetString("CommentRemovalWarning"),
             };
 
             var result = await dialog.ShowAsync();
@@ -244,34 +265,55 @@ namespace SocialMediaApplication.Presenter.View.CommentView
         private void SetReaction(Reaction reaction)
         {
             CommentViewModel.Reaction = reaction;
+            var reactionIndex = CommentViewModel.Reactions.IndexOf(CommentViewModel.Reactions.FirstOrDefault(r => r.ReactedBy == AppSettings.UserId));
+
+            if (reactionIndex != -1)
+            {
+                CommentViewModel.Reactions[reactionIndex] = reaction;
+            }
+            else
+            {
+                CommentViewModel.Reactions.Add(reaction);
+            }
             switch (reaction.ReactionType)
             {
                 case ReactionType.Heart:
                     CommentViewModel.ReactionIcon = "♥";
+                    CommentViewModel.ReactionText= "Heart";
+                    
                     break;
                 case ReactionType.ThumbsDown:
                     CommentViewModel.ReactionIcon = "👎";
+                    CommentViewModel.ReactionText = "Thumbs down";
                     break;
                 case ReactionType.ThumbsUp:
                     CommentViewModel.ReactionIcon = "👍";
+                    CommentViewModel.ReactionText = "Thumbs up";
 
                     break;
                 case ReactionType.Happy:
                     CommentViewModel.ReactionIcon = "😁";
+                    CommentViewModel.ReactionText = "Happy";
                     break;
                 case ReactionType.Mad:
                     CommentViewModel.ReactionIcon = "😡";
+                    CommentViewModel.ReactionText = "Mad";
                     break;
                 case ReactionType.HeartBreak:
                     CommentViewModel.ReactionIcon = "💔";
+                    CommentViewModel.ReactionText= "Heart break";
                     break;
                 case ReactionType.Sad:
                     CommentViewModel.ReactionIcon = "😕";
+                    CommentViewModel.ReactionText = "Sad";
                     break;
                 default:
                     CommentViewModel.ReactionIcon = "👍";
+                    CommentViewModel.ReactionText = "React";
                     break;
             }
+
+            ChangeInReaction?.Invoke(CommentViewModel.Reaction);
             ReactionOnComment.Visibility = Visibility.Visible;
             ReactionIcon.Visibility = Visibility.Visible;
         }
@@ -299,8 +341,26 @@ namespace SocialMediaApplication.Presenter.View.CommentView
 
         private void ReactionIcon_OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            //CommentReactionIconClicked?.Invoke(CommentViewModel.Reactions);
-            CommentReactionIconClicked?.Invoke(CommentReactions);
+            CommentReactionIconClicked?.Invoke(CommentViewModel.Reactions.ToList());   
+            //CommentReactionPopup.IsOpen = true;
+        }
+
+        private void RemoveComment_OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is FontIcon icon)
+            {
+                icon.FontSize = 15;
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Hand, 1);
+            }
+        }
+
+        private void RemoveComment_OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is FontIcon icon)
+            {
+                icon.FontSize = 13;
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
+            }
         }
     }
 

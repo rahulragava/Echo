@@ -44,8 +44,8 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
         public void GetUsers()
         {
-            var getUserRequest = new GetUserRequestObj(UserIds, new GetUserDetailViewModelPresenterCallBack(this));
-            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            var getUserRequest = new GetUserRequestObj(UserIds);
+            var getUserUseCase = new GetUserUseCase(getUserRequest, new GetUserDetailViewModelPresenterCallBack(this));
             getUserUseCase.Execute();
         }
 
@@ -65,7 +65,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
             UserList.Clear();
             foreach (var user in Users)
             {
-                UserVObj userVObj = new UserVObj();
+                var userVObj = new UserVObj();
                 await SetProfileIconAsync(user.ProfileIcon);
                 userVObj.Id = user.Id;
                 userVObj.UserName = user.UserName;
@@ -98,7 +98,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
     }

@@ -13,7 +13,5 @@ namespace SocialMediaApplication.Models.BusinessModels
         public string FormattedCreatedTime { get; set; } 
         public List<CommentBObj> Comments { get; set; }
         public List<Reaction> Reactions { get; set; }
-
-        
     }
 }

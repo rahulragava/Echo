@@ -19,7 +19,7 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IUserPollChoiceSelectionManager _userSelectionPollChoiceManager = UserPollChoiceSelectionManager.GetInstance;
         public readonly InsertUserChoiceSelectionRequest InsertUserChoiceSelectionRequest;
 
-        public InsertUserSelectionChoiceUseCase(InsertUserChoiceSelectionRequest insertUserChoiceSelectionRequest)
+        public InsertUserSelectionChoiceUseCase(InsertUserChoiceSelectionRequest insertUserChoiceSelectionRequest, IPresenterCallBack<InsertUserChoiceSelectionResponse> insertUserChoiceSelectionPresenterCallBack) : base(insertUserChoiceSelectionPresenterCallBack)
         {
             InsertUserChoiceSelectionRequest = insertUserChoiceSelectionRequest;
         }
@@ -27,7 +27,6 @@ namespace SocialMediaApplication.Domain.UseCase
         public override void Action()
         {
             _userSelectionPollChoiceManager.InsertPollChoiceSelectionAsync(InsertUserChoiceSelectionRequest, new InsertUserChoiceSelectionUseCaseCallBack(this));
-
         }
     }
 
@@ -44,16 +43,14 @@ namespace SocialMediaApplication.Domain.UseCase
 
     public class InsertUserChoiceSelectionRequest
     {
-        public InsertUserChoiceSelectionRequest(string postId, UserPollChoiceSelection userPollChoiceSelection, IPresenterCallBack<InsertUserChoiceSelectionResponse> insertUserChoiceSelectionPresenterCallBack)
+        public InsertUserChoiceSelectionRequest(string postId, UserPollChoiceSelection userPollChoiceSelection)
         {
             PostId = postId;
             UserPollChoiceSelection = userPollChoiceSelection;
-            InsertUserChoiceSelectionPresenterCallBack = insertUserChoiceSelectionPresenterCallBack;
         }
 
         public string PostId { get; }
         public UserPollChoiceSelection UserPollChoiceSelection { get; }
-        public IPresenterCallBack<InsertUserChoiceSelectionResponse> InsertUserChoiceSelectionPresenterCallBack { get; }
     }
     
     public class InsertUserChoiceSelectionUseCaseCallBack : IUseCaseCallBack<InsertUserChoiceSelectionResponse>
@@ -67,14 +64,12 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(InsertUserChoiceSelectionResponse responseObj)
         {
-            _insertUserChoiceSelectionUseCase?.InsertUserChoiceSelectionRequest
-                .InsertUserChoiceSelectionPresenterCallBack?.OnSuccess(responseObj);
+            _insertUserChoiceSelectionUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _insertUserChoiceSelectionUseCase?.InsertUserChoiceSelectionRequest
-                .InsertUserChoiceSelectionPresenterCallBack?.OnError(ex);
+            _insertUserChoiceSelectionUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 }

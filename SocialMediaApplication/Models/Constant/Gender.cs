@@ -1,6 +1,4 @@
-﻿using SQLite;
-
-namespace SocialMediaApplication.Models.Constant
+﻿namespace SocialMediaApplication.Models.Constant
 {
     public enum Gender
     {

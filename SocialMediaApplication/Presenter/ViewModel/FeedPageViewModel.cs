@@ -34,9 +34,9 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             TextPosts = new ObservableCollection<TextPostBObj>();
             PollPosts = new ObservableCollection<PollPostBObj>();
+            PostBObjList = new ObservableCollection<PostBObj>();
             Reactions = new ObservableCollection<Reaction>();
             CommentReactions = new ObservableCollection<Reaction>();
-            PostBObjList = new ObservableCollection<PostBObj>();
             PostFontStyles = Enum.GetValues(typeof(PostFontStyle)).Cast<PostFontStyle>().ToList();
         }
         private double _scrollPosition;
@@ -45,6 +45,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             get => _scrollPosition;
             set => SetProperty(ref _scrollPosition,value);
+        }
+
+        private bool _isLoading = false;
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
         }
 
         private BitmapImage _profileImage;
@@ -61,6 +69,13 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             get => _userThought;
             set => SetProperty(ref _userThought, value);
+        }
+     
+        public async void SetProfileIcon(string imagePath)
+        {
+            var imageConversion = new StringToImageUtil();
+            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
+            ProfileImage = profileIcon;
         }
         public void SetReactions(List<Reaction> reactions)
         {
@@ -79,14 +94,6 @@ namespace SocialMediaApplication.Presenter.ViewModel
                 CommentReactions.Add(reaction);
             }
         }
-
-        public async void SetProfileIcon(string imagePath)
-        {
-            var imageConversion = new StringToImageUtil();
-            var profileIcon = await imageConversion.GetImageFromStringAsync(imagePath);
-            ProfileImage = profileIcon;
-        }
-
         public List<PostFontStyle> PostFontStyles;
 
         private PostFontStyle _fontStyle = PostFontStyle.Simple;
@@ -125,6 +132,30 @@ namespace SocialMediaApplication.Presenter.ViewModel
             flag = false;
         }
 
+        public Reaction CommentReaction { get; set; }
+
+
+        public void ChangeInCommentReactions(List<Reaction> reactions)
+        {
+            var flag = false;
+            foreach (var reaction in reactions)
+            {
+                if (reaction.ReactedBy == CommentReaction.ReactedBy)
+                {
+                    CommentReactions.Remove(reaction);
+                    CommentReactions.Add(CommentReaction);
+                    flag = true;
+                }
+            }
+            if (!flag)
+            {
+                CommentReactions.Add(CommentReaction);
+            }
+            flag = false;
+        }
+
+       
+
         public int PollAmountToBeFetched = 5;
         public int PollAmountToBeSkipped = 0;
         public int TextAmountToBeFetched = 5;
@@ -133,16 +164,15 @@ namespace SocialMediaApplication.Presenter.ViewModel
         public void GetFeeds()
         {
             Success = false;
-            var fetchFeedRequest = new FetchFeedRequest(PollAmountToBeFetched, PollAmountToBeSkipped, TextAmountToBeFetched, TextAmountToBeSkipped, new FeedPageViewModelPresenterCallBack(this));
-            var fetchFeedUseCase = new FetchFeedUseCase(fetchFeedRequest);
+            var fetchFeedRequest = new FetchFeedRequest(PollAmountToBeFetched, PollAmountToBeSkipped, TextAmountToBeFetched, TextAmountToBeSkipped);
+            var fetchFeedUseCase = new FetchFeedUseCase(fetchFeedRequest, new FeedPageViewModelPresenterCallBack(this));
             fetchFeedUseCase.Execute();
-
         }
 
         public void GetUser()
         {
-            var getUserRequest = new GetUserRequestObj(new List<string>(){AppSettings.UserId}, new GetUserDetailViewModelPresenterCallBack(this));
-            var getUserUseCase = new GetUserUseCase(getUserRequest);
+            var getUserRequest = new GetUserRequestObj(new List<string>(){AppSettings.UserId});
+            var getUserUseCase = new GetUserUseCase(getUserRequest, new GetUserDetailViewModelPresenterCallBack(this));
             getUserUseCase.Execute();
         }
 
@@ -151,11 +181,18 @@ namespace SocialMediaApplication.Presenter.ViewModel
         {
             TextPost = textPost;
             var textPostCreationRequest =
-                new TextPostCreationRequest(textPost, new TextPostCreationPresenterCallBack(this));
-            var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest);
+                new TextPostCreationRequest(textPost);
+            var textPostCreationUseCase = new TextPostCreationUseCase(textPostCreationRequest, new TextPostCreationPresenterCallBack(this));
             textPostCreationUseCase.Execute();
         }
 
+        private TextPostBObj _textPostBObj;
+
+        public TextPostBObj TextPostBObj
+        {
+            get => _textPostBObj;
+            set => SetProperty(ref _textPostBObj,value);
+        }
         public class GetUserDetailViewModelPresenterCallBack : IPresenterCallBack<GetUserResponseObj>
         {
             private readonly FeedPageViewModel _feedPageViewModel;
@@ -171,13 +208,16 @@ namespace SocialMediaApplication.Presenter.ViewModel
                     () =>
                     {
                         _feedPageViewModel.User = getUserResponseObj.Users[0];
-                        if (string.IsNullOrEmpty(getUserResponseObj.Users[0].FirstName))
+
+                        if (!string.IsNullOrEmpty(getUserResponseObj.Users[0].FirstName))
                         {
-                            _feedPageViewModel.UserThought = "Whats on your mind, " + getUserResponseObj.Users[0].UserName + " ?";
+                            var userThought = _feedPageViewModel.MiniTextPostCreationView.GetUserDetailSuccess(getUserResponseObj.Users[0].FirstName);
+                            _feedPageViewModel.UserThought = userThought;
                         }
                         else
                         {
-                            _feedPageViewModel.UserThought = "Whats on your mind, " + getUserResponseObj.Users[0].FirstName +" ?";
+                            var userThought = _feedPageViewModel.MiniTextPostCreationView.GetUserDetailSuccess(getUserResponseObj.Users[0].UserName);
+                            _feedPageViewModel.UserThought = userThought;
                         }
                         _feedPageViewModel.SetProfileIcon(getUserResponseObj.Users[0].ProfileIcon);
                     }
@@ -201,13 +241,14 @@ namespace SocialMediaApplication.Presenter.ViewModel
             public void OnSuccess(FetchFeedResponse fetchFeedResponse)
             {
                 Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                    () =>
+                     () =>
                     {
                         if (fetchFeedResponse.TextPosts.Count == 0 && fetchFeedResponse.PollPosts.Count == 0)
                         {
+                            //_feedPageViewModel.IsLoading = false;
+                            //_feedPageViewModel.Success = true;
                             return;
                         }
-
                         foreach (var postBObj in fetchFeedResponse.TextPosts.OrderByDescending(p => p.CreatedAt))
                         {
                             _feedPageViewModel.PostBObjList.Add(postBObj);
@@ -217,9 +258,11 @@ namespace SocialMediaApplication.Presenter.ViewModel
                         {
                             _feedPageViewModel.PostBObjList.Add(postBObj);
                         }
+
+                        //await Task.Delay(500);
+                        //_feedPageViewModel.IsLoading = false;
                         _feedPageViewModel.PollAmountToBeSkipped += 5;
                         _feedPageViewModel.TextAmountToBeSkipped += 5;
-
                         _feedPageViewModel.Success = true;
                     }
                 );
@@ -227,6 +270,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnError(Exception ex)
             {
+                
             }
         }
 
@@ -252,7 +296,7 @@ namespace SocialMediaApplication.Presenter.ViewModel
 
             public void OnError(Exception ex)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
     }

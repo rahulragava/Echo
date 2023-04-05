@@ -29,6 +29,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -41,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +54,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -64,6 +67,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +80,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <OutputPath>bin\ARM64\Release\</OutputPath>
@@ -88,6 +93,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +105,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -111,6 +118,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -121,27 +129,40 @@
     </Compile>
     <Compile Include="Database\DatabaseHandler\Contract\IFetchPostManager.cs" />
     <Compile Include="DataManager\Contract\IEditProfileImageManager.cs" />
+    <Compile Include="DataManager\Contract\IEditTextPostManager.cs" />
     <Compile Include="DataManager\Contract\IFeedManager.cs" />
     <Compile Include="DataManager\Contract\IFollowUnFollowManager.cs" />
     <Compile Include="DataManager\Contract\IGetCommentManager.cs" />
     <Compile Include="DataManager\Contract\IGetUserManager.cs" />
+    <Compile Include="DataManager\Contract\IGetUserNamesManager.cs" />
+    <Compile Include="DataManager\Contract\IGetUsersManager.cs" />
+    <Compile Include="DataManager\Contract\ILoginManager.cs" />
     <Compile Include="DataManager\Contract\IRemovePostManager.cs" />
+    <Compile Include="DataManager\Contract\ISignUpManager.cs" />
     <Compile Include="DataManager\Contract\IUserMiniDetailManager.cs" />
     <Compile Include="DataManager\Contract\IUserPollChoiceSelectionManager.cs" />
     <Compile Include="DataManager\Contract\RemoveCommentManager.cs" />
     <Compile Include="DataManager\CreatePostManager.cs" />
+    <Compile Include="DataManager\CustomException\NoSuchUserException.cs" />
+    <Compile Include="DataManager\CustomException\UserMailAlreadyExistException.cs" />
+    <Compile Include="DataManager\CustomException\UserNameAlreadyExistException.cs" />
     <Compile Include="DataManager\EditProfileImageManager.cs" />
+    <Compile Include="DataManager\EditTextPostManager.cs" />
     <Compile Include="DataManager\FeedManager.cs" />
     <Compile Include="DataManager\FollowUnFollowManager.cs" />
     <Compile Include="DataManager\GetCommentManager.cs" />
     <Compile Include="DataManager\GetUserManager.cs" />
+    <Compile Include="DataManager\GetUserNamesManager.cs" />
+    <Compile Include="DataManager\GetUsersManager.cs" />
     <Compile Include="DataManager\LogInManager.cs" />
     <Compile Include="DataManager\RemoveCommentManager.cs" />
     <Compile Include="DataManager\RemovePostManager.cs" />
+    <Compile Include="DataManager\SignUpManager.cs" />
     <Compile Include="DataManager\UserMiniDetailManager.cs" />
     <Compile Include="DataManager\UserPollChoiceSelectionManager.cs" />
     <Compile Include="Domain\UseCase\EditHomeImageUseCase.cs" />
     <Compile Include="Domain\UseCase\EditProfileImageUseCase.cs" />
+    <Compile Include="Domain\UseCase\EditTextPostUseCase.cs" />
     <Compile Include="Domain\UseCase\EditUserProfileUseCase.cs" />
     <Compile Include="Domain\UseCase\FetchFeedUseCase.cs" />
     <Compile Include="Domain\UseCase\FollowUnFollowSearchedUserUseCase.cs" />
@@ -187,6 +208,7 @@
     <Compile Include="Domain\UseCase\LoginUseCase.cs" />
     <Compile Include="Domain\UseCase\UseCaseBase.cs" />
     <Compile Include="Presenter\ViewModel\CommentViewModel.cs" />
+    <Compile Include="Presenter\ViewModel\EditTextPostViewModel.cs" />
     <Compile Include="Presenter\ViewModel\FeedPageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\GetUsersDetailViewModel.cs" />
     <Compile Include="Presenter\ViewModel\PostControlViewModel.cs" />
@@ -194,11 +216,11 @@
     <Compile Include="Presenter\ViewModel\ProfilePageViewModel.cs" />
     <Compile Include="Presenter\ViewModel\ReactionViewModel.cs" />
     <Compile Include="Presenter\ViewModel\SearchViewModel.cs" />
-    <Compile Include="Presenter\ViewModel\UserSelectionReactionsViewModel.cs" />
-    <Compile Include="Presenter\View\SignUp\SignUpUserControl.xaml.cs">
-      <DependentUpon>SignUpUserControl.xaml</DependentUpon>
+    <Compile Include="Presenter\ViewModel\UserSelectionReactionsVM.cs" />
+    <Compile Include="Presenter\View\PostView\TextPostView\EditTextPostUserControl.xaml.cs">
+      <DependentUpon>EditTextPostUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Util\ObservableCollectionExtension.cs" />
+    <Compile Include="Util\RelativeDateTime.cs" />
     <Compile Include="Util\ValueConverter\BoolToPasswordRevealModeConverter.cs" />
     <Compile Include="Util\ValueConverter\BoolToVisibilityConverter.cs.cs" />
     <Compile Include="Presenter\ViewModel\IPresenterCallBack.cs" />
@@ -206,7 +228,6 @@
     <Compile Include="Presenter\ViewModel\SignUpViewModel.cs" />
     <Compile Include="Util\ValueConverter\PostFontStyleConverter.cs" />
     <Compile Include="Util\ValueConverter\RelativeCountConverter.cs" />
-    <Compile Include="Util\ValueConverter\RelativeDateTimeConverter.cs" />
     <Compile Include="Presenter\ViewModel\ViewModelBase.cs" />
     <Compile Include="Presenter\View\CommentView\CommentsViewUserControl.xaml.cs">
       <DependentUpon>CommentsViewUserControl.xaml</DependentUpon>
@@ -217,10 +238,10 @@
     <Compile Include="Presenter\View\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\LogInView\LogInPage.xaml.cs">
+    <Compile Include="Presenter\View\MainPageView\LogInView\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\MainPage.xaml.cs">
+    <Compile Include="Presenter\View\MainPageView\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BusinessModels\CommentBObj.cs" />
@@ -271,7 +292,6 @@
     <Compile Include="Presenter\View\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presenter\View\SignUp\ISignUpView.cs" />
     <Compile Include="Presenter\View\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
     </Compile>
@@ -290,8 +310,8 @@
     <Compile Include="DataManager\FetchPostManager.cs" />
     <Compile Include="DataManager\ReactionManager.cs" />
     <Compile Include="DataManager\UserCredentialManager.cs" />
-    <Compile Include="DataManager\UserManager.cs" />
-    <Compile Include="Presenter\View\SignUp\SignUpPage.xaml.cs">
+    <Compile Include="DataManager\EditUserManager.cs" />
+    <Compile Include="Presenter\View\MainPageView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\AppSettings.cs" />
@@ -299,7 +319,6 @@
     <Compile Include="Util\SelectTemplate.cs" />
     <Compile Include="Util\StringToImageUtil.cs" />
     <Compile Include="Util\Validation.cs" />
-    <Compile Include="Util\UserManagerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -308,13 +327,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\44-443150_wallpaper-hd-dark-theme-4k-black-wallpaper-for.jpg" />
-    <Content Include="Assets\AddIcon.png" />
+    <Content Include="Assets\Dislike.gif" />
+    <Content Include="Assets\Happy.gif" />
+    <Content Include="Assets\HappyTransparent.gif" />
+    <Content Include="Assets\Heart.gif" />
+    <Content Include="Assets\Heartbreak.gif" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Assets\leandra-rieger-31p65jYy7gE-unsplash.jpg" />
+    <Content Include="Assets\Like.gif" />
+    <Content Include="Assets\Mad.gif" />
     <Content Include="Assets\placeholder profile.jpg" />
+    <Content Include="Assets\SadEmoji.gif" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-125.png" />
     <Content Include="Assets\SmallTile.scale-150.png" />
@@ -353,17 +380,13 @@
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\textIcon.png" />
-    <Content Include="Assets\facebook_dark.png" />
-    <Content Include="Assets\facebook_light.png" />
     <Content Include="Assets\polling.png" />
-    <Content Include="Assets\signInBackground.jpg" />
     <Content Include="Assets\TextPostIcon.png" />
     <Content Include="Assets\wallpaper_mikael_gustafsson_png by Mikael Gustafsson.png" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="Assets\—Pngtree—facebook icon logo in modern_5221788.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
@@ -376,6 +399,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Presenter\Resource\ButtonHoverStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\Resource\ProfilePageResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presenter\Resource\ThemeResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -396,11 +427,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\LogInView\LogInPage.xaml">
+    <Page Include="Presenter\View\MainPageView\LogInView\LogInPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\MainPage.xaml">
+    <Page Include="Presenter\View\MainPageView\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -413,6 +444,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presenter\View\PostView\PostPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presenter\View\PostView\TextPostView\EditTextPostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -444,11 +479,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presenter\View\SignUp\SignUpPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Presenter\View\SignUp\SignUpUserControl.xaml">
+    <Page Include="Presenter\View\MainPageView\SignUp\SignUpPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

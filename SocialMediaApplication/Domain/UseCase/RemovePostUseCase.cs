@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 namespace SocialMediaApplication.Domain.UseCase
 {
     
-    public class RemovePostUseCase : UseCaseBase<InsertCommentResponse>
+    public class RemovePostUseCase : UseCaseBase<RemovePostResponse>
     {
         private readonly IRemovePostManager _removePostManager = RemovePostManager.GetInstance;
         public readonly RemovePostRequest RemovePostRequest;
 
-        public RemovePostUseCase(RemovePostRequest removePostRequest)
+        public RemovePostUseCase(RemovePostRequest removePostRequest, IPresenterCallBack<RemovePostResponse> removePostPresenterCallBack) : base(removePostPresenterCallBack)
         {
             RemovePostRequest = removePostRequest;
         }
@@ -24,9 +24,6 @@ namespace SocialMediaApplication.Domain.UseCase
         public override void Action()
         {
             _removePostManager.RemovePostAsync(RemovePostRequest, new RemovePostUseCaseCallBack(this));
-            //_addCommentManager.InsertCommentAsync(InsertCommentRequest, new InsertCommentUseCaseCallBack(this));
-            //_userManager.LoginUserAsync(LoginRequest, new LogInUseCaseCallBack(this));
-
         }
     }
 
@@ -42,26 +39,24 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(RemovePostResponse responseObj)
         {
-            _removePostUseCase?.RemovePostRequest.RemovePresenterCallBack?.OnSuccess(responseObj);
+            _removePostUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _removePostUseCase?.RemovePostRequest.RemovePresenterCallBack?.OnError(ex);
+            _removePostUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
     //request object
     public class RemovePostRequest
     {
-        public RemovePostRequest(PostBObj postBObj ,PostControlViewModel.RemovePostPresenterCallBack removePresenterCallBack)
+        public RemovePostRequest(PostBObj postBObj)
         {
             PostBObj = postBObj;
-            RemovePresenterCallBack = removePresenterCallBack;
         }
 
         public PostBObj PostBObj { get; }
-        public IPresenterCallBack<RemovePostResponse> RemovePresenterCallBack{ get; }
 
     }
 

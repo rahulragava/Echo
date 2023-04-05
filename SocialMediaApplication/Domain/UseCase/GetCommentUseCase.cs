@@ -4,9 +4,6 @@ using SocialMediaApplication.Models.BusinessModels;
 using SocialMediaApplication.Presenter.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMediaApplication.Domain.UseCase
 {
@@ -15,11 +12,10 @@ namespace SocialMediaApplication.Domain.UseCase
         private readonly IGetCommentManager _getCommentManager= GetCommentManager.GetInstance;
         public readonly GetCommentRequest GetCommentRequest;
 
-        public GetCommentUseCase(GetCommentRequest getCommentRequest)
+        public GetCommentUseCase(GetCommentRequest getCommentRequest, IPresenterCallBack<GetCommentResponse> getCommentPresenterCallBack) : base(getCommentPresenterCallBack)
         {
             GetCommentRequest = getCommentRequest;
         }
-
 
         public override void Action()
         {
@@ -40,26 +36,24 @@ namespace SocialMediaApplication.Domain.UseCase
 
         public void OnSuccess(GetCommentResponse responseObj)
         {
-            _getCommentUseCase?.GetCommentRequest.GetCommentPresenterCallBack?.OnSuccess(responseObj);
+            _getCommentUseCase?.PresenterCallBack?.OnSuccess(responseObj);
         }
 
         public void OnError(Exception ex)
         {
-            _getCommentUseCase?.GetCommentRequest.GetCommentPresenterCallBack?.OnError(ex);
+            _getCommentUseCase?.PresenterCallBack?.OnError(ex);
         }
     }
 
 
     public class GetCommentRequest
     {
-        public GetCommentRequest(string postId,  IPresenterCallBack<GetCommentResponse> getCommentPresenterCallBack)
+        public GetCommentRequest(string postId)
         {
             PostId = postId;
-            GetCommentPresenterCallBack = getCommentPresenterCallBack;
         }
 
         public string PostId { get; }
-        public IPresenterCallBack<GetCommentResponse> GetCommentPresenterCallBack { get; }
 
     }
 
